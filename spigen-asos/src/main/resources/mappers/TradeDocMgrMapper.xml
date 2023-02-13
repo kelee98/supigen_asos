@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ 
+<mapper namespace="mappers.TradeDocMgrMapper">
+	<select id="selectTaxFileMgrListQry" resultType= "com.spigen.asos.model.FileMgrVO">
+			SELECT DISTINCT
+					 ZOBDT
+			       , KUNNR_R AS kunnrR
+			       , NAME1_R AS name1R
+			       , ZCIVNO
+			       , NETWR_IV AS netwrIv
+			       , ZEXDNO
+			  	   , ZDTYPE_CI AS docTypeCI
+				   , ZFILE_CI AS fileNmCI
+				   , SUBSTRING_INDEX(ZFILE_CI, '.',-1) AS fileTypeCI
+				   , ZEXID_CI AS zexidCi
+			       , ZEXBNO
+			       , ZDTYPE_BL AS docTypeBL
+			       , ZFILE_BL AS fileNmBL
+				   , SUBSTRING_INDEX(ZFILE_BL, '.',-1) AS fileTypeBL
+			       , ZEXID_BL AS zexidBl
+			       , ZHBLNO				 				
+  				    , ( SELECT COUNT(*) AS CNT
+  				          FROM (
+		  				          SELECT DISTINCT
+										 ZOBDT
+								       , KUNNR_R AS kunnrR
+								       , NAME1_R AS name1R
+								       , ZCIVNO
+								       , NETWR_IV AS netwrIv
+								       , ZEXDNO
+								  	   , ZDTYPE_CI AS docTypeCI
+									   , ZFILE_CI AS fileNmCI
+									   , SUBSTRING_INDEX(ZFILE_CI, '.',-1) AS fileTypeCI
+									   , ZEXID_CI AS zexidCi
+								       , ZEXBNO
+								       , ZDTYPE_BL AS docTypeBL
+								       , ZFILE_BL AS fileNmBL
+									   , SUBSTRING_INDEX(ZFILE_BL, '.',-1) AS fileTypeBL
+								       , ZEXID_BL AS zexidBl
+								       , ZHBLNO 
+		                       FROM gi_billing
+				                  WHERE 1=1
+					               <if test="kunnrR != null and kunnrR != ''">
+									    AND kunnr_r IN
+										<foreach collection="qryLs" item="kunnrR" index="index" separator="," open="(" close=")">
+							        		 #{kunnrR}
+							     		</foreach>
+									</if>			                  
+					               <if test='qryType=="Q"'>
+					                    AND ZOBDT BETWEEN #{qryQBfr} AND #{qryQAftr}
+								   </if>
+					               <if test='qryType=="M"'>
+					                    AND left(ZOBDT,7) BETWEEN #{qryMBfr} AND #{qryMAftr}
+					               </if>
+					               <if test='qryType=="D"'>
+					                    AND ZOBDT BETWEEN #{qryBfr} AND #{qryAftr}
+					               </if>
+									<if test="blNo != null and blNo != ''">
+								       AND ZEXBNO = #{blNo}
+									</if>			  
+									<if test="ciNo != null and ciNo != ''">
+								       AND ZEXDNO = #{ciNo}
+									</if>	              
+					                <if test='docType=="CI"'>
+					               		<if test='docType=="pdf"'>
+								       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) = 'pdf'
+								       </if>
+					               		<if test='docType=="excel"'>
+								       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) IN ('xls','xlsx')
+								       </if>
+					               		<if test='docType=="etc"'>
+								       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) NOT IN ('pdf', 'xls','xlsx')
+								       </if>
+									</if>						
+					                <if test='docType=="BL"'>
+					               		<if test='docType=="pdf"'>
+								       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) = 'pdf'
+								       </if>
+					               		<if test='docType=="excel"'>
+								       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) IN ('xls','xlsx')
+								       </if>
+					               		<if test='docType=="etc"'>
+								       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) NOT IN ('pdf', 'xls','xlsx')
+								       </if>
+									</if>
+					) A						
+                  ) AS CNT   			       
+			    FROM gi_billing
+               WHERE 1=1
+               <if test="kunnrR != null and kunnrR != ''">
+				    AND kunnr_r IN
+					<foreach collection="qryLs" item="kunnrR" index="index" separator="," open="(" close=")">
+		        		 #{kunnrR}
+		     		</foreach>
+				</if>
+	           <if test='qryType=="Q"'>
+                    AND ZOBDT BETWEEN #{qryQBfr} AND #{qryQAftr}
+			   </if>
+	           <if test='qryType=="M"'>
+                    AND left(ZOBDT,7) BETWEEN #{qryMBfr} AND #{qryMAftr}
+               </if>
+	           <if test='qryType=="D"'>
+                    AND ZOBDT BETWEEN #{qryBfr} AND #{qryAftr}
+               </if>				
+				<if test="blNo != null and blNo != ''">
+				       AND ZEXBNO = #{blNo}
+				</if>			  
+				<if test="ciNo != null and ciNo != ''">
+				       AND ZEXDNO = #{ciNo}
+				</if>	         
+	                <if test='docType=="CI"'>
+	               		<if test='fileType=="pdf"'>
+				       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) = 'pdf'
+				       </if>
+	               		<if test='fileType=="excel"'>
+				       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) IN ('xls','xlsx')
+				       </if>
+	               		<if test='fileType=="etc"'>
+				       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) NOT IN ('pdf', 'xls','xlsx')
+				       </if>
+					</if>						
+	                <if test='docType=="BL"'>
+	               		<if test='fileType=="pdf"'>
+				       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) = 'pdf'
+				       </if>
+	               		<if test='fileType=="excel"'>
+				       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) IN ('xls','xlsx')
+				       </if>
+	               		<if test='fileType=="etc"'>
+				       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) NOT IN ('pdf', 'xls','xlsx')
+				       </if>
+					</if>	
+	  ORDER BY ZOBDT,netwrIv+0
+	    LIMIT #{firstIndex}	, #{recordCountPerPage}
+	</select>
+	
+	<select id="selectTaxFileMgrListQry_bak" resultType= "com.spigen.asos.model.FileMgrVO">
+			SELECT ZEXDNO
+			  	   , ZDTYPE_CI AS docTypeCI
+				   , ZFILE_CI AS fileNmCI
+				   , SUBSTRING_INDEX(ZFILE_CI, '.',-1) AS fileTypeCI
+				   , ZEXID_CI AS zexidCi
+			       , ZEXBNO
+			       , ZDTYPE_BL AS docTypeBL
+			       , ZFILE_BL AS fileNmBL
+				   , SUBSTRING_INDEX(ZFILE_BL, '.',-1) AS fileTypeBL
+			       , ZEXID_BL AS zexidBl
+			       , VBELN
+			       , AUBEL
+			       , TKNUM
+			       , ZREQTY
+			       , BSTNK
+			       , ZCIVNO
+			       , NETWR_IV AS netwrIv
+			       , ZEXFNO
+			       , ZHBLNO
+			       , ZMBLNO
+			       , ZOBDT
+			       , ZEXDT
+			       , MATNR
+			       , ARKTX
+			       , ZEXCNO
+			       , ZEDSNO
+			       , ZEDSDT
+			       , WADAT_IST AS wadatList
+			       , WADAT
+			       , VBELN_K AS vbelnK
+			       , FKDAT
+			       , FKIMG
+			       , VRKME
+			       , WAERK
+			       , NETWR
+			       , ZFWDR
+			       , NAME1_F AS name1F
+			       , KUNNR_R AS kunnrR
+			       , NAME1_R AS name1R
+			       , KUNNR_N AS kunnrN
+			       , NAME1_N AS name1N
+			       , INCO1
+			       , INCO2
+			       , ZTERM
+			       , BUKRS
+			       , BSART_T AS bsartT						 				
+  				    , ( SELECT COUNT(NO) AS CNT 
+                       FROM gi_billing
+                  WHERE 1=1
+	               <if test='qryType=="Q"'>
+	                    AND ZOBDT BETWEEN #{qryQBfr} AND #{qryQAftr}
+				   </if>
+	               <if test='qryType=="M"'>
+	                    AND left(ZOBDT,7) BETWEEN #{qryMBfr} AND #{qryMAftr}
+	               </if>
+	               <if test='qryType=="D"'>
+	                    AND ZOBDT BETWEEN #{qryBfr} AND #{qryAftr}
+	               </if>
+					<if test="blNo != null and blNo != ''">
+				       AND ZEXBNO = #{blNo}
+					</if>			  
+					<if test="ciNo != null and ciNo != ''">
+				       AND ZEXDNO = #{ciNo}
+					</if>	              
+	                <if test='docType=="CI"'>
+	               		<if test='docType=="pdf"'>
+				       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) = 'pdf'
+				       </if>
+	               		<if test='docType=="excel"'>
+				       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) IN ('xls','xlsx')
+				       </if>
+	               		<if test='docType=="etc"'>
+				       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) NOT IN ('pdf', 'xls','xlsx')
+				       </if>
+					</if>						
+	                <if test='docType=="BL"'>
+	               		<if test='docType=="pdf"'>
+				       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) = 'pdf'
+				       </if>
+	               		<if test='docType=="excel"'>
+				       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) IN ('xls','xlsx')
+				       </if>
+	               		<if test='docType=="etc"'>
+				       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) NOT IN ('pdf', 'xls','xlsx')
+				       </if>
+					</if>						
+                  ) AS CNT   			       
+			    FROM gi_billing
+               WHERE 1=1
+	           <if test='qryType=="Q"'>
+                    AND ZOBDT BETWEEN #{qryQBfr} AND #{qryQAftr}
+			   </if>
+	           <if test='qryType=="M"'>
+                    AND left(ZOBDT,7) BETWEEN #{qryMBfr} AND #{qryMAftr}
+               </if>
+	           <if test='qryType=="D"'>
+                    AND ZOBDT BETWEEN #{qryBfr} AND #{qryAftr}
+               </if>				
+				<if test="blNo != null and blNo != ''">
+				       AND ZEXBNO = #{blNo}
+				</if>			  
+				<if test="ciNo != null and ciNo != ''">
+				       AND ZEXDNO = #{ciNo}
+				</if>	         
+	                <if test='docType=="CI"'>
+	               		<if test='fileType=="pdf"'>
+				       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) = 'pdf'
+				       </if>
+	               		<if test='fileType=="excel"'>
+				       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) IN ('xls','xlsx')
+				       </if>
+	               		<if test='fileType=="etc"'>
+				       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) NOT IN ('pdf', 'xls','xlsx')
+				       </if>
+					</if>						
+	                <if test='docType=="BL"'>
+	               		<if test='fileType=="pdf"'>
+				       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) = 'pdf'
+				       </if>
+	               		<if test='fileType=="excel"'>
+				       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) IN ('xls','xlsx')
+				       </if>
+	               		<if test='fileType=="etc"'>
+				       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) NOT IN ('pdf', 'xls','xlsx')
+				       </if>
+					</if>			
+	  ORDER BY ZOBDT DESC
+	    LIMIT #{firstIndex}	, #{recordCountPerPage}
+	</select>
+	
+	<select id="selectTaxFileMgrListQry_local" resultType= "com.spigen.asos.model.FileMgrVO">
+			SELECT DISTINCT
+					 ZOBDT
+			       , KUNNR_R AS kunnrR
+			       , NAME1_R AS name1R
+			       , ZCIVNO
+			       , NETWR_IV AS netwrIv
+			       , ZEXDNO
+			  	   , ZDTYPE_CI AS docTypeCI
+				   , ZFILE_CI AS fileNmCI
+				   , SUBSTRING_INDEX(ZFILE_CI, '.',-1) AS fileTypeCI
+				   , ZEXID_CI AS zexidCi
+			       , ZEXBNO
+			       , ZDTYPE_BL AS docTypeBL
+			       , ZFILE_BL AS fileNmBL
+				   , SUBSTRING_INDEX(ZFILE_BL, '.',-1) AS fileTypeBL
+			       , ZEXID_BL AS zexidBl
+			       , ZHBLNO				 				
+  				    , ( SELECT COUNT(*) AS CNT
+  				          FROM (
+		  				          SELECT DISTINCT
+										 ZOBDT
+								       , KUNNR_R AS kunnrR
+								       , NAME1_R AS name1R
+								       , ZCIVNO
+								       , NETWR_IV AS netwrIv
+								       , ZEXDNO
+								  	   , ZDTYPE_CI AS docTypeCI
+									   , ZFILE_CI AS fileNmCI
+									   , SUBSTRING_INDEX(ZFILE_CI, '.',-1) AS fileTypeCI
+									   , ZEXID_CI AS zexidCi
+								       , ZEXBNO
+								       , ZDTYPE_BL AS docTypeBL
+								       , ZFILE_BL AS fileNmBL
+									   , SUBSTRING_INDEX(ZFILE_BL, '.',-1) AS fileTypeBL
+								       , ZEXID_BL AS zexidBl
+								       , ZHBLNO 
+		                       FROM gi_billing
+				                  WHERE 1=1
+					               <if test="kunnrR != null and kunnrR != ''">
+									    AND kunnr_r IN
+										<foreach collection="qryLs" item="kunnrR" index="index" separator="," open="(" close=")">
+							        		 #{kunnrR}
+							     		</foreach>
+									</if>			                  
+					               <if test='qryType=="Q"'>
+					                    AND ZOBDT BETWEEN #{qryQBfr} AND #{qryQAftr}
+								   </if>
+					               <if test='qryType=="M"'>
+					                    AND left(ZOBDT,7) BETWEEN #{qryMBfr} AND #{qryMAftr}
+					               </if>
+					               <if test='qryType=="D"'>
+					                    AND ZOBDT BETWEEN #{qryBfr} AND #{qryAftr}
+					               </if>
+									<if test="blNo != null and blNo != ''">
+								       AND ZEXBNO = #{blNo}
+									</if>			  
+									<if test="ciNo != null and ciNo != ''">
+								       AND ZEXDNO = #{ciNo}
+									</if>	              
+					                <if test='docType=="CI"'>
+					               		<if test='docType=="pdf"'>
+								       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) = 'pdf'
+								       </if>
+					               		<if test='docType=="excel"'>
+								       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) IN ('xls','xlsx')
+								       </if>
+					               		<if test='docType=="etc"'>
+								       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) NOT IN ('pdf', 'xls','xlsx')
+								       </if>
+									</if>						
+					                <if test='docType=="BL"'>
+					               		<if test='docType=="pdf"'>
+								       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) = 'pdf'
+								       </if>
+					               		<if test='docType=="excel"'>
+								       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) IN ('xls','xlsx')
+								       </if>
+					               		<if test='docType=="etc"'>
+								       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) NOT IN ('pdf', 'xls','xlsx')
+								       </if>
+									</if>
+					) A						
+                  ) AS CNT   			       
+			    FROM gi_billing
+               WHERE 1=1
+               <if test="kunnrR != null and kunnrR != ''">
+				    AND kunnr_r IN
+					<foreach collection="qryLs" item="kunnrR" index="index" separator="," open="(" close=")">
+		        		 #{kunnrR}
+		     		</foreach>
+				</if>
+	           <if test='qryType=="Q"'>
+                    AND ZOBDT BETWEEN #{qryQBfr} AND #{qryQAftr}
+			   </if>
+	           <if test='qryType=="M"'>
+                    AND left(ZOBDT,7) BETWEEN #{qryMBfr} AND #{qryMAftr}
+               </if>
+	           <if test='qryType=="D"'>
+                    AND ZOBDT BETWEEN #{qryBfr} AND #{qryAftr}
+               </if>				
+				<if test="blNo != null and blNo != ''">
+				       AND ZEXBNO = #{blNo}
+				</if>			  
+				<if test="ciNo != null and ciNo != ''">
+				       AND ZEXDNO = #{ciNo}
+				</if>	         
+	                <if test='docType=="CI"'>
+	               		<if test='fileType=="pdf"'>
+				       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) = 'pdf'
+				       </if>
+	               		<if test='fileType=="excel"'>
+				       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) IN ('xls','xlsx')
+				       </if>
+	               		<if test='fileType=="etc"'>
+				       		AND SUBSTRING_INDEX(ZFILE_CI, '.',-1) NOT IN ('pdf', 'xls','xlsx')
+				       </if>
+					</if>						
+	                <if test='docType=="BL"'>
+	               		<if test='fileType=="pdf"'>
+				       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) = 'pdf'
+				       </if>
+	               		<if test='fileType=="excel"'>
+				       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) IN ('xls','xlsx')
+				       </if>
+	               		<if test='fileType=="etc"'>
+				       		AND SUBSTRING_INDEX(ZFILE_BL, '.',-1) NOT IN ('pdf', 'xls','xlsx')
+				       </if>
+					</if>	
+	  ORDER BY ZOBDT,netwrIv+0
+	    LIMIT #{firstIndex}	, #{recordCountPerPage}
+	</select>
+	
+	<select id="selectFileMgrListQry" resultType= "com.spigen.asos.model.FileMgrVO">
+				SELECT A.ZBUKR
+					, A.LAUFD
+					, A.LAUFI
+					, A.GJAHR
+					, A.BELNR
+					, A.VBLNR
+					, A.ZBUKR
+					, A.BLART
+					, A.NAME1
+					, A.EVI_SEQ AS eviSeq
+					, B.FILE_SEQ AS fileSeq
+					, IFNULL(SUBSTRING_INDEX(B.FILE_NAME, '.',-1),'') AS fileType
+					, B.FILE_APPNR AS fileAppnr
+					, IFNULL(B.FILE_NAME,'') AS fileNm
+					, IFNULL(B.FILE_TEXT,'') AS fileText
+					, B.FILE_DATE AS fileDate
+					, B.FILE_PATH AS filePath
+					, B.FILE_SIZE AS fileSize
+					, IFNULL(C.SEND_YN,'N') AS sendYn
+					, A.PYBK_ADR AS pybkAdr
+					, A.RCVR_ACNO AS rcvrAcno
+					, A.RCVR_ENG_NM AS rcvrEngNm
+					, A.DRAC_BIC_NM AS dracBicNm
+					, A.DRAC_NO AS dracNo
+					, A.REMT_RSCD1 AS remtRscd1
+					, A.BRCD AS brcd
+					, A.EBNK_FAMT1700 AS ebnkFamt
+					, A.REMT_CURCD AS remtCurcd
+					, IFNULL(CASE C.SEND_YN WHEN 'Y' THEN '전송' WHEN 'N' THEN '미전송' WHEN 'R' THEN '재전송' END,'미전송') AS sendYnNm
+  				    , ( SELECT COUNT(*)
+                     	  FROM imp_slip_doc_mst A
+				    LEFT OUTER 
+				          JOIN uni_att B
+				            ON A.EVI_SEQ = B.EVI_SEQ  
+					LEFT OUTER 
+				          JOIN doc_send_yn C
+				            ON (A.ZBUKR = C.ZBUKR
+					            AND A.LAUFD = C.LAUFD
+					            AND A.LAUFI = C.LAUFI
+					            AND A.VBLNR = C.VBLNR
+						        AND B.EVI_SEQ = C.EVI_SEQ
+						        AND B.FILE_SEQ = C.FILE_SEQ					            
+					            )					            
+					  WHERE A.LAUFD BETWEEN #{qryBfr} AND #{qryAftr} 
+					<if test="laufi != null and laufi != ''">
+					       AND A.LAUFI = #{laufi}
+					</if>			  
+					<if test="sendYn != null and sendYn != ''">
+						<if test='sendYn=="N"'>
+							AND C.SEND_YN IS NULL
+						</if>
+						<if test='sendYn!="N"'>
+					    	AND C.SEND_YN = #{sendYn}
+						</if>
+					</if>  
+                   	) AS CNT 					
+			  FROM imp_slip_doc_mst A
+	    LEFT OUTER 
+			  JOIN uni_att B
+			    ON A.EVI_SEQ = B.EVI_SEQ  
+		LEFT OUTER 
+	         JOIN doc_send_yn C
+	           ON (A.ZBUKR = C.ZBUKR
+		           AND A.LAUFD = C.LAUFD
+		           AND A.LAUFI = C.LAUFI
+		           AND A.VBLNR = C.VBLNR
+			       AND B.EVI_SEQ = C.EVI_SEQ
+			       AND B.FILE_SEQ = C.FILE_SEQ		           
+		           )				    
+			 WHERE A.LAUFD BETWEEN #{qryBfr} AND #{qryAftr} 
+		<if test="laufi != null and laufi != ''">
+		       AND A.LAUFI = #{laufi}
+		</if>			  
+		<if test="sendYn != null and sendYn != ''">
+			<if test='sendYn=="N"'>
+				AND C.SEND_YN IS NULL
+			</if>
+			<if test='sendYn!="N"'>
+		    	AND C.SEND_YN = #{sendYn}
+			</if>
+		</if>  
+		ORDER BY LAUFD DESC, LAUFI, BELNR, eviSeq, fileSeq  					
+	    LIMIT #{firstIndex}	, #{recordCountPerPage}
+	</select>
+	
+	<select id="selectFileMgrListQry_local" resultType= "com.spigen.asos.model.FileMgrVO">
+				SELECT A.ZBUKR
+					, A.LAUFD
+					, A.LAUFI
+					, A.GJAHR
+					, A.BELNR
+					, A.VBLNR
+					, A.ZBUKR
+					, A.BLART
+					, A.NAME1
+					, A.EVI_SEQ AS eviSeq
+					, B.FILE_SEQ AS fileSeq
+					, IFNULL(SUBSTRING_INDEX(B.FILE_NAME, '.',-1),'') AS fileType
+					, B.FILE_APPNR AS fileAppnr
+					, IFNULL(B.FILE_NAME,'') AS fileNm
+					, IFNULL(B.FILE_TEXT,'') AS fileText
+					, B.FILE_DATE AS fileDate
+					, B.FILE_PATH AS filePath
+					, B.FILE_SIZE AS fileSize
+					, IFNULL(C.SEND_YN,'N') AS sendYn
+					, A.PYBK_ADR AS pybkAdr
+					, A.RCVR_ACNO AS rcvrAcno
+					, A.RCVR_ENG_NM AS rcvrEngNm
+					, A.DRAC_BIC_NM AS dracBicNm
+					, A.DRAC_NO AS dracNo
+					, A.REMT_RSCD1 AS remtRscd1
+					, A.BRCD AS brcd
+					, A.EBNK_FAMT1700 AS ebnkFamt
+					, A.REMT_CURCD AS remtCurcd
+					, IFNULL(CASE C.SEND_YN WHEN 'Y' THEN '전송' WHEN 'N' THEN '미전송' WHEN 'R' THEN '재전송' END,'미전송') AS sendYnNm
+  				    , ( SELECT COUNT(*)
+                     	  FROM imp_slip_doc_mst A
+				    LEFT OUTER 
+				          JOIN uni_att B
+				            ON A.EVI_SEQ = B.EVI_SEQ  
+					LEFT OUTER 
+				          JOIN doc_send_yn C
+				            ON (A.ZBUKR = C.ZBUKR
+					            AND A.LAUFD = C.LAUFD
+					            AND A.LAUFI = C.LAUFI
+					            AND A.VBLNR = C.VBLNR
+						        AND B.EVI_SEQ = C.EVI_SEQ
+						        AND B.FILE_SEQ = C.FILE_SEQ					            
+					            )					            
+					  WHERE A.LAUFD BETWEEN #{qryBfr} AND #{qryAftr} 
+					<if test="laufi != null and laufi != ''">
+					       AND A.LAUFI = #{laufi}
+					</if>			  
+					<if test="sendYn != null and sendYn != ''">
+						<if test='sendYn=="N"'>
+							AND C.SEND_YN IS NULL
+						</if>
+						<if test='sendYn!="N"'>
+					    	AND C.SEND_YN = #{sendYn}
+						</if>
+					</if>  
+                   	) AS CNT 					
+			  FROM imp_slip_doc_mst A
+	    LEFT OUTER 
+			  JOIN uni_att B
+			    ON A.EVI_SEQ = B.EVI_SEQ  
+		LEFT OUTER 
+	         JOIN doc_send_yn C
+	           ON (A.ZBUKR = C.ZBUKR
+		           AND A.LAUFD = C.LAUFD
+		           AND A.LAUFI = C.LAUFI
+		           AND A.VBLNR = C.VBLNR
+			       AND B.EVI_SEQ = C.EVI_SEQ
+			       AND B.FILE_SEQ = C.FILE_SEQ		           
+		           )				    
+			 WHERE A.LAUFD BETWEEN #{qryBfr} AND #{qryAftr} 
+		<if test="laufi != null and laufi != ''">
+		       AND A.LAUFI = #{laufi}
+		</if>			  
+		<if test="sendYn != null and sendYn != ''">
+			<if test='sendYn=="N"'>
+				AND C.SEND_YN IS NULL
+			</if>
+			<if test='sendYn!="N"'>
+		    	AND C.SEND_YN = #{sendYn}
+			</if>
+		</if>  
+		ORDER BY LAUFD DESC, LAUFI, BELNR, eviSeq, fileSeq  					
+	    LIMIT #{firstIndex}	, #{recordCountPerPage}
+	</select>
+
+    <select id="selectBankInfoList" resultType= "com.spigen.asos.model.FileMgrVO">
+			 SELECT A.BANK_NM AS bankNm
+			        , A.BANK_BRCH AS bankBrch
+	                , A.FAX_NUM AS faxNum
+	                , A.MNGR_NM AS mngrNm
+	                , A.MNGR_NUM AS mngrNum
+	                , A.MNGR_NUM2 AS mngrNum2
+	                , A.USE_YN AS useYn
+	                , CASE A.USE_YN WHEN 'Y' THEN '사용' WHEN 'N' THEN '미사용' END AS useYnNm
+	                , SEQ
+	                , RGT_DTM AS rgtDtm
+	                , RGT_ID AS rgtId	                
+	        FROM bank_info A 
+	       WHERE 1=1
+		<if test="bankNm != null and bankNm != ''">
+		     AND A.BANK_NM LIKE CONCAT(#{bankNm},'%')
+		</if>
+		<if test="bankBrch != null and bankBrch != ''">
+		     AND A.BANK_BRCH LIKE CONCAT(#{bankBrch},'%')
+		</if>
+		<if test="useYn != null and useYn != ''">
+		     AND A.USE_YN =  #{useYn}
+		</if>
+		<if test="seq != null and seq != ''">
+		     AND A.SEQ =  #{seq}
+		</if>
+	    ORDER BY BANK_NM,MNGR_NM, USE_YN DESC 	
+    </select>
+    
+    <insert id="insertBankInfo" parameterType="com.spigen.asos.model.FileMgrVO">
+	  INSERT INTO bank_info 
+	              ( BANK_NM
+	                , BANK_BRCH
+	                , FAX_NUM
+	                , MNGR_NM
+	                , MNGR_NUM
+	                , MNGR_NUM2
+	                , USE_YN
+	                , RGT_DTM
+	                , RGT_ID			        
+			       ) VALUES 
+					 ( #{bankNm}
+					   , #{bankBrch}
+					   , #{faxNum}
+					   , #{mngrNm}
+					   , #{mngrNum}
+					   , #{mngrNum2}
+					   , #{useYn}					 
+					   , CURRENT_TIMESTAMP
+					   , #{rgtId}					 
+					 )						 
+    </insert>
+    
+    
+    <update id="updateBankInfo" parameterType="com.spigen.asos.model.FileMgrVO">
+       UPDATE bank_info
+    	  SET BANK_NM = #{bankNm}
+    	      , BANK_BRCH = #{bankBrch}
+    	      , FAX_NUM= #{faxNum}
+    	      , MNGR_NM = #{mngrNm}
+    	      , MNGR_NUM = #{mngrNum}
+    	      , MNGR_NUM2 = #{mngrNum2}
+    	      , USE_YN = #{useYn}
+    	      , RGT_DTM = CURRENT_TIMESTAMP
+    	      , RGT_ID = #{rgtId}
+    	WHERE SEQ = #{seq}
+   	</update>
+   	
+   	<insert id="insertSendHis" parameterType="com.spigen.asos.model.FileMgrVO">
+	  INSERT INTO send_his 
+	              ( BANK_NM
+	                , BANK_BRCH
+	                , FAX_NUM
+	                , FILE_NM
+	                , REQ_NUM
+	                , SEND_PGS
+	                , SEND_PEE
+	                , SEND_DT
+	                , SEND_STATE
+	                , SEND_RESULT
+			       ) 
+			       SELECT 
+					      BANK_NM
+					      , BANK_BRCH
+					      , FAX_NUM
+					      , #{fileNm}
+					      , #{reqNum}
+					      , #{sendPgs}
+					      , #{sendPee}
+					      , #{sendDt}
+					      , #{sendState}
+					      , #{sendResult}
+				     FROM bank_info
+				    WHERE SEQ = #{seq}   						 
+    </insert>
+    
+    <select id="selectfaxSendHisQry" resultType= "com.spigen.asos.model.FileMgrVO">
+    	SELECT SEQ AS seq
+    	       , BANK_NM AS bankNm
+    	       , BANK_BRCH AS bankBrch
+    	       , FAX_NUM AS faxNum
+    	       , DATE_FORMAT(SEND_DT,'%Y-%m-%d %T') AS sendDt
+    	       , FILE_NM AS fileNm
+    	       , REQ_NUM AS reqNum
+    	  FROM send_his
+    	 WHERE DATE_FORMAT(SEND_DT,'%Y-%m-%d') BETWEEN #{qryBfr} AND #{qryAftr} 
+		<if test="bankNm != null and bankNm != ''">
+		     AND BANK_NM LIKE CONCAT(#{bankNm},'%')
+		</if>
+		<if test="reqNum != null and reqNum != ''">
+		     AND REQ_NUM =  #{reqNum}
+		</if>    	 
+      ORDER BY SEQ DESC
+    </select>
+   	
+<!--    	<update id="updateSendYn" parameterType="com.spigen.asos.model.FileMgrVO"> -->
+<!--    		UPDATE imp_slip_doc_mst -->
+<!--    	   	   SET SEND_YN = #{sendYn} -->
+<!--    		 WHERE laufd = #{laufd} -->
+<!--    		   AND laufi = #{laufi} -->
+<!--    		   AND vblnr = #{vblnr} -->
+<!--    		   AND zbukr = #{zbukr}  -->
+<!--    	</update> -->
+
+   	<insert id="updateSendYn" parameterType="com.spigen.asos.model.FileMgrVO">
+   		INSERT 
+   		  INTO doc_send_yn
+   		       ( laufd
+   		         , laufi
+   		         , vblnr
+   		         , zbukr
+   		         , evi_seq
+   		         , file_seq
+   		         , send_yn
+   		         , credat
+   		         , cretim
+   		         , creusr
+   		         , lmodat
+   		         , lmotim
+   		         , lmousr
+   		       )
+   		       SELECT
+	   		     #{laufd}
+	   		     , #{laufi}
+	   		     , #{vblnr}
+	   		     , #{zbukr}
+	   		     , #{eviSeq}
+	   		     , #{fileSeq}
+	   		     , #{sendYn}
+	   		     , DATE_FORMAT(now(), '%Y%m%d')
+	   		     , DATE_FORMAT(now(), '%H%i%s')   
+	   		     , #{updId}
+	   		     , ''
+	   		     , ''
+	   		     , ''
+			FROM DUAL
+   	</insert>
+   	
+   	<update id="updateSendYn2" parameterType="com.spigen.asos.model.FileMgrVO">
+   		UPDATE doc_send_yn
+   		   SET send_yn = #{sendYn}
+   		       , lmodat = DATE_FORMAT(now(), '%Y%m%d')
+   		       , lmotim = DATE_FORMAT(now(), '%H%i%s')
+   		       , lmousr = #{updId} 
+   		 WHERE laufd = #{laufd}
+	   	   AND laufi = #{laufi}
+	   	   AND vblnr = #{vblnr}
+	   	   AND zbukr = #{zbukr}
+	   	   AND evi_seq = #{eviSeq}
+	   	   AND file_seq= #{fileSeq}     
+   	</update>
+   	
+    <select id="selectSendYn" resultType= "int" parameterType="com.spigen.asos.model.FileMgrVO">
+   		SELECT COUNT(*)
+   		  FROM doc_send_yn   		   
+   		 WHERE laufd = #{laufd}
+	   	   AND laufi = #{laufi}
+	   	   AND vblnr = #{vblnr}
+	   	   AND zbukr = #{zbukr}
+	   	   AND evi_seq = #{eviSeq}
+	   	   AND file_seq= #{fileSeq}     
+   	</select>
+   	
+   <insert id="insertBankInfoHis" parameterType="com.spigen.asos.model.FileMgrVO">
+	  INSERT INTO bank_info_his 
+	              ( BANK_SEQ
+	                , BANK_NM
+	                , BANK_BRCH 
+	                , FAX_NUM
+	                , MNGR_NM 
+	                , MNGR_NUM 
+	                , MNGR_NUM2  
+	                , USE_YN  
+	                , RGT_DTM
+    	      		, RGT_ID
+    	      		, CHG_CD
+			       ) 
+			       SELECT 
+					      SEQ
+					      , BANK_NM
+					      , BANK_BRCH
+					      , FAX_NUM
+					      , MNGR_NM
+					      , MNGR_NUM
+					      , MNGR_NUM2
+					      , USE_YN
+					      , CURRENT_TIMESTAMP
+					      , #{rgtId} 
+					      , #{chgCd}
+				     FROM bank_info
+				    WHERE BANK_NM = #{bankNm}   						 
+				      AND BANK_BRCH = #{bankBrch}   						 
+    </insert>
+</mapper>
+ 
+
+

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ 
+<mapper namespace="mappers.CmMgrMapper">
+
+	<select id="selectGnrCdList" resultType= "com.spigen.asos.model.CmMgrVO">
+		SELECT GNR_CD AS gnrCd
+		       , GNR_NM AS gnrNm
+			   , LENGTH AS length
+			   , USE_YN AS useYn
+		  FROM gnrcd_clf
+		 WHERE 1=1
+		<if test="gnrCd != null and gnrCd != ''">
+		   AND GNR_CD =  #{gnrCd}
+		</if>
+		<if test="gnrNm != null and gnrNm != ''">
+		   AND GNR_NM LIKE CONCAT(#{gnrNm},'%')
+		</if>		 
+      ORDER BY GNR_CD 	
+	</select>
+
+    <select id="selectGnrCdDetailList" resultType= "com.spigen.asos.model.CmMgrVO">
+		SELECT GNR_CD AS gnrCd
+		       , DTL_CD AS dtlCd
+		       , DTL_NM AS dtlNm
+		       , IFNULL(DTL_CTS,'') AS dtlCts
+		       , CAPTION AS caption
+		       , USE_YN AS useYn
+		  FROM gnrcd_dtl
+	     WHERE 1=1
+		<if test="gnrCd != null and gnrCd != ''">
+		   AND GNR_CD =  #{gnrCd}
+		</if>
+	    ORDER BY DTL_CD 	
+    </select>
+    
+    <insert id="insertGnrCdRgt" parameterType="com.spigen.asos.model.CmMgrVO">
+	  INSERT INTO gnrcd_clf
+	              ( GNR_CD
+	                , GNR_NM
+	                , LENGTH
+	                , USE_YN
+			       ) VALUES 
+					 ( #{gnrCd}
+					   , #{gnrNm}
+					   , #{length}
+					   , #{useYn}					 
+					 )						 
+    </insert>
+    
+    <insert id="insertGnrCdDetailRgt" parameterType="com.spigen.asos.model.CmMgrVO">
+	  INSERT INTO gnrcd_dtl
+	              ( GNR_CD
+	                , DTL_CD
+	                , DTL_NM
+	                , DTL_CTS
+	                , CAPTION
+	                , USE_YN
+			       ) VALUES 
+					 ( #{gnrCd}
+					   , #{dtlCd}
+					   , #{dtlNm}
+					   , #{dtlCts}
+					   , #{caption}
+					   , #{useYn}					 
+					 )						 
+    </insert>
+    
+    <select id="selectGnrCdQry" resultType= "com.spigen.asos.model.CmMgrVO">
+		SELECT GNR_CD AS gnrCd
+		       , GNR_NM AS gnrNm
+			   , LENGTH AS length
+			   , USE_YN AS useYn
+		  FROM gnrcd_clf
+		 WHERE 1=1
+		<if test="gnrCd != null and gnrCd != ''">
+		   AND GNR_CD =  #{gnrCd}
+		</if>
+    </select>
+    
+    <update id="updateGnrCdUpd" parameterType="com.spigen.asos.model.CmMgrVO">
+       UPDATE gnrcd_clf
+    	  SET GNR_NM = #{gnrNm}
+    	      , LENGTH = #{length}
+    	      , USE_YN = #{useYn}
+    	WHERE GNR_CD = #{gnrCd}
+   	</update>
+   	
+    <select id="selectGnrCdDetailQry" resultType= "com.spigen.asos.model.CmMgrVO">
+		SELECT GNR_CD AS gnrCd
+		       , DTL_CD AS dtlCd
+		       , DTL_NM AS dtlNm
+		       , IFNULL(DTL_CTS,'') AS dtlCts
+		       , CAPTION AS caption
+		       , USE_YN AS useYn
+		  FROM gnrcd_dtl
+	     WHERE 1=1
+		<if test="gnrCd != null and gnrCd != ''">
+		   AND GNR_CD =  #{gnrCd}
+		</if>
+		<if test="dtlCd != null and dtlCd != ''">
+		   AND DTL_CD =  #{dtlCd}
+		</if>
+    </select>
+    
+    <update id="updateGnrCdDetailUpd" parameterType="com.spigen.asos.model.CmMgrVO">
+       UPDATE gnrcd_dtl
+    	  SET DTL_CD = #{dtlCd}
+    	      , DTL_NM = #{dtlNm}
+    	      , DTL_CTS = #{dtlCts}
+    	      , CAPTION = #{caption}
+    	      , USE_YN = #{useYn}
+    	WHERE GNR_CD = #{gnrCd}
+    	  AND DTL_CD = #{preDtlCd}
+   	</update>
+   	
+    <select id="selectProdInfoList_001" resultType= "com.spigen.asos.model.DocMgrVO">
+		SELECT DISTINCT 
+		       MVGR2 AS mvgr2
+		       , MVGT2 AS mvgt2
+		  FROM prd_srch
+		 UNION ALL
+		 SELECT '' AS mvgr2
+		        , '해당없음' AS mvgt2
+		   FROM DUAL      
+	  ORDER BY MVGT2 
+    </select>
+    
+    <select id="selectProdInfoList_002" resultType= "com.spigen.asos.model.DocMgrVO">
+		SELECT DISTINCT 
+		       MVGR3 AS mvgr3
+		       , MVGT3 AS mvgt3
+		  FROM prd_srch
+	     WHERE 1=1
+		<if test="mvgr2 != null and mvgr2 != ''">
+		   AND MVGR2 =  #{mvgr2}
+		</if>		  
+	  ORDER BY MVGT3
+    </select>
+    
+    <select id="selectProdInfoList_003" resultType= "com.spigen.asos.model.DocMgrVO">
+		SELECT DISTINCT 
+		       NORMT AS normt
+		  FROM prd_srch
+	     WHERE NORMT != ''
+		<if test="mvgr2 != null and mvgr2 != ''">
+		   AND MVGR2 =  #{mvgr2}
+		</if>		  
+		<if test="mvgr3 != null and mvgr3 != ''">
+		   AND MVGR3 = #{mvgr3}
+		</if>		  
+	  ORDER BY NORMT
+    </select>
+    
+    <select id="selectVdrList" resultType= "com.spigen.asos.model.DocMgrVO">
+		SELECT distinct 
+			   lifnr 
+		       , bu_sort1 AS vdrNm
+		  FROM vnd_mst
+	     WHERE bu_sort1 !=""
+		<if test="vdrNm != null and vdrNm != ''">
+		   AND bu_sort1 LIKE CONCAT(#{vdrNm},'%')
+		</if>		  
+	  ORDER BY vdrNm
+    </select>
+    
+    <select id="vndrBySKUList" resultType= "com.spigen.asos.model.DocMgrVO">
+		SELECT DISTINCT
+		       A.matnr
+		 	   , A.komtx
+		 	   , A.charg
+		 	   , 'Y' AS chkYn
+		  FROM prd_mst A
+ 		       , prd_by_vnd B 
+		 WHERE A.matnr = B.matnr
+	       AND A.charg = B.charg
+		<if test="matnr != null and matnr != ''">
+		   AND A.matnr LIKE CONCAT(#{matnr},'%')
+		</if>		  
+		<if test="lifnr != null and lifnr != ''">
+		   AND B.lifnr = #{lifnr}
+		</if>
+	UNION ALL
+	SELECT C.matnr
+ 	       , C.komtx
+ 	       , C.charg
+ 	       , C.chkYn
+	 FROM  (
+		 		SELECT DISTINCT
+			       A.matnr
+			 	   , A.komtx
+			 	   , A.charg
+			 	   , CASE WHEN B.matnr IS NULL THEN 'N' ELSE 'Y' END AS chkYn
+			  FROM prd_mst A
+	 		  LEFT 
+	    OUTER JOIN prd_by_vnd B 
+		           ON (A.matnr = B.matnr
+		               AND A.charg = B.charg
+					<if test="lifnr != null and lifnr != ''">
+					   AND B.lifnr = #{lifnr}
+					</if>		               
+					  ) 
+			 WHERE 1=1
+			<if test="matnr != null and matnr != ''">
+			   AND A.matnr LIKE CONCAT(#{matnr},'%')
+			</if>		  
+		      ) C
+	  WHERE C.chkYn = 'N'	      
+   ORDER BY matnr
+	  LIMIT 0, 99
+    </select>
+
+    <insert id="insertSKUByVndr" parameterType="com.spigen.asos.model.DocMgrVO">
+	  INSERT INTO prd_by_vnd
+	              ( lifnr
+	                , matnr
+	                , charg
+	                , credat
+	                , cretim
+	                , creusr
+			       ) VALUES 
+					 ( #{lifnr}
+					   , #{matnr}
+					   , #{charg}
+		   		       , DATE_FORMAT(now(), '%Y%m%d')
+		   		       , DATE_FORMAT(now(), '%H%i%s')   
+		   		       , #{crtrId}
+					 )						 
+    </insert>  
+      
+    <delete id="deleteSKUByVndr" parameterType="com.spigen.asos.model.DocMgrVO">
+      DELETE 
+	    FROM prd_by_vnd
+	   WHERE lifnr = #{lifnr} 
+	     AND matnr = #{matnr}
+	     AND charg = #{charg}
+    </delete>
+    
+    <!-- 거래처 조회 -->
+    <select id="selectClntList" resultType= "com.spigen.asos.model.FileMgrVO">
+		SELECT DISTINCT 
+		       kunnr_r AS kunnrR
+		       , name1_r AS name1R
+		  FROM gi_billing
+	  ORDER BY NAME1_r
+    </select>
+</mapper>
+ 
+
+

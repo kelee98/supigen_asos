@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ 
+<mapper namespace="mappers.exListMapper">
+	<select id="selectExableList" resultType= "com.spigen.asos.model.exableList">
+		SELECT DISTINCT 
+                TT2.deleyn, 
+                TT1.orddat,
+                TT.sddate,
+                TT3.wktynm,
+                999 AS box,
+                TT.wkonum, 
+                TT3.wktynm,
+	    BZ.name1, 
+	   TT.assycd,
+	   TT.komtx,   
+                TT2.otbxlb,  
+                TT.wkstat,
+                TT.qtyhtim,  
+                TT.qtyout,
+               
+               TT.qtyout+TT.qtyout1 AS OUTQTY,
+               TT.qtyout1,
+                TT.qtyhtim - (TT.qtyout+TT.qtyout1) AS QTY,
+                TT.qtyhtim - (TT.qtyout+TT.qtyout1) AS INPUTQTY
+  
+        FROM
+        (
+        SELECT
+                    T1.wkonum,           
+                    T1.ospser,          
+                    T1.assycd,             
+                    T2.komtx,              
+                    T1.wkstat,           
+                    T1.wktype,
+                    T1.sddate,
+                    T1.wrkopt,
+                     999 AS qtyhtim,
+                     999 AS qtyout ,             
+                     999 AS qtyout1               
+         
+                FROM
+                        aitem T1            
+                    INNER JOIN
+                        prd_mst T2                
+                            ON
+                                T1.assycd = T2.matnr
+                WHERE
+                    T2.company = '1000'       
+	ORDER BY
+                    T1.wkonum, T1.assycd DESC
+        ) TT,
+            wkord TT1,
+            stock TT2,
+            WKTYP TT3,           
+            vnd_mst BZ             
+        WHERE 
+                TT.wkonum = TT1.wkonum   
+            AND TT.wkonum = TT2.wkonum
+            AND TT.assycd = TT2.assycd 
+            AND TT.ospser = TT2.ospser 
+            AND TT.wktype = TT3.wktycd  
+            AND TT2.qtyitm > 0 
+            AND TT2.kndstk = '1' 
+            AND TT1.cornum = BZ.lifnr
+		</select>
+
+<select id="selectExList" resultType= "com.spigen.asos.model.exList">	
+		SELECT
+		DISTINCT 
+            T1.asndky,
+            T1.asndit,
+            T2.cornum,
+             BZ.name1,
+            T1.wkonum,
+            T1.assycd,
+            SK.komtx,
+            T1.otbxlb,
+            T1.qtyout,
+            T1.outdat,
+            T1.outtim
+           
+        FROM
+            stbot  T1,
+            wkord  T2,
+            asndh  AH, 
+            prd_mst SK,
+            vnd_mst BZ
+        WHERE  
+            T1.asndky = AH.asndky
+        AND T1.wkonum = T2.wkonum
+        AND T2.cornum = BZ.lifnr    
+        AND T1.assycd = SK.matnr 
+        AND AH.statdo= 'NEW'
+     </select>
+		<!-- 수정 -->
+<!--  <update id="createEXlist" parameterType="memberVO">
+insert into
+ 	stbot(asndky, asndit,outdat,outdat)
+   values(#{id}, #{name}, #{goal},NOW(),NOW(),#{postion_code})
+	
+</update>-->
+</mapper>

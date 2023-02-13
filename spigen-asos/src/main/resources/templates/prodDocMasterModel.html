@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- 공통 Config -->
+  <head th:replace="config::configFragment">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v4.0.1">
+  </head>
+  <!-- 공통 헤더-->
+  <header th:replace="topbar::topbarFragment"></header>
+  <body>
+  	<form name="menuFrm">
+   		<input type="hidden"> 	
+   	</form>
+   	<form name="searchFrm" id="searchFrm">
+    <div class="container-fluid">
+      <div class="row">	
+      
+      	<!-- left메뉴 -->
+  		<nav th:replace="nav::sidebarMenu"></nav> 
+  		
+		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>모델별 마스터 등록</h2>
+		  <div class="search">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			<ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">* 제조사</span></label>    
+				<select id="mvgr2" name="mvgr2" hname="제조사" class="inp_type" onchange="qryProdInfo('2',this.value)" required="required">
+				  	<option value="">전체</option>
+			  	</select>                                                                                                                                                                                                                                                                                                                                                                                                                                                
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <label class="lb1"><span>기종</span></label>     
+			  	<select id="mvgr3" name="mvgr3" class="inp_type" onchange="qryProdInfo('3',this.value)">
+				  	<option value="">전체</option>
+			  	</select>                                                                                                                                                                                                                                                                                                                                                                                                                                               
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			</ul>
+			<ul>
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">모델명</span></label>
+			  	<select id="normt" name="normt" class="inp_type">
+				  	<option value="">전체</option>
+			  	</select>   		  
+			  </li> 
+			  <li class="title6">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">SKU</span></label>
+			  	<input type="text" id="matnr" name="matnr" class="inp_type" maxlength="40" placeholder="구분자 (,)로 복수입력 가능">
+			  	<button type="button" id="searchHelper" onclick="searchHelperPopup()" class="btn btn-outline-secondary btn-sm">
+			  		<span data-feather="plus"></span>
+			  	</button>
+			  </li> 
+			  <li class="title7">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+				<button type="button" id="qryBtn" name="qryBtn" onclick="qryHeaderList()" class="btn btn-secondary btn-sm">
+				<span data-feather="search"></span> 조회
+				</button>
+			  </li>
+			</ul>
+		  </div>
+		    <article class="article_list_table2">
+            <div class="list-table2">
+              <table id="gridList" class="table table-striped table-sm">
+              	<colgroup>
+					<col width="10%">
+					<col width="14%">
+					<col width="17%">
+					<col width="7%">
+					<col width="7%">
+<!-- 					<col width="7%"> -->
+<!-- 					<col width="7%"> -->
+<!-- 					<col width="5%"> -->
+<!-- 					<col width="7%"> -->
+<!-- 					<col width="7%"> -->
+<!-- 					<col width="7%"> -->
+<!-- 					<col width="5%"> -->
+				</colgroup>
+                <thead>
+                  <tr>
+					<th scope="col" class="center">제조사</th>
+					<th scope="col" class="center">기종</th>
+					<th scope="col" class="center">모델명</th>
+					<th scope="col" class="center"><input type="checkbox" id="checkAllA" class="checkAll" > 승인원</th>
+					<th scope="col" class="center"><input type="checkbox" id="checkAllS" class="checkAll"> 시방서</th>
+<!-- 					<th scope="col" class="center">도안</th> -->
+<!-- 					<th scope="col" class="center">제품인증</th> -->
+<!-- 					<th scope="col" class="center">회로도/도면</th> -->
+<!-- 					<th scope="col" class="center">패킹가이드</th> -->
+<!-- 					<th scope="col" class="center">유해물질</th> -->
+<!-- 					<th scope="col" class="center">연구개발</th> -->
+<!-- 					<th scope="col" class="center">R/C</th> -->
+                  </tr>
+                </thead>
+                <tbody>
+	                <tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+<!-- 						<td></td> -->
+<!-- 						<td></td> -->
+<!-- 						<td></td> -->
+<!-- 						<td></td> -->
+<!-- 						<td></td> -->
+<!-- 						<td></td> -->
+<!-- 						<td></td> -->
+					</tr>
+                </tbody>
+              </table>
+            </div>
+            </article>
+			<!-- pagging -->
+			<div class="paginate_complex">
+				<div id="paging" class="paging">
+					<div id="boardNavigation" class="boardNavigation">
+						<input type="hidden" id="pageIndex" name="pageIndex" value="1"/>
+						<div id="pagination" class="pagination"></div>
+					</div>
+				</div>
+			</div>
+			<!-- //pagging -->
+          </div>
+      </main>
+      <div>
+</div>
+      </div>
+     </div>
+   </form>
+<script>
+$(document).ready(function(){
+
+	feather.replace();
+	
+	qryProdInfo("1","");
+	//전체선택
+	$("#checkAllA").click(function(){
+		$(".chkList").prop("checked", this.checked).change();
+	});
+	
+	//전체선택
+	$("#checkAllS").click(function(){
+		$(".chkList2").prop("checked", this.checked).change();
+	});
+	
+	fnInitMenu("nav3");
+
+});
+
+//제조사,기종 등 콤보박스 조회
+function qryProdInfo(qryFlag, qryValue){
+	
+	var mvgr2 = $('#mvgr2 option:selected').val();
+	var mvgr3 = $('#mvgr3 option:selected').val();
+
+	var sendData = JSON.stringify({qryFlag:qryFlag, mvgr2:mvgr2, mvgr3:mvgr3}); 
+	
+	$.ajax({
+        type : 'POST',
+        data : sendData,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        dataType : 'json',
+        url :  '/cm/selectProdInfoList',
+        contentType:"application/json;charset=UTF-8",
+        success : function(result) {
+           //alert(result.resultList[0]);
+           setSelectBox(qryFlag, result.resultList);
+           $('#pageIndex').val(1);
+        },
+        error : function(request,status){
+            alert("조회 실패");
+        }
+	});
+}
+
+//콤보박스 세팅
+function setSelectBox(qryFlag, resultList){
+	var htmltext="";    
+    htmltext += "<option value=''>전체</option>";
+    for(var i = 0 ; i < resultList.length ; i++){
+		var resultVO = resultList[i];    
+		if(qryFlag=="1"){
+    		htmltext += "<option value=\'"+resultVO.mvgr2+"\'>"+resultVO.mvgt2+"</option>";
+		}else if(qryFlag=="2"){
+    		htmltext += "<option value=\'"+resultVO.mvgr3+"\'>"+resultVO.mvgt3+"</option>";
+		}else{
+    		htmltext += "<option value=\'"+resultVO.normt+"\'>"+resultVO.normt+"</option>";
+		}
+    }
+	if(qryFlag=="1"){
+    	$("#mvgr2").html(htmltext);
+	}else if(qryFlag=="2"){
+    	$("#mvgr3").html(htmltext);
+	}else{
+    	$("#normt").html(htmltext);
+	}
+
+}
+
+//필수값 입력 유효성 체크 펑션
+function validCheck(){
+	  
+	var rgtFlag = true;
+	
+	if($('#mvgr2').val()=="" && $('#matnr').val()==""){
+		alert("제조사 or SKU는 필수 입력 항목입니다.");
+		rgtFlag = false;
+	}		
+	return rgtFlag;
+}
+	
+//제품 서류 마스터 조회
+function qryHeaderList(){
+	if(validCheck()){
+		
+		trim();
+		
+		var sendData = $('#searchFrm').serialize();
+	
+	   	$.ajax({
+	          type : 'POST',
+	          data : sendData,
+	          beforeSend : function(xhr)
+	          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+	  				xhr.setRequestHeader(header, token); 
+	          },
+	          dataType : 'json',
+	          url :  '/prodDocMaster/prodDocMasterList',
+	          success : function(result) {
+	             onSuccess(result);
+	          },
+	          error : function(request,status){
+	              alert("조회 실패");
+	          }
+		});
+	}
+
+}
+
+function onSuccess(result){
+	
+	var htmltext="";    
+    if(result.resultList.length == 0) {
+        htmltext += "<tr>";
+        htmltext += "<td colspan=\"5\" class='center'>조회 결과가 없습니다.</td>";
+        htmltext += "</tr>";
+    }else{
+
+		for(var n = 0 ; n<result.resultList.length ; n ++){
+			var resultVO = result.resultList[n];      
+		    htmltext += "<tr>";
+		    htmltext += "<td class='center'>"+resultVO.mvgt2+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mvgt3+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.normt+"</td>";
+		    if(resultVO.areq =="Y" || resultVO.areq =="F"){
+			    htmltext += "<td class='center'><input type='checkbox' name='aReq' class='chkList' checked='checked' onChange=\"sDocRgt(this,\'"+resultVO.mvgr2+"\',\'"+resultVO.mvgr3+"\',\'"+resultVO.normt+"\', 'A', event)\"></td>";
+		    }else{
+			    htmltext += "<td class='center'><input type='checkbox' name='aReq' class='chkList' onChange=\"sDocRgt(this,\'"+resultVO.mvgr2+"\',\'"+resultVO.mvgr3+"\',\'"+resultVO.normt+"\', 'A',event)\"></td>";
+		    }
+		    if(resultVO.sreq =="Y" || resultVO.sreq =="F"){
+			    htmltext += "<td class='center'><input type='checkbox' name='sReq' class='chkList2' checked='checked' onChange=\"sDocRgt(this,\'"+resultVO.mvgr2+"\',\'"+resultVO.mvgr3+"\',\'"+resultVO.normt+"\', 'S', event)\"></td>";
+		    }else{
+			    htmltext += "<td class='center'><input type='checkbox' name='sReq' class='chkList2' onChange=\"sDocRgt(this,\'"+resultVO.mvgr2+"\',\'"+resultVO.mvgr3+"\',\'"+resultVO.normt+"\', 'S',event)\"></td>";
+		    }
+
+		    htmltext += "</tr>";
+		}
+
+    }
+    $("#gridList > tbody").html(htmltext);
+    $("#pagination").quickPager( {
+        pageSize: result.paginationInfo.pageSize,
+        pageUnit: result.paginationInfo.recordCountPerPage,
+        pageIndexId: "pageIndex",
+        callback:function() {
+         	qryHeaderList();
+        },
+        currentPage: result.paginationInfo.currentPageNo,
+        totalCount: result.paginationInfo.totalRecordCount,
+        searchUrl: "#_"
+    }); 
+    
+    var chkList  = $(".chkList");
+    if(chkList.length == chkList.filter(":checked").length){
+		$("#checkAllA").prop("checked", true);
+    }else{
+		$("#checkAllA").prop("checked", false);
+    }
+    
+    var chkList2  = $(".chkList2");
+    
+    if(chkList2.length == chkList2.filter(":checked").length){
+		$("#checkAllS").prop("checked", true);
+    }else{
+		$("#checkAllS").prop("checked", false);
+    }
+}
+
+function sDocRgt(obj, mvgr2, mvgr3, normt, type){
+
+	//type S:시방서 / A:승인원
+	var sendSReq;
+	var sendAReq;
+
+	if($(obj).is(":checked")){
+		if(type=="S"){
+			sendSReq = 'Y';
+		}else{
+			sendAReq = 'Y';
+		}
+	}else{
+		if(type=="S"){
+			sendSReq = 'N';
+		}else{
+			sendAReq = 'N';
+		}
+	}
+
+	var sendData = JSON.stringify({mvgr2:mvgr2, mvgr3:mvgr3, normt:normt, sreq:sendSReq, areq:sendAReq}); 
+
+	$.ajax({
+        type : 'POST',
+        data : sendData,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        dataType : 'json',
+        url :  '/prodDocMaster/insertRqrdDocs',
+        contentType:"application/json;charset=UTF-8",
+        success : function(result) {
+        	qryHeaderList();
+        },
+        error : function(request,status){
+            alert("조회 실패");
+        }
+	});
+}
+
+function searchHelperValue(value){
+
+    $('#matnr').val(value);
+
+}
+
+</script>
+</body>
+</html>

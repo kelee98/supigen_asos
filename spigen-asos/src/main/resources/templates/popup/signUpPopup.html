@@ -1,0 +1,274 @@
+<!doctype html>
+<html>
+<!-- 공통 Config -->
+<head th:replace="popup/popupConfig::configFragment">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class = "container" >
+	<form name="uploadForm" id="uploadForm" role="form" class="form-horizontal">
+		<h2>사용자 계정 등록</h2>
+		        <div class="form-group">
+                    <label for="firstName" class="col-sm-3 control-label">* 사용자ID</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="id" name="id" dataType="EMAIL" hname="사용자ID" placeholder="아이디를 입력해주세요.(이메일 형식)" class="form-control" autofocus maxlength="50"  required="required" onkeyup="chkInput(this)">
+                    	<span class="chkMsg" id="idChk"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">* 비밀번호</label>
+                    <div class="col-sm-9">
+                        <input type="password" id="password" dataType="ALPHA_N_INT" name="password" hname="비밀번호" placeholder="비밀번호를 입력해주세요.(8자 이상, 영문+숫자 조합)" class="form-control" maxlength="20" required="required" onkeyup="chkInput(this)">
+                       	<span class="chkMsg" id="passwordChk"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">* 비밀번호 확인</label>
+                    <div class="col-sm-9">
+                        <input type="password" id="password2" dataType="ALPHA_N_INT" name="password2" hname="비밀번호 확인" placeholder="비밀번호를 한번 더 입력해주세요." class="form-control" maxlength="20" required="required" onkeyup="chkInput(this)">
+                       	<span class="chkMsg" id="password2Chk"></span>
+                    </div>
+                </div>
+		        <div class="form-group">
+                    <label for="firstName" class="col-sm-3 control-label">* 성명</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="username" name="username" hname="성명" placeholder="성명을 입력해주세요." class="form-control" autofocus maxlength="20"  required="required">
+                    </div>
+                </div>                
+                 <div class="form-group">
+                    <label class="control-label col-sm-3">* 권한</label>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label class="radio-inline">
+                                    <input type="radio" name="roleId" value="00" onclick="pickVndr(this)">마스터
+                                </label>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="radio-inline">
+                                    <input type="radio" name="roleId" value="03" onclick="pickVndr(this)">수출입서류
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label class="radio-inline">
+                                    <input type="radio" name="roleId" value="12" checked="checked" onclick="pickVndr(this)">제품서류
+                                </label>
+                            </div>
+                            <div class="col-sm-5">
+                                <label class="radio-inline">
+                                    <input type="radio" name="roleId" value="13" onclick="pickVndr(this)">제품서류(BOM)
+                                </label>
+                            </div>
+                            <div class="col-sm-3">
+                                <label class="radio-inline">
+                                    <input type="radio" name="roleId" value="14" onclick="pickVndr(this)">벤더
+                                </label>
+                            </div>    
+                        </div>
+                    </div>
+                </div> 
+  		        <div class="form-group">
+                    <label for="firstName" class="col-sm-3 control-label">* 벤더</label>
+                    <div class="col-sm-9">
+						<select id="lifnr" name="lifnr" class="form-control" disabled="disabled">
+							<option value="">선택없음</option>
+							<option value="0010101820">(주)기프트코리아</option>
+							<option value="0010100824">영광정공</option>
+						</select>
+                    </div>
+                </div>                 
+                <div class="form-group" style="margin-top: 30px">
+                    <div class="col-sm-11 col-sm-offset-1">
+                        <button type="button" class="btn btn-secondary btn" style="width: 49%" onclick="window.close();">취소</button>
+                        <button type="button" class="btn btn-primary btn" style="width: 49%" onclick="qryRgtPossYn();">등록</button>
+                    </div>
+                </div>
+	</form>
+</div>
+</body>
+<script>
+
+$(document).ready(function () {
+	
+});
+
+function chkInput(obj){
+	
+	var inputId = $(obj).attr("id");
+	var inputVal = $(obj).val();
+	
+	
+	var msg = "";
+	switch(inputId) {
+	  case "id":
+		  msg = chkId($(obj));
+	    break;
+	  case "password":
+	  	  msg = chkPw($(obj));
+	    break;
+	  case "password2":
+	  	  msg = chkPw2($(obj));
+	    break;
+	  default:
+	    // code block
+	}
+	
+	if(succFlag){
+		$("#" + inputId + "Chk").removeClass('chkMsg').addClass('chkMsgActive');
+	}else{
+		$("#" + inputId + "Chk").removeClass('chkMsgActive').addClass('chkMsg');
+	}
+	$("#" + inputId + "Chk").html(msg);
+	
+}
+
+var returnMsg = "";
+var succFlag = false;
+
+function chkId(obj){
+	var value = $(obj).val();
+	if(value.length==0){
+		returnMsg = "아이디를 입력해주세요."
+    	succFlag = false;
+	}else if(!isEmail(value)){
+		returnMsg = "아이디는 이메일 형식으로 입력 가능합니다."
+    	succFlag = false;
+	}else{
+		if(idDupChk(value)){
+    		returnMsg = "이미 존재하는 아이디입니다.";
+    		succFlag = false;
+		}else{
+    		returnMsg = "사용할 수 있는 아이디입니다."
+    		succFlag = true;
+		}
+	}
+	return returnMsg;
+}
+
+
+function idDupChk(value){
+	
+	var sendData = {id:value};
+	var returnBool = false;
+	
+    $.ajax({
+        type: 'POST',
+        dataType : 'json', 
+        data : sendData,
+        async: false,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        url :  '/userMgrList/signUpPopup/idCheck',
+        success: function (data) {
+        	if(data.result>0){
+        		returnBool = true;
+        	}
+        },
+        error: function (e) {
+            alert("등록 실패");
+        }
+    });
+    
+    return returnBool;
+}
+
+function chkPw(obj){
+	var value = $(obj).val();
+	if(value.length<8){
+		returnMsg = "비밀번호를 8자 이상 입력해주세요."
+    	succFlag = false;
+	}else if(!isAlphaIntComb(value)){
+		returnMsg = "비밀번호는 영문과 숫자의 조합으로 입력해주세요."
+    	succFlag = false;
+	}else{
+		returnMsg = "사용할 수 있는 비밀번호입니다."
+		succFlag = true;
+	}
+	
+	return returnMsg;
+}
+
+function chkPw2(obj){
+	var value = $(obj).val();
+	if(value!=$("#password").val()){
+		returnMsg = "비밀번호가 일치하지 않습니다."
+    	succFlag = false;
+	}else{
+		returnMsg = "비밀번호가 일치합니다."
+		succFlag = true;
+	}
+	
+	return returnMsg;
+}
+
+
+//은행정보 등록 유효성 체크
+function qryRgtPossYn(){
+	if(validRequired()){
+		addUser();
+	}
+}
+
+
+function inputFaxNum(obj, index){
+	if($(obj).val()==""){
+		$('input[name=defaultFax]').eq(index).prop("disabled",true);
+	}else{
+		$('input[name=defaultFax]').eq(index).prop("disabled",false);
+	}
+		
+}
+
+//유저 등록
+function addUser(){
+	if($(".chkMsg").length>0){
+		alert("올바르지 않은 입력값이 존재합니다.");
+		return;
+	}
+	var sendData = $('#uploadForm').serialize();
+
+    $.ajax({
+        type: 'POST',
+        dataType : 'json', 
+        data : sendData,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        url :  '/login/createUser',
+        success: function (data) {
+        	if(data.result>0){
+        		alert("등록 성공하였습니다.");
+                //부모창 재조회
+                window.opener.qryBankInfoList();
+        		window.close();
+        	}else{
+        		alert("등록 실패하였습니다.");
+        		window.close();
+        	}
+        		
+        },
+        error: function (e) {
+            alert("등록 실패");
+        }
+    });
+}
+
+function pickVndr(obj){
+	if($(obj).val()=="14"){
+		$('#lifnr').attr('disabled', false);
+	}else{
+		$('#lifnr').val("");
+		$('#lifnr').attr('disabled', true);
+	}
+
+}
+
+</script>
+</body>
+</html>

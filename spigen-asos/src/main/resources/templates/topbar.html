@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.0.1">
+    <title>Spigen Web</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/dist/css/bootstrap.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet">
+  </head>
+  	<header th:fragment="topbarFragment">
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="/index">Spigen Web</a>
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+		<form id="logout" name="logout" >
+<!-- 		   <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}"/> -->
+		</form>
+      <ul class="navbar-nav px-3">
+<!--       <th:block sec:authorize="isAuthenticated()"> -->
+<!-- 		<div sec:authorize="isAuthenticated()"> -->
+<!-- 		  <span sec:authentication="principal">PrincipalString</span>님 환영합니다 -->
+<!-- 		  <span sec:authentication="authorities">PrincipalString</span>님 환영합니다 -->
+<!-- 		</div> -->
+<!-- 		</th:block> -->
+
+        <li class="nav-item text-nowrap">
+          <a class="nav-link" href="#" onClick="javascript:startLogOut()">Sign out</a>
+        </li>
+      </ul>
+    </nav>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+
+
+  	<script type="text/javascript">
+	//logout
+  	function startLogOut(){
+		var frm = document.logout;
+		frm.action = "/logout";
+		frm.submit();
+  	}
+	
+  	</script>
+  </header>
+
+</html>

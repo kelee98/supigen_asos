@@ -1,0 +1,22 @@
+{"properties": [
+  {
+    "name": "cloud.aws.s3.bucket",
+    "type": "java.lang.String",
+    "description": "A description for 'cloud.aws.s3.bucket'"
+  },
+  {
+    "name": "security.oauth2.client.preEstablishedRedirectUri",
+    "type": "java.lang.String",
+    "description": "A description for 'security.oauth2.client.preEstablishedRedirectUri'"
+  },
+  {
+    "name": "security.oauth2.client.accessTokenUri",
+    "type": "java.lang.String",
+    "description": "A description for 'security.oauth2.client.accessTokenUri'"
+  },
+  {
+    "name": "security.oauth2.client.userAuthorizationUri",
+    "type": "java.lang.String",
+    "description": "A description for 'security.oauth2.client.userAuthorizationUri'"
+  }
+]}

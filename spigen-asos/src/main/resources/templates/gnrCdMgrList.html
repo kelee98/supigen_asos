@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- 공통 Config -->
+  <head th:replace="config::configFragment">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v4.0.1">
+  </head>
+  <!-- 공통 헤더-->
+  <header th:replace="topbar::topbarFragment"></header>
+  <body>
+  	<form name="menuFrm">
+   		<input type="hidden"> 	
+   	</form>
+  	<form name="searchFrm">
+   		<input type="hidden" id="selectGnrCd" name="selectGnrCd"> 	
+   		<input type="hidden" id="selectDtlCd" name="selectDtlCd"> 	
+   	</form>
+    <div class="container-fluid">
+      <div class="row">	
+      
+      	<!-- left메뉴 -->
+  		<nav th:replace="nav::sidebarMenu"></nav> 
+  		
+		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>일반코드 관리</h2>
+		  <div class="search">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			<ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <li class="title">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">코드</span></label>                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <input type="text" id="gnrCd" name="gnrCd" types="CHAR" hname="코드" maxlength="100" class="inp_type">                                                                                                                                                                                                                                                                                                                                                                                                                                         
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <label class="lb1"><span>코드명</span></label>                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+			  <input type="text" id="gnrNm" name="gnrNm" types="ECNO" hname="코드명" maxlength="6" class="inp_type">                                                                                                                                                                                                                                                                                                                                                                                                                                      
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			</ul>
+			<ul>
+			  <li class="title">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">사용여부</span></label>
+			  <select id="useYn" name="useYn">
+			  	<option value="">전체</option>
+			  	<option value="Y" selected="selected">사용</option>
+			  	<option value="N">미사용</option>
+			  </select>
+			  </li> 
+			  <li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+				<input type="button" id="qryBtn" name="qryBtn" value="조회" onclick="qryHeaderList()" class="qryBtn">
+			  </li>
+			</ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+		  </div>
+		    <article>
+		    <div class="headerDiv">
+		    <header><h4>일반코드</h4></header>
+		    </div>
+            <div class="list-table">
+              <table id="gridList" class="table table-striped table-sm">
+              	<colgroup>
+					<col width="10%">
+					<col width="14%">
+					<col width="17%">
+					<col width="7%">
+				</colgroup>
+                <thead>
+                  <tr>
+					<th scope="col" class="center">코드</th>
+					<th scope="col" class="center">코드명</th>
+					<th scope="col" class="center">길이</th>
+					<th scope="col" class="center">사용여부</th>
+                  </tr>
+                </thead>
+                <tbody>
+	                <tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+                </tbody>
+              </table>
+            </div>
+			<div class="btnDivR">
+            	<button type="button" id="btnSubmit" class="btn btn-primary btn-sm" onclick="gnrCdRgt();">등록</button>
+            	<button type="button" id="btnUpdate" class="btn btn-dark btn-sm" onclick="gnrCdUpd();">수정</button>
+            </div>	
+            </article>
+		   <article>
+		   	<div class="headerDiv">
+		    <header><h4>상세코드</h4></header>
+		    </div>
+            <div class="list-table3">
+              <table id="gridDetailList" class="table table-striped table-sm">
+              	<colgroup>
+					<col width="10%">
+					<col width="14%">
+					<col width="14%">
+					<col width="10%">
+				</colgroup>
+                <thead>
+                  <tr>
+					<th scope="col" class="center">코드</th>
+					<th scope="col" class="center">코드명</th>
+					<th scope="col" class="center">코드내용</th>
+					<th scope="col" class="center">사용여부</th>
+                  </tr>
+                </thead>
+                <tbody>
+	                <tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="btnDivR">
+            	<button type="button" id="btnSubmitDetail" class="btn btn-primary btn-sm" onclick="gnrCdDetailRgt();">등록</button>
+            	<button type="button" id="btnUpdateDetail" class="btn btn-dark btn-sm" onclick="gnrCdDetailUpd();">수정</button>
+            </div>	
+            </article>
+          </div>
+      </main>
+      </div>
+     </div>
+<script>
+$(document).ready(function(){
+
+	feather.replace();
+	$("#btnUpdate").hide();
+	$("#btnUpdateDetail").hide();
+	fnInitMenu("nav7");
+
+
+});
+
+function qryHeaderList(){
+	
+	$("#btnUpdate").hide();
+	$("#btnUpdateDetail").hide();
+
+	var sendData = JSON.stringify({gnrCd:$('#gnrCd').val(), gnrNm:$('#gnrNm').val()}); 
+
+   	$.ajax({
+          type : 'POST',
+          data : sendData,
+          dataType : 'json',
+          beforeSend : function(xhr)
+          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+          },
+          url :  '/cm/selectGnrCdList',
+          contentType:"application/json;charset=UTF-8",
+          success : function(result) {
+             //var obj = jQuery.parseJSON(result);
+             //alert(result.resultList[0]);
+             onSuccess(result.resultList);
+          },
+          error : function(request,status){
+              alert("조회 실패");
+          }
+	});
+	
+}
+
+function onSuccess(resultList){
+	
+	var htmltext="";    
+    if(resultList.length == 0) {
+        htmltext += "<tr>";
+        htmltext += "<td colspan=\"4\">조회 결과가 없습니다.</td>";
+        htmltext += "</tr>";
+    }else{
+
+		for(var n = 0 ; n<resultList.length ; n ++){
+			var resultVO = resultList[n];      
+		    htmltext += "<tr onclick=\"selectRow(this,\'"+resultVO.gnrCd+"\', event)\" style=\"cursor:pointer\">>";
+		    htmltext += "<td class='center'>"+resultVO.gnrCd+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.gnrNm+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.length+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.useYn+"</td>";
+		    htmltext += "</tr>";
+		}
+
+    }
+    $("#gridList > tbody").html(htmltext);
+}
+
+var currentSelector = null;
+function selectRow(obj, gnrCd){
+
+	$(obj).css('background-color', '#ffffd9');
+	
+	if(currentSelector != null && currentSelector != obj){
+		$(currentSelector).css('background-color','');
+	}
+	currentSelector = obj;
+	
+	$("#selectGnrCd").val(gnrCd);
+	$("#btnUpdate").show();
+	
+	qryDetailList(obj, gnrCd);
+	
+}
+
+var currentSelectorDetail = null;
+function selectRowDetail(obj, gnrCd, dtlCd){
+
+	$(obj).css('background-color', '#ffffd9');
+	
+	if(currentSelectorDetail != null && currentSelectorDetail != obj){
+		$(currentSelectorDetail).css('background-color','');
+	}
+	currentSelectorDetail = obj;
+	
+	$("#selectDtlCd").val(dtlCd);
+
+	$("#btnUpdateDetail").show();
+	
+}
+
+function qryDetailList(obj, gnrCd){
+	
+	var sendData = JSON.stringify({gnrCd:gnrCd}); 
+	
+   	$.ajax({
+          type : 'POST',
+          data : sendData,
+          dataType : 'json',
+          beforeSend : function(xhr)
+          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+          },
+          url :  '/cm/selectGnrCdDetailList',
+          contentType:"application/json;charset=UTF-8",
+          success : function(result) {
+             onSuccessDetail(result.resultList);
+          },
+          error : function(request,status){
+              alert("조회 실패");
+          }
+	});
+}
+
+
+function onSuccessDetail(resultList){
+	
+	var htmltext="";    
+    if(resultList.length == 0) {
+        htmltext += "<tr>";
+        htmltext += "<td class='center' colspan=\"4\">조회 결과가 없습니다.</td>";
+        htmltext += "</tr>";
+    }else{
+
+		for(var n = 0 ; n<resultList.length ; n ++){
+			var resultVO = resultList[n];      
+		    htmltext += "<tr onclick=\"selectRowDetail(this,\'"+resultVO.gnrCd+"\',\'"+resultVO.dtlCd+"\' , event)\" style=\"cursor:pointer\">>";
+		    htmltext += "<td class='center'>"+resultVO.dtlCd+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.dtlNm+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.dtlCts+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.useYn+"</td>";
+		    htmltext += "</tr>";
+		}
+
+    }
+    $("#gridDetailList > tbody").html(htmltext);
+}
+
+//일반코드 등록 화면 호출
+function gnrCdRgt(){
+
+	openPopup("/cm/gnrCdRgtPopupScreen",800,350);
+}
+
+//상세코드 등록 화면 호출
+function gnrCdDetailRgt(){
+
+	openPopup("/cm/gnrCdDetailRgtPopupScreen?gnrCd="+$("#selectGnrCd").val(),800,350);
+}
+
+//일반코드 수정 화면 호출
+function gnrCdUpd(){
+
+	openPopup("/cm/gnrCdUpdPopupScreen?gnrCd="+$("#selectGnrCd").val(),800,350);
+}
+
+//상세코드 수정 화면 호출
+function gnrCdDetailUpd(){
+
+	openPopup("/cm/gnrCdDetailUpdPopupScreen?gnrCd="+$("#selectGnrCd").val()+"&dtlCd="+$("#selectDtlCd").val(),800,350);
+}
+
+
+
+</script>
+</body>
+</html>

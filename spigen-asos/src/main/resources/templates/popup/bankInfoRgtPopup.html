@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<!-- 공통 Config -->
+<head th:replace="popup/popupConfig::configFragment">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class = "container" >
+	<form name="uploadForm" id="uploadForm" role="form" class="form-horizontal">
+		<h2>FAX 기본 정보 등록</h2>
+		        <div class="form-group">
+                    <label for="firstName" class="col-sm-3 control-label">* 은행명</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="bankNm" name="bankNm" hname="은행명" placeholder="수신처 은행명을 입력해주세요." class="form-control" autofocus maxlength="50"  required="required">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">* 지점명</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="bankBrch" name="bankBrch" hname="지점명" placeholder="지점명을 입력해주세요." class="form-control" maxlength="50" required="required">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="birthDate" class="col-sm-3 control-label">* FAX번호</label>
+                    <div class="col-sm-9">
+                        <input type="tel" id="faxNum" name="faxNum" hname="FAX번호" dataType="INT" placeholder="FAX번호('-'제외)를 입력해주세요." class="form-control" maxlength="20" required="required">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">담당자명</label>
+                    <div class="col-sm-9">
+                        <input type="text"  id="mngrNm" name="mngrNm" placeholder="담당자명을 입력해주세요." class="form-control" maxlength="20">
+                    </div>
+                </div> 
+                 <div class="form-group">
+                    <label for="birthDate" class="col-sm-3 control-label">담당자 번호</label>
+                    <div class="col-sm-9">
+                        <input type="tel" id="mngrNum" name="mngrNum"  hname="담당자 번호" dataType="INT"  placeholder="담당자 번호('-'제외)를 입력해주세요." class="form-control" maxlength="20">
+                    </div>
+                </div>   
+                 <div class="form-group">
+                    <label for="birthDate" class="col-sm-3 control-label">담당자 내선</label>
+                    <div class="col-sm-9">
+                        <input type="tel" id="mngrNum2" name="mngrNum2"  hname="담당자 내선번호" dataType="INT"  placeholder="담당자 내선 번호('-'제외)를 입력해주세요." class="form-control" maxlength="20">
+                    </div>
+                </div>                                            
+                 <div class="form-group">
+                    <label class="control-label col-sm-3">* 사용여부</label>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label class="radio-inline">
+                                    <input type="radio" name="useYn" value="Y" checked="checked">사용
+                                </label>
+                            </div>
+                            <div class="col-sm-5">
+                                <label class="radio-inline">
+                                    <input type="radio" name="useYn" value="N">미사용
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                
+                <div class="form-group" style="margin-top: 30px">
+                    <div class="col-sm-11 col-sm-offset-1">
+                        <button type="button" class="btn btn-secondary btn" style="width: 49%" onclick="window.close();">취소</button>
+                        <button type="button" class="btn btn-primary btn" style="width: 49%" onclick="qryRgtPossYn();">등록</button>
+                    </div>
+                </div>
+	</form>
+</div>
+</body>
+<script>
+
+$(document).ready(function () {
+	
+});
+
+//은행정보 등록 유효성 체크
+function qryRgtPossYn(){
+	if(validRequired()){
+		bankInfoRgt();
+	}
+}
+
+
+function inputFaxNum(obj, index){
+	if($(obj).val()==""){
+		$('input[name=defaultFax]').eq(index).prop("disabled",true);
+	}else{
+		$('input[name=defaultFax]').eq(index).prop("disabled",false);
+	}
+		
+}
+
+//은행정보 등록
+function bankInfoRgt(){
+
+	if(!confirm("수신처 정보를 등록하시겠습니까?")){
+	return;
+	}
+	
+	var sendData = $('#uploadForm').serialize();
+
+    $.ajax({
+        type: 'POST',
+        dataType : 'json', 
+        data : sendData,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        url :  '/bankInfo/bankInfoRgt',
+        success: function (data) {
+        	if(data.resultList>0){
+        		alert("등록 성공하였습니다.");
+                //부모창 재조회
+                window.opener.qryBankInfoList();
+        		window.close();
+        	}else{
+        		alert("등록 실패하였습니다.");
+        		window.close();
+        	}
+        		
+        },
+        error: function (e) {
+            alert("등록 실패");
+        }
+    });
+}
+
+</script>
+</body>
+</html>

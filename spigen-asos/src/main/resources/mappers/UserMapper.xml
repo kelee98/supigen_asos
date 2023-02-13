@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ 
+<mapper namespace="mappers.UserMapper">
+
+	<select id="selectUserInfo" resultType= "com.spigen.asos.model.UserVO"  parameterType="String">
+		SELECT A.USER_ID AS username
+			   , A.USER_PW AS password
+			   , B.ROLE_ID AS  roleId
+			   , B.ROLE_NAME AS userRole
+			   , B.ROLE_INFO AS roleInfo
+			   , A.lifnr AS lifnr
+		  FROM users A
+		       , user_roles B
+		 WHERE A.ROLE_ID = B.ROLE_ID 
+		<if test="value != null and value != ''">
+		   AND USER_ID =  #{value}
+		</if>
+	</select>
+	
+	<select id="initPwProssYn" resultType= "String"  parameterType="com.spigen.asos.model.UserVO">
+		SELECT CASE COUNT(USER_ID) WHEN '0' THEN 'N' ELSE 'Y' END AS RESULT 
+		  FROM users
+		 WHERE USER_ID =  #{id}
+		   AND EMAIL =  #{email}
+	</select>
+	
+	<select id="idCheck" resultType= "int"  parameterType="com.spigen.asos.model.UserVO">
+		SELECT COUNT(USER_ID) 
+		  FROM users
+		 WHERE USER_ID =  #{id}
+		   AND USE_YN = 'Y'
+	</select>
+	
+	<update id="initPassword" parameterType="com.spigen.asos.model.UserVO">
+		UPDATE users
+		   SET USER_PW = #{id}
+		       , INIT_YN = 'Y'
+		 WHERE USER_ID =  #{id} 
+		   AND EMAIL =  #{email}
+		   AND USE_YN = 'Y'
+	</update>
+	
+     <insert id="createUser" parameterType="com.spigen.asos.model.UserVO">
+          INSERT INTO users (USER_ID, USER_NAME, USER_PW, ROLE_ID, EMAIL, INIT_YN, USE_YN, REG_DATE, lifnr)
+                    VALUES (#{id}, #{username}, #{password}, #{roleId}, #{email}, 'Y', 'Y', CURRENT_TIMESTAMP, #{lifnr})
+     </insert>
+    
+     <insert id="createAuthority" parameterType="org.springframework.security.core.GrantedAuthority">
+          INSERT INTO authority (username, authority_name)
+                    VALUES
+                         <foreach item="authority" index="index" collection="authorities" separator=",">
+                              (#{username}, #{authority})
+                         </foreach>
+     </insert>
+     
+ 	<select id="selectUserMgrList" resultType= "com.spigen.asos.model.UserVO" parameterType= "com.spigen.asos.model.UserVO">
+		SELECT A.USER_ID AS id
+		       , A.USER_NAME AS username
+			   , B.ROLE_ID AS  roleId
+			   , B.ROLE_NAME AS userRole
+			   , B.ROLE_INFO AS roleInfo
+			   , A.USE_YN AS useYn
+			   , A.INIT_YN AS initYn
+		  FROM users A
+		       , user_roles B
+		 WHERE A.ROLE_ID = B.ROLE_ID 
+		<if test="id != null and id != ''">
+		   AND USER_ID =  #{id}
+		</if>
+		<if test="username != null and username != ''">
+		   AND USER_NAME LIKE CONCAT ('%',#{username},'%')
+		</if>
+		<if test="useYn != null and useYn != ''">
+		   AND A.USE_YN =  #{useYn}
+		</if>		
+	</select>    
+     
+     <update id="updInitPassword" parameterType="com.spigen.asos.model.UserVO">
+     	UPDATE users
+     	   SET USER_PW = #{password} 
+     	       , UPD_DATE = CURRENT_TIMESTAMP
+     	       , INIT_YN = 'N'
+		 WHERE USER_ID =  #{id}
+		   AND USE_YN =  #{useYn}
+     </update>
+     
+     <update id="updUserInfo" parameterType="com.spigen.asos.model.UserVO">
+     	UPDATE users
+     	   SET UPD_DATE = CURRENT_TIMESTAMP
+     	       , USER_NAME = #{username}
+     	       , ROLE_ID = #{roleId}
+			<if test='initYn == "Y"'>
+     	       , INIT_YN = 'Y'
+			   , USER_PW = #{password}
+			</if>	     
+		 WHERE USER_ID =  #{id}
+		   AND USE_YN =  #{useYn}
+     </update>
+     
+     <insert id="insertLoginHis" parameterType="com.spigen.asos.model.UserVO">
+          INSERT 
+            INTO login_his 
+                 ( USER_ID
+                   , USER_IP
+                   , CREDAT
+                   , CRETIM
+                   , CREDTM
+                  ) VALUES 
+                  (
+                    #{id}
+                    , #{userIp}
+	   		        , DATE_FORMAT(now(), '%Y%m%d')
+	   		        , DATE_FORMAT(now(), '%H%i%s')  
+                    , CURRENT_TIMESTAMP
+                  )
+     </insert>
+     
+</mapper>
+ 
+
+

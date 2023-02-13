@@ -1,0 +1,1744 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ 
+<mapper namespace="mappers.ProdDocMgrMapper">
+    <select id="selectHeaderList" resultType= "com.spigen.asos.model.DocMgrVO">
+         SELECT  A.MVGR2
+                 , A.MVGT2
+                 , A.MVGR3
+                 , A.MVGT3
+                 , A.NORMT
+                 , B.A_REQ AS AREQ
+                 , B.S_REQ AS SREQ
+                 , ( SELECT COUNT(DISTINCT MVGR2,MVGR3,NORMT) AS CNT 
+                       FROM prd_mst 
+                       WHERE NORMT != '' 
+                    <if test="mvgr2 != null and mvgr2 != ''">
+		     			AND MVGR2 = #{mvgr2}
+					</if>
+					<if test="mvgr3 != null and mvgr3 != ''">
+					     AND MVGR3 = #{mvgr3}
+					</if>
+					<if test="normt != null and normt != ''">
+					     AND NORMT = #{normt}
+					</if>
+					<if test="matnr != null and matnr != ''">
+					    AND MATNR IN
+						<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+			        		 #{matnr}
+			     		</foreach>
+					</if>   
+                   ) AS CNT                 
+	        FROM prd_mst A 
+ LEFT OUTER JOIN reqrd_docs B 
+	          ON (A.MVGR3 = B.MVGR3 
+	             AND A.MVGR2 = B.MVGR2
+	             AND A.NORMT = B.NORMT
+				 )
+	       WHERE A.NORMT != ''
+		<if test="mvgr2 != null and mvgr2 != ''">
+		     AND A.MVGR2 = #{mvgr2}
+		</if>
+		<if test="mvgr3 != null and mvgr3 != ''">
+		     AND A.MVGR3 = #{mvgr3}
+		</if>
+		<if test="normt != null and normt != ''">
+		     AND A.NORMT = #{normt}
+		</if>
+		<if test="matnr != null and matnr != ''">
+		    AND A.MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if> 
+	    GROUP BY A.MVGR2, A.MVGR3, A.NORMT
+	    ORDER BY MVGT2, MVGT3, NORMT
+	    LIMIT #{firstIndex}	, #{recordCountPerPage}
+    </select>
+    
+    <select id="selectCntRqrdDocs" resultType= "Integer" parameterType="com.spigen.asos.model.DocMgrVO">
+		 SELECT COUNT(MVGR2|MVGR3|NORMT) AS cnt
+           FROM reqrd_docs 
+	       WHERE 1=1
+		<if test="mvgr2 != null and mvgr2 != ''">
+		     AND MVGR2 =  #{mvgr2}
+		</if>
+		<if test="mvgr3 != null and mvgr3 != ''">
+		     AND MVGR3 =  #{mvgr3}
+		</if>
+		<if test="normt != null and normt != ''">
+		     AND NORMT =  #{normt}
+		</if>
+    </select>
+    
+    <insert id="insertRqrdDocs" parameterType="com.spigen.asos.model.DocMgrVO">
+	  INSERT INTO reqrd_docs 
+	              ( MVGR2
+			        , MVGR3
+			        , NORMT
+			        , A_REQ
+			        , S_REQ
+			        , CRT_DTM
+			        , UPD_DTM
+			       ) 
+			       SELECT MVGR2
+			                , MVGR3
+			                , NORMT
+			                , #{aReq}
+			                , #{sReq}
+			                , CURRENT_TIMESTAMP   
+			                , CURRENT_TIMESTAMP 
+			           FROM prd_mst
+						 WHERE MVGR2 = #{mvgr2}
+						   AND MVGR3 = #{mvgr3}
+						   AND NORMT = #{normt}	
+				  GROUP BY MVGR2, MVGR3, NORMT							 
+    </insert>
+    
+    <update id="updateRqrdDocs" parameterType="com.spigen.asos.model.DocMgrVO">
+    	UPDATE reqrd_docs
+    	<if test="aReq != null and aReq != ''">
+    	  SET A_REQ = #{aReq}
+		</if>
+    	<if test="sReq != null and sReq != ''">
+    	  SET S_REQ = #{sReq}
+		</if>
+    	WHERE 1=1
+		<if test="mvgr2 != null and mvgr2 != ''">
+		     AND MVGR2 =  #{mvgr2}
+		</if>
+		<if test="mvgr3 != null and mvgr3 != ''">
+		     AND MVGR3 =  #{mvgr3}
+		</if>
+		<if test="normt != null and normt != ''">
+		     AND NORMT =  #{normt}
+		</if>
+    </update>
+    
+    <!-- 제품 서류 마스터(SKU) -->
+     <select id="selectDetailList" resultType= "com.spigen.asos.model.DocMgrVO" parameterType="com.spigen.asos.model.DocMgrVO">
+        SELECT  A.MVGR2
+                 , A.MVGT2
+                 , A.MVGR3
+                 , A.MVGT3
+                 , A.MATNR
+                 , A.NORMT
+                 , B.A_REQ AS AREQ
+                 , B.D_REQ AS DREQ
+                 , ( SELECT COUNT(DISTINCT MVGR2,MVGR3,NORMT,MATNR) AS CNT 
+                       FROM prd_mst 
+                       WHERE NORMT != '' 
+                    <if test="mvgr2 != null and mvgr2 != ''">
+		     			AND MVGR2 = #{mvgr2}
+					</if>
+					<if test="mvgr3 != null and mvgr3 != ''">
+					     AND MVGR3 = #{mvgr3}
+					</if>
+					<if test="normt != null and normt != ''">
+					     AND NORMT = #{normt}
+					</if>
+					<if test="matnr != null and matnr != ''">
+					    AND MATNR IN
+						<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+			        		 #{matnr}
+			     		</foreach>
+					</if>  
+                   ) AS CNT
+	        FROM prd_mst A 
+ LEFT OUTER JOIN reqrd_docs_sku B 
+	          ON (A.MVGR3 = B.MVGR3 
+	             AND A.MVGR2 = B.MVGR2
+	             AND A.NORMT = B.NORMT
+	             AND A.MATNR = B.MATNR
+				 )
+	       WHERE A.NORMT != ''
+		<if test="mvgr2 != null and mvgr2 != ''">
+		     AND A.MVGR2 = #{mvgr2}
+		</if>
+		<if test="mvgr3 != null and mvgr3 != ''">
+		     AND A.MVGR3 = #{mvgr3}
+		</if>
+		<if test="normt != null and normt != ''">
+		     AND A.NORMT = #{normt}
+		</if>
+		<if test="matnr != null and matnr != ''">
+		    AND A.MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if>  
+	    GROUP BY A.MVGR2, A.MVGR3, A.NORMT, A.MATNR 
+	    ORDER BY MVGT2, MVGT3, NORMT, MATNR   
+	    LIMIT #{firstIndex}	, #{recordCountPerPage}
+    </select>
+    
+    <select id="selectCntRqrdDocsSKU" resultType= "Integer" parameterType="com.spigen.asos.model.DocMgrVO">
+		 SELECT COUNT(MVGR2|MVGR3|NORMT|MATNR) AS cnt
+           FROM reqrd_docs_sku
+	      WHERE NORMT != ''
+		<if test="mvgr2 != null and mvgr2 != ''">
+		     AND MVGR2 =  #{mvgr2}
+		</if>
+		<if test="mvgr3 != null and mvgr3 != ''">
+		     AND MVGR3 =  #{mvgr3}
+		</if>
+		<if test="normt != null and normt != ''">
+		     AND NORMT =  #{normt}
+		</if>
+		<if test="matnr != null and matnr != ''">
+		    AND MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if>  
+    </select>
+    
+    <insert id="insertRqrdDocsSKU" parameterType="com.spigen.asos.model.DocMgrVO">
+	  INSERT INTO reqrd_docs_sku
+	              ( MVGR2
+			        , MVGR3
+			        , NORMT
+			        , MATNR
+			        , A_REQ
+			        , D_REQ
+			        , CRT_DTM
+			        , UPD_DTM
+			       ) 
+			       SELECT A.MVGR2
+			                , A.MVGR3
+			                , A.NORMT
+			                , A.MATNR
+			                , #{aReq}
+			                , #{dReq}
+			                , CURRENT_TIMESTAMP   
+			                , CURRENT_TIMESTAMP 
+			           FROM prd_mst A
+						 WHERE A.MVGR2 = #{mvgr2}
+						   AND A.MVGR3 = #{mvgr3}
+						   AND A.NORMT = #{normt}	
+						   AND A.MATNR = #{matnr}	
+				  GROUP BY MVGR2, MVGR3, NORMT, MATNR						 
+    </insert>
+    
+    <update id="updateRqrdDocsSKU" parameterType="com.spigen.asos.model.DocMgrVO">
+    	UPDATE reqrd_docs_sku
+    	<if test="aReq != null and aReq != ''">
+    	  SET A_REQ = #{aReq}
+		</if>
+    	<if test="dReq != null and dReq != ''">
+    	  SET D_REQ = #{dReq}
+		</if>
+    	WHERE 1=1
+		<if test="mvgr2 != null and mvgr2 != ''">
+		     AND MVGR2 =  #{mvgr2}
+		</if>
+		<if test="mvgr3 != null and mvgr3 != ''">
+		     AND MVGR3 =  #{mvgr3}
+		</if>
+		<if test="normt != null and normt != ''">
+		     AND NORMT =  #{normt}
+		</if>
+		<if test="matnr != null and matnr != ''">
+		    AND MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if>  
+    </update>
+    
+    <insert id="deleteRqrdDocs" parameterType="com.spigen.asos.model.DocMgrVO">
+	  DELETE 
+	    FROM reqrd_docs
+	   WHERE MVGR2 = #{mvgr2} 
+	     AND MVGR3 = #{mvgr3}
+		 AND NORMT = #{normt}
+		<if test="matnr != null and matnr != ''">
+		    AND MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if>  	          
+    </insert>
+    
+    <select id="selectSDocMgrListCnt" resultType= "int" parameterType="com.spigen.asos.model.DocMgrVO">
+		SELECT COUNT(DISTINCT A.MVGR2, A.MVGR3 , A.NORMT) AS CNT 
+		  FROM prd_mst A
+		 WHERE 1=1
+		<if test="mvgr2 != null and mvgr2 != ''">
+		   AND A.MVGR2 = #{mvgr2}
+		</if>
+		<if test="mvgr3 != null and mvgr3 != ''">
+		   AND A.MVGR3 = #{mvgr3}
+		</if>
+		<if test="normt != null and normt != ''">
+		   AND A.NORMT = #{normt}
+		</if>
+		<if test="matnr != null and matnr != ''">
+		    AND A.MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if>        
+	</select>
+	
+    <select id="selectSDocMgrList" resultType= "com.spigen.asos.model.DocMgrVO" parameterType="com.spigen.asos.model.DocMgrVO">
+	SELECT A.MVGR2
+           , A.MVGT2
+           , A.MVGR3
+           , A.MVGT3
+           , A.NORMT
+           , A.FIN_YN AS FINYN
+           , A.S_REQ AS SREQ
+           , A.A_REQ AS AREQ
+           , '' AS SEQS
+           , '' AS SEQA
+           , '' AS FILENMS
+           , '' AS FILENMA
+           , '' AS PATHS
+           , '' AS PATHA           
+           , '' AS FILETYPES
+           , '' AS FILETYPEA 
+           , '0' AS ROWNUM     
+           , '1' AS CNT
+	  FROM ( 
+		    SELECT DISTINCT
+		           A.MVGR2
+		           , A.MVGT2
+		           , A.MVGR3
+		           , A.MVGT3
+		           , A.NORMT
+		           , B.FIN_YN
+		           , IFNULL(B.S_REQ,'N') AS S_REQ
+		           , IFNULL(B.A_REQ,'N') AS A_REQ
+		     FROM prd_mst A
+	   LEFT OUTER 
+	         JOIN reqrd_docs B 
+		       ON (A.MVGR3 = B.MVGR3 
+		             AND A.MVGR2 = B.MVGR2
+		             AND A.NORMT = B.NORMT
+				  )
+	       WHERE A.NORMT != ''
+			<if test="mvgr2 != null and mvgr2 != ''">
+			     AND A.MVGR2 = #{mvgr2}
+			</if>
+			<if test="mvgr3 != null and mvgr3 != ''">
+			     AND A.MVGR3 = #{mvgr3}
+			</if>
+			<if test="normt != null and normt != ''">
+			     AND A.NORMT = #{normt}
+			</if>
+			<if test="matnr != null and matnr != ''">
+			    AND A.MATNR IN
+				<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+	        		 #{matnr}
+	     		</foreach>
+			</if>	
+		 GROUP BY MVGR2, MVGR3, NORMT
+		) A
+	WHERE A.S_REQ IN('Y','N')
+	  AND A.A_REQ IN('Y', 'N')	
+	UNION ALL
+	SELECT C.MVGR2
+           , C.MVGT2
+           , C.MVGR3
+           , C.MVGT3
+           , C.NORMT
+           , C.FIN_YN AS FINYN
+           , C.S_REQ AS SREQ
+           , C.A_REQ AS AREQ
+           , IFNULL(GROUP_CONCAT(C.SEQ_S),'') AS SEQS
+           , IFNULL(GROUP_CONCAT(C.SEQ_A),'') AS SEQA
+           , IFNULL(GROUP_CONCAT(C.FILE_NM_S),'') AS FILENMS
+           , IFNULL(GROUP_CONCAT(C.FILE_NM_A,''),'') AS FILENMA
+           , IFNULL(GROUP_CONCAT(C.PATH_S),'') AS PATHS
+           , IFNULL(GROUP_CONCAT(C.PATH_A),'') AS PATHA
+           , IFNULL(GROUP_CONCAT(C.FILE_TYPE_S),'') AS FILETYPES
+           , IFNULL(GROUP_CONCAT(C.FILE_TYPE_A),'') AS FILETYPEA
+           , ROWNUM AS ROWNUM     
+           , (SELECT COUNT(*) from prd_docs B WHERE B.DEL_YN='N' AND C.MVGR2 = B.MVGR2 AND C.MVGR3 = B.MVGR3 AND C.NORMT = B.NORMT GROUP BY C.MVGR2, C.MVGR3, C.NORMT) AS CNT	  
+          FROM (	
+			SELECT A.MVGR2
+		           , A.MVGT2
+		           , A.MVGR3
+		           , A.MVGT3
+		           , A.NORMT
+		           , A.FIN_YN 
+		           , A.S_REQ 
+		           , A.A_REQ 
+		           , B.DOC_CD 
+		           , CASE B.DOC_CD WHEN 'S' THEN B.SEQ END AS SEQ_S
+		           , CASE B.DOC_CD WHEN 'A' THEN B.SEQ END AS SEQ_A
+		           , CASE B.DOC_CD WHEN 'S' THEN B.FILE_NM END AS FILE_NM_S
+		           , CASE B.DOC_CD WHEN 'A' THEN B.FILE_NM END AS FILE_NM_A
+		           , CASE B.DOC_CD WHEN 'S' THEN CONCAT(B.PATH,B.FILE_NM) END AS PATH_S
+		           , CASE B.DOC_CD WHEN 'A' THEN CONCAT(B.PATH,B.FILE_NM) END AS PATH_A   
+		           , CASE B.DOC_CD WHEN 'S' THEN B.FILE_TYPE END AS FILE_TYPE_S
+		           , CASE B.DOC_CD WHEN 'A' THEN B.FILE_TYPE END AS FILE_TYPE_A    
+		           , ROWNUM AS ROWNUM     
+			  FROM ( 
+				    SELECT DISTINCT
+				           A.MVGR2
+				           , A.MVGT2
+				           , A.MVGR3
+				           , A.MVGT3
+				           , A.NORMT
+				           , B.FIN_YN
+				           , IFNULL(B.S_REQ,'N') AS S_REQ
+				           , IFNULL(B.A_REQ,'N') AS A_REQ
+				           , FORMAT(@ROWNUM := @ROWNUM + 1, 0) AS ROWNUM
+				     FROM prd_mst A
+			   LEFT OUTER 
+			         JOIN reqrd_docs B 
+				       ON (A.MVGR3 = B.MVGR3 
+				             AND A.MVGR2 = B.MVGR2
+				             AND A.NORMT = B.NORMT
+						  )
+	       		   WHERE A.NORMT != ''
+	       		     AND (@ROWNUM:=0) = 0
+					<if test="mvgr2 != null and mvgr2 != ''">
+					     AND A.MVGR2 = #{mvgr2}
+					</if>
+					<if test="mvgr3 != null and mvgr3 != ''">
+					     AND A.MVGR3 = #{mvgr3}
+					</if>
+					<if test="normt != null and normt != ''">
+					     AND A.NORMT = #{normt}
+					</if>
+					<if test="matnr != null and matnr != ''">
+					    AND A.MATNR IN
+						<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+			        		 #{matnr}
+			     		</foreach>
+					</if>      
+				 GROUP BY MVGR2, MVGR3, NORMT
+				) A
+				, prd_docs B
+			WHERE A.MVGR3 = B.MVGR3 
+		      AND A.MVGR2 = B.MVGR2
+		      AND A.NORMT = B.NORMT	
+		      AND B.DEL_YN = 'N'	
+			  AND (A.S_REQ ='F'
+			   OR A.A_REQ ='F')	 
+			) C   
+   GROUP BY C.MVGR2, C.MVGR3 , C.NORMT
+   ORDER BY MVGT2, MVGT3, NORMT 
+   LIMIT #{firstIndex}	, #{recordCountPerPage}
+	</select>
+	
+	<select id="selectAttachedFileList" resultType= "com.spigen.asos.model.DocMgrVO">
+		SELECT SEQ
+		       , FILE_NM AS FILENM 
+		       , PATH
+		       , FILE_TYPE AS FILETYPE
+		       , REMARKS
+	      FROM prd_docs
+	     WHERE SEQ = #{seq} 
+	      AND  DEL_YN = 'N'	
+    </select>
+	
+    <select id="selectSDocMgrSubList" resultType= "com.spigen.asos.model.DocMgrVO" parameterType="com.spigen.asos.model.DocMgrVO">
+	SELECT A.MVGR2
+           , A.MVGT2
+           , A.MVGR3
+           , A.MVGT3
+           , A.NORMT
+           , A.MATNR
+           , IFNULL(A.MAKTX,'N/A') AS MAKTX
+           , A.IDNRK
+           , A.FIN_YN AS FINYN
+           , A.DREQ AS DREQ
+           , A.AREQ AS AREQ
+           , '' AS SEQD
+           , '' AS SEQA
+           , '' AS FILENMD
+           , '' AS FILENMA
+           , '' AS PATHD
+           , '' AS PATHA           
+           , '' AS FILETYPED
+           , '' AS FILETYPEA           
+    
+	  FROM ( 
+		    SELECT DISTINCT
+		           A.MVGR2
+		           , A.MVGT2
+		           , A.MVGR3
+		           , A.MVGT3
+		           , A.NORMT
+		           , A.MATNR
+		           , A.MAKTX
+		           , A.IDNRK
+		           , IFNULL(B.FIN_YN, 'N') AS FIN_YN
+		           , IFNULL(B.D_REQ,'N') AS DREQ
+		           , IFNULL(B.A_REQ,'N') AS AREQ
+		     FROM bom_list A
+	   LEFT OUTER 
+	         JOIN reqrd_docs_sku B 
+			        ON (A.MVGR3 = B.MVGR3 
+			             AND A.MVGR2 = B.MVGR2
+			             AND A.NORMT = B.NORMT
+			             AND A.MATNR = B.MATNR )
+	       WHERE A.NORMT != ''
+		    	<if test="mvgr2 != null and mvgr2 != ''">
+		    	   AND A.MVGR2 = #{mvgr2}
+		    	</if>
+		    	<if test="mvgr3 != null and mvgr3 != ''">
+		    	   AND A.MVGR3 = #{mvgr3}
+		    	</if>
+		    	<if test="normt != null and normt != ''">
+		    	   AND A.NORMT = #{normt}
+		    	</if>
+				<if test="matnr != null and matnr != ''">
+				    AND A.MATNR IN
+					<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+		        		 #{matnr}
+		     		</foreach>
+				</if> 
+			 GROUP BY MVGR2, MVGR3, NORMT, MATNR, A.IDNRK
+		) A
+	  WHERE	A.DREQ = 'N' 
+	    AND A.AREQ = 'N' 	    
+	UNION ALL
+		SELECT D.MVGR2
+	           , D.MVGT2
+	           , D.MVGR3
+	           , D.MVGT3
+	           , D.NORMT
+	           , D.MATNR
+               , IFNULL(D.MAKTX,'N/A') AS MAKTX
+	           , D.IDNRK
+	           , D.FIN_YN 
+	           , D.DREQ 
+	           , D.AREQ 
+	           , CASE D.DREQ WHEN 'Y' THEN D.SEQ END AS SEQ_D
+	           , CASE D.AREQ WHEN 'Y' THEN D.SEQ END AS SEQ_A
+	           , CASE D.DREQ WHEN 'Y' THEN D.FILE_NM END AS FILE_NM_D
+	           , CASE D.AREQ WHEN 'Y' THEN D.FILE_NM END AS FILE_NM_A
+	           , CASE D.DREQ WHEN 'Y' THEN CONCAT(D.PATH,D.FILE_NM) END AS PATH_D
+	           , CASE D.AREQ WHEN 'Y' THEN CONCAT(D.PATH,D.FILE_NM) END AS PATH_A   
+	           , CASE D.DREQ WHEN 'Y' THEN D.FILE_TYPE END AS FILE_TYPE_D
+	           , CASE D.AREQ WHEN 'Y' THEN D.FILE_TYPE END AS FILE_TYPE_A
+		  FROM ( 
+				    SELECT 
+				           A.MVGR2
+				           , A.MVGT2
+				           , A.MVGR3
+				           , A.MVGT3
+				           , A.NORMT
+				           , A.MATNR
+				           , A.MAKTX
+				           , A.IDNRK
+				           , IFNULL(C.FIN_YN, 'N') AS FIN_YN
+				           , IFNULL(B.D_REQ,'N') AS DREQ
+				           , IFNULL(B.A_REQ,'N') AS AREQ
+				           , C.SEQ
+				           , C.FILE_NM
+				           , C.PATH
+				           , C.FILE_TYPE
+				           , C.DEL_YN
+				           , C.REQ
+				     FROM bom_list A
+			   LEFT OUTER 
+			         JOIN reqrd_docs_sku B 
+					        ON (A.MVGR3 = B.MVGR3 
+					             AND A.MVGR2 = B.MVGR2
+					             AND A.NORMT = B.NORMT
+					             AND A.MATNR = B.MATNR )
+				LEFT OUTER 
+			         JOIN bom_docs C
+			           ON (A.IDNRK = C.IDNRK) 	             
+			       WHERE A.NORMT != ''
+			    	<if test="mvgr2 != null and mvgr2 != ''">
+			    	   AND A.MVGR2 = #{mvgr2}
+			    	</if>
+			    	<if test="mvgr3 != null and mvgr3 != ''">
+			    	   AND A.MVGR3 = #{mvgr3}
+			    	</if>
+			    	<if test="normt != null and normt != ''">
+			    	   AND A.NORMT = #{normt}
+			    	</if>
+					<if test="matnr != null and matnr != ''">
+					    AND A.MATNR IN
+						<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+			        		 #{matnr}
+			     		</foreach>
+					</if>  
+	     			   AND (C.DEL_YN = 'N' OR C.DEL_YN IS NULL)
+	       GROUP BY MVGR2, MVGR3, NORMT, MATNR, A.IDNRK			   
+			) D 
+	WHERE (D.DREQ = 'Y' OR D.AREQ = 'Y')
+   ORDER BY MVGT2, MVGT3, NORMT, MATNR, IDNRK 
+	</select>
+	
+	<select id="deviceList" resultType= "com.spigen.asos.model.DocMgrVO">
+		SELECT DISTINCT 
+		       MVGR3
+		       , MVGT3 
+	      FROM B2B_PRODUCT
+    </select>
+    
+	<select id="modelList" resultType= "com.spigen.asos.model.DocMgrVO">
+		SELECT DISTINCT NORMT
+	      FROM B2B_PRODUCT
+    </select>
+    
+	<select id="skuList" resultType= "com.spigen.asos.model.DocMgrVO">
+		SELECT DISTINCT 
+       		   A.MATNR
+       		   , B.FIN_YN AS FINYN
+       		   , B.COMN_YN AS COMNYN
+	      FROM B2B_PRODUCT A
+	           , reqrd_docs B
+	     WHERE A.MVGR2 = B.MVGR2
+	       AND A.MVGR3 = B.MVGR3
+	       AND A.NORMT = B.NORMT
+	       AND A.MATNR = B.SKU	
+		<if test="mvgr2 != null and mvgr2 != ''">
+		   AND B.MVGR2 =  #{mvgr2}
+		</if>
+		<if test="mvgr3 != null and mvgr3 != ''">
+		   AND B.MVGR3 =  #{mvgr3}
+		</if>
+		<if test="normt != null and normt != ''">
+		   AND B.NORMT =  #{normt}
+		</if>
+    </select>
+    
+	<select id="selectCntSkuList" resultType= "com.spigen.asos.model.DocMgrVO" parameterType="com.spigen.asos.model.DocMgrVO">
+			SELECT DISTINCT (CASE A.S_REQ WHEN 'N' THEN '0' WHEN 'Y' THEN '1' ELSE '0' END) AS CNT 
+					, IFNULL( A.SKU, B.MATNR) AS MATNR
+			 FROM B2B_PRODUCT B 
+		          LEFT OUTER JOIN reqrd_docs A
+					ON A.MVGR2 = B.MVGR2
+					AND A.MVGR3 = B.MVGR3
+					AND A.NORMT = B.NORMT
+					AND A.SKU = B.MATNR
+			WHERE B.MVGR3 = #{mvgr3}
+	          AND B.NORMT= #{normt}
+	          AND B.MATNR IN 
+	  	<foreach collection="subList" item="item" open="(" close=")" separator=",">
+    		#{item.matnr}
+		</foreach>	     
+    </select>   
+    
+	<select id="selectCntRgtList" resultType="int" parameterType="com.spigen.asos.model.DocMgrVO">
+	    SELECT COUNT(*) AS CNT
+	      FROM QUALITY_DOC A
+	     WHERE A.MVGR3 = #{mvgr3} 
+	       AND A.NORMT= #{normt}
+	       AND A.SKU = #{matnr}
+	       AND A.DOC_CD ='S'
+    </select> 
+      
+	<select id="selectFilePath" parameterType="com.spigen.asos.model.DocMgrVO" resultType= "com.spigen.asos.model.FileMgrVO">
+	    SELECT CONCAT(PATH,FILE_NM) AS filePath
+	           , FILE_NM AS fileNm  
+		    <if test="docType == null or docType == ''">
+		      FROM bom_docs
+    		</if>
+		    <if test="docType != null and docType != ''">
+		      FROM prd_docs
+    		</if>
+		     WHERE SEQ =  #{seq}
+		       AND DEL_YN = 'N'	
+    </select> 
+
+    <insert id="insertSDocFile" parameterType="com.spigen.asos.model.DocMgrVO">
+	 	  INSERT INTO prd_docs 
+	              (  MVGR2
+			        , MVGT2
+			        , MVGR3
+			        , MVGT3
+			        , NORMT
+			        , DOC_CD
+			        , FILE_NM
+			        , PATH
+			        , FILE_TYPE
+			        , CRT_DTM
+			        , UPD_DTM
+			        , DEL_YN
+			        , REMARKS
+			       ) 
+			       SELECT MVGR2
+			              , MVGT2
+			              , MVGR3
+			              , MVGT3
+			              , NORMT
+			              , #{docType}
+			              , #{fileNm}
+			              , #{path}
+			              , SUBSTRING_INDEX(#{fileNm}, '.',-1)
+			              , CURRENT_TIMESTAMP   
+			              , CURRENT_TIMESTAMP 
+			              , 'N'
+			              , #{remarks}
+			         FROM prd_mst
+				  	  WHERE MVGR2 = #{mvgr2}
+				  	  	AND MVGR3 = #{mvgr3}
+					    AND NORMT = #{normt}
+				  GROUP BY MVGR2, MVGR3, NORMT
+    </insert>   
+    
+    <update id="updateProdDocFile" parameterType="com.spigen.asos.model.DocMgrVO">
+       UPDATE prd_docs
+    	  SET FILE_NM = #{fileNm}
+    	      , PATH = #{path}
+    	      , FILE_TYPE = SUBSTRING_INDEX(#{fileNm}, '.',-1)
+    	      , UPD_DTM = CURRENT_TIMESTAMP
+    	      , REMARKS = #{remarks}
+    	WHERE SEQ = #{seq}
+ 		  AND DEL_YN = 'N'	
+    </update>
+    
+    <update id="updateSDocFile" parameterType="com.spigen.asos.model.DocMgrVO">
+    	UPDATE reqrd_docs
+    	<if test="sReq != null and sReq != ''">
+    	  SET S_REQ = #{sReq}
+    	</if>
+    	<if test="aReq != null and aReq != ''">
+    	  SET A_REQ = #{aReq}
+    	</if>
+    	<if test="finYn != null and finYn != ''">
+    	  SET FIN_YN = #{finYn}
+    	</if>
+	     WHERE 1=1
+	  	<if test="mvgr2 != null and mvgr2 != ''">
+	  	   AND MVGR2 = #{mvgr2}
+	  	</if>	 
+	  	<if test="mvgr3 != null and mvgr3 != ''">
+	       AND MVGR3 = #{mvgr3}
+	  	</if>	 
+	  	<if test="normt != null and normt != ''">
+	       AND NORMT = #{normt}
+	  	</if>	
+    </update>
+    
+    <update id="deleteProdDoc" parameterType="com.spigen.asos.model.DocMgrVO">
+		UPDATE prd_docs
+    	   SET DEL_YN = 'Y'
+    	       , UPD_DTM = CURRENT_TIMESTAMP
+<!--     	       , UPDR_ID = #{crtrId} -->
+    	       , PATH = #{path}
+    	WHERE SEQ = #{seq}
+    </update>
+    
+   <select id="selectFinYn" parameterType="com.spigen.asos.model.DocMgrVO" resultType="string">
+    SELECT CASE WHEN A_REQ = 'F' AND S_REQ = 'F' THEN 'Y' 
+    	        WHEN A_REQ = 'N' AND S_REQ = 'F' THEN 'Y' 
+    	       	WHEN A_REQ = 'F' AND S_REQ = 'N' THEN 'Y' ELSE 'N' END AS FINYN
+	      FROM reqrd_docs
+	     WHERE 1=1
+	  	<if test="mvgr2 != null and mvgr2 != ''">
+	  	   AND MVGR2 = #{mvgr2}
+	  	</if>	 
+	  	<if test="mvgr3 != null and mvgr3 != ''">
+	       AND MVGR3 = #{mvgr3}
+	  	</if>	 
+	  	<if test="normt != null and normt != ''">
+	       AND NORMT = #{normt}
+	  	</if>	 
+    </select> 
+    
+    <insert id="insertProdDocFileChgHis" parameterType="com.spigen.asos.model.DocMgrVO">
+    	INSERT 
+    	  INTO prd_docs_his
+    	       ( 
+    	       	 CHG_CD 
+		         , DOC_CD
+		         , DOC_SEQ
+		         , MVGR2
+		         , MVGR3
+		         , NORMT
+		         , MATNR
+		         , CRT_DTM
+		         , CRTR_ID
+		         , REMARKS
+    	       ) 
+    	       SELECT #{chgCd} AS CHG_CD
+    	              , DOC_CD
+    	              , SEQ
+    	              , MVGR2
+    	              , MVGR3
+    	              , NORMT
+    	              , '' AS MATNR
+    	              , CURRENT_TIMESTAMP
+    	              , #{crtrId}
+    	              , REMARKS
+    	         FROM prd_docs
+		        WHERE 1=1
+		  	<if test="mvgr2 != null and mvgr2 != ''">
+		  	     AND MVGR2 = #{mvgr2}
+		  	</if>	 
+		  	<if test="mvgr3 != null and mvgr3 != ''">
+		       	 AND MVGR3 = #{mvgr3}
+		  	</if>	 
+		  	<if test="normt != null and normt != ''">
+		       	 AND NORMT = #{normt}
+		  	</if>			        
+		  	<if test="seq != null and seq != ''">
+		       	 AND SEQ = #{seq}
+		  	</if>
+    </insert>
+    
+   	<select id="selectMasterInfo" parameterType="com.spigen.asos.model.DocMgrVO" resultType="com.spigen.asos.model.DocMgrVO">
+	    SELECT DISTINCT
+	           A.MVGR2
+	           , A.MVGT2
+	           , A.MVGR3
+	           , A.MVGT3
+	           , A.NORMT
+	           , #{docType} AS docType
+	           , CASE #{docType} WHEN 'S' THEN '시방서' WHEN 'A' THEN '승인원' ELSE '도안' END AS docTypeNm
+	     FROM prd_mst A
+	   WHERE 1=1	  
+		<if test="mvgr2 != null and mvgr2 != ''">
+		     AND A.MVGR2 = #{mvgr2}
+		</if>
+		<if test="mvgr3 != null and mvgr3 != ''">
+		     AND A.MVGR3 = #{mvgr3}
+		</if>
+		<if test="normt != null and normt != ''">
+		     AND A.NORMT = #{normt}
+		</if>
+		<if test="matnr != null and matnr != ''">
+		    AND A.MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if> 	      
+	 GROUP BY MVGR2, MVGR3, NORMT
+    </select> 
+    
+    
+   	<select id="selectBomMgrList" parameterType="com.spigen.asos.model.DocMgrVO" resultType="com.spigen.asos.model.DocMgrVO">
+	 SELECT A.IMTART
+			, A.IDNRK
+			, A.CSTLAL
+		    , A.ZTEXT
+		    , A.ZMNGKO
+		    , A.IWGBEZ
+			, A.FIN_YN AS FINYN
+            , A.REQ AS REQ
+            , '' AS SEQ
+            , '' AS FILENM
+            , '' AS PATH
+            , '' AS FILETYPE
+	  FROM ( 
+			SELECT A.IMTART
+				   , A.IDNRK
+				   , A.CSTLAL
+				   , A.ZTEXT
+				   , A.ZMNGKO
+				   , A.IWGBEZ
+				   , IFNULL(B.FIN_YN,'Y') AS FIN_YN
+				   , IFNULL(B.REQ,'N') AS REQ					
+		     FROM ( SELECT DISTINCT
+		                   A.MATNR
+			               , A.IMTART
+				           , A.IDNRK
+				           , A.CSTLAL
+				           , A.ZTEXT
+				           , A.IWGBEZ
+				           , CAST(A.ZMNGKO AS signed integer) AS ZMNGKO
+				      FROM bom_list A
+				    ) A		  
+	     LEFT OUTER 
+		       JOIN reqrd_docs_mtr B 
+	             ON ( A.IDNRK = B.IDNRK
+	             	  AND A.CSTLAL = B.CSTLAL)
+	          WHERE 1=1 
+			<if test="matnr != null and matnr != ''">
+			    AND A.MATNR IN
+				<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+	        		 #{matnr}
+	     		</foreach>
+			</if>  	          
+			<if test="idnrk != null and idnrk != ''">
+			     AND A.IDNRK = #{idnrk}
+			</if>		      
+	       GROUP BY A.IDNRK, A.CSTLAL
+		) A
+	WHERE A.REQ IN ('Y', 'N')
+	UNION ALL
+	SELECT C.IMTART
+		   , C.IDNRK
+		   , C.CSTLAL
+		   , C.ZTEXT
+		   , C.ZMNGKO
+		   , C.IWGBEZ
+		   , C.FIN_YN AS FINYN
+           , C.REQ AS REQ
+           , D.SEQ AS SEQ
+           , D.FILE_NM AS FILENM
+           , CONCAT(D.PATH,D.FILE_NM) AS PATH
+           , D.FILE_TYPE AS FILETYPE
+	  FROM (	
+			SELECT A.IMTART
+				   , A.IDNRK
+				   , A.ZTEXT
+				   , A.CSTLAL
+				   , A.IWGBEZ
+				   , A.ZMNGKO
+				   , B.REQ
+				   , B.FIN_YN
+			  FROM ( 
+					SELECT DISTINCT
+					       A.IMTART
+						   , A.IDNRK
+						   , A.ZTEXT
+						   , A.CSTLAL
+						   , A.IWGBEZ
+						   , CAST(A.ZMNGKO AS signed integer) AS ZMNGKO
+					  FROM bom_list A
+				     WHERE 1=1 		  
+					<if test="matnr != null and matnr != ''">
+					    AND A.MATNR IN
+						<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+			        		 #{matnr}
+			     		</foreach>
+					</if>  	      
+				<if test="idnrk != null and idnrk != ''">
+				     AND A.IDNRK = #{idnrk}
+				</if>		      
+	       GROUP BY A.IMTART, A.IDNRK, A.ZTEXT, A.CSTLAL
+				) A
+				, reqrd_docs_mtr B
+			WHERE A.IDNRK = B.IDNRK
+			  AND A.CSTLAL = B.CSTLAL
+			) C
+			, bom_docs D   
+	  WHERE C.IDNRK = D.IDNRK
+	    AND C.CSTLAL = D.CSTLAL
+	    AND C.REQ = 'F'
+        AND D.DEL_YN = 'N'	
+   ORDER BY IMTART, IDNRK, CSTLAL, ZTEXT 
+   LIMIT #{firstIndex}	, #{recordCountPerPage}
+    </select> 
+    
+   	<select id="selectBomMgrListCnt" parameterType="com.spigen.asos.model.DocMgrVO" resultType="int" >
+		SELECT COUNT(DISTINCT IDNRK)
+		  FROM bom_list
+	   	  WHERE 1=1	  
+		<if test="matnr != null and matnr != ''">
+		    AND MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if>  
+		<if test="idnrk != null and idnrk != ''">
+		     AND IDNRK = #{idnrk}
+		</if>
+    </select> 
+    
+   	<select id="selectBomMasterInfo" parameterType="com.spigen.asos.model.DocMgrVO" resultType="com.spigen.asos.model.DocMgrVO">
+		SELECT DISTINCT
+		       A.IDNRK
+			   , A.ZTEXT
+			   , A.CSTLAL
+	     FROM bom_list A
+	   	  WHERE 1=1	  
+		<if test="idnrk != null and idnrk != ''">
+		     AND A.IDNRK = #{idnrk}
+		</if>
+		<if test="cstlal != null and cstlal != ''">
+		     AND A.CSTLAL = #{cstlal}
+		</if>
+		<if test="cstlal == null or cstlal == ''">
+		     AND A.CSTLAL =''
+		</if>
+    </select> 
+   
+    <insert id="insertBomDocFile" parameterType="com.spigen.asos.model.DocMgrVO">
+	 	  INSERT INTO bom_docs 
+	              (  IDNRK
+	                , CSTLAL
+			        , FILE_NM
+			        , PATH
+			        , FILE_TYPE
+			        , DEL_YN
+			        , FIN_YN
+			        , REQ
+			        , CRT_DTM
+			        , UPD_DTM
+			       ) VALUES
+			       (
+		     		 #{idnrk}
+		     		 , #{cstlal}
+		              , #{fileNm}
+		              , #{path}
+		              , SUBSTRING_INDEX(#{fileNm}, '.',-1)
+		              , 'N'
+		              , 'Y'
+		              , 'F'
+		              , CURRENT_TIMESTAMP   
+		              , CURRENT_TIMESTAMP 
+					)
+    </insert>  
+    
+    <update id="updateBomDocFile" parameterType="com.spigen.asos.model.DocMgrVO">
+    	UPDATE reqrd_docs_mtr
+    	  SET
+    	<if test="req != null and req != ''">
+    	   REQ = #{req}
+    	</if>
+    	<if test="finYn != null and finYn != ''">
+    	  , FIN_YN = #{finYn}
+    	</if>
+	     WHERE 1=1
+		<if test="idnrk != null and idnrk != ''">
+		     AND IDNRK = #{idnrk}
+		</if>	
+		<if test="cstlal != null and cstlal != ''">
+		     AND CSTLAL = #{cstlal}
+		</if>	
+    </update>
+    
+    <insert id="insertBomDocFileChgHis" parameterType="com.spigen.asos.model.DocMgrVO">
+    	INSERT 
+    	  INTO bom_docs_his
+    	       ( 
+    	       	 CHG_CD 
+		         , DOC_SEQ
+		         , IDNRK
+		         , CSTLAL
+		         , CRT_DTM
+		         , CRTR_ID
+    	       ) 
+    	       SELECT #{chgCd} AS CHG_CD
+    	              , SEQ
+    	              , IDNRK
+    	              , CSTLAL
+    	              , CURRENT_TIMESTAMP
+    	              , 'SESSION'
+    	         FROM bom_docs
+		        WHERE 1=1
+			<if test="idnrk != null and idnrk != ''">
+			     AND IDNRK = #{idnrk}
+			</if>		        
+			<if test="cstlal != null and cstlal != ''">
+			     AND CSTLAL = #{cstlal}
+			</if>		        
+		  	<if test="seq != null and seq != ''">
+		       	 AND SEQ = #{seq}
+		  	</if>
+    </insert> 
+  
+   <select id="selectFinYnBom" parameterType="com.spigen.asos.model.DocMgrVO" resultType="string">
+	    SELECT CASE WHEN A.A_REQ = 'F' AND A.D_REQ = 'F' THEN 'Y' ELSE 'N' END AS FINYN
+		      FROM reqrd_docs_sku A
+		           , bom_list B
+		     WHERE A.MATNR=B.MATNR
+		      AND A.IDNRK = B.IDNRK
+			<if test="idnrk != null and idnrk != ''">
+			     AND B.IDNRK = #{idnrk}
+			</if>	 
+	     GROUP BY A.IDNRK		
+    </select>        
+ 
+	<select id="selectAttachedBomFileList" resultType= "com.spigen.asos.model.DocMgrVO">
+		SELECT SEQ
+		       , FILE_NM AS FILENM 
+		       , PATH
+		       , FILE_TYPE AS FILETYPE
+	      FROM bom_docs
+	     WHERE SEQ = #{seq} 
+	      AND  DEL_YN = 'N'	
+    </select>
+
+    <update id="deleteBomDoc" parameterType="com.spigen.asos.model.DocMgrVO">
+		UPDATE bom_docs
+    	   SET DEL_YN = 'Y'
+    	       , UPD_DTM = CURRENT_TIMESTAMP
+    	WHERE SEQ = #{seq}
+    </update>   
+    
+    <select id="selectQryAttchFileCnt" resultType= "Integer" parameterType="com.spigen.asos.model.DocMgrVO">
+		SELECT COUNT(A.SEQ) 
+	      FROM prd_docs A
+	     WHERE A.MVGR2 = #{mvgr2} 
+	       AND A.MVGR3 = #{mvgr3} 
+	       AND A.NORMT= #{normt}
+	       AND A.DOC_CD= #{docType}
+	       AND A.DEL_YN = 'N'
+    </select>
+ 
+     <select id="selectQryBomAttchFileCnt" resultType= "Integer" parameterType="com.spigen.asos.model.DocMgrVO">
+		SELECT COUNT(A.SEQ) 
+	      FROM bom_docs A
+	     WHERE A.IDNRK = #{idnrk} 
+	       AND A.CSTLAL = #{cstlal} 
+	       AND A.DEL_YN = 'N'
+    </select>    
+    
+   <select id="selectBomInfoListCnt" resultType= "Integer" parameterType="com.spigen.asos.model.DocMgrVO">
+		SELECT COUNT(*) 
+	      FROM bom_list A
+		<if test="lifnr != null and lifnr != ''">
+			   , prd_by_vnd B
+		 WHERE A.matnr = B.matnr
+		   AND A.stlal = B.charg
+		   AND B.lifnr = #{lifnr}   
+		</if>
+		<if test="lifnr == null or lifnr == ''">
+		      WHERE 1=1
+		</if>
+		<if test="matnr != null and matnr != ''">
+		    AND A.MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if>  			
+		<if test="cstlal != null and cstlal != ''">
+	 		AND A.STLAL = #{cstlal}
+		</if>
+		<if test="idnrk != null and idnrk != ''">
+	 		AND A.IDNRK = #{idnrk}
+		</if>			
+    </select>   
+    
+   <select id="selectBomInfoList" resultType= "com.spigen.asos.model.DocMgrVO"  parameterType="com.spigen.asos.model.DocMgrVO">
+		 SELECT A.MATNR
+				, STLAL
+				, MAKTX
+				, ENMTX
+				, ALEVEL
+				, CLEVEL
+				, ZPSTAU
+				, ZSTOC
+				, IMTART
+				, IDNRK
+				, CSTLAL
+				, ZTEXT
+				, ZMNGKO
+				, BMENG
+				, MENGE
+				, BBMENG
+				, MEINS
+				, ZPOSTP
+				, IMATKL
+				, IWGBEZ
+				, HMATNR
+				, HSTLAL
+				, STKTX
+				, MTART
+				, MATKL
+				, WGBEZ
+				, DISPO
+				, DSNAM
+				, PRDHA
+				, VTEXT
+				, MVGR1
+				, MVGT1
+				, MVGR2
+				, MVGT2
+				, MVGR3
+				, MVGT3
+				, MVGR4
+				, MVGT4
+				, NORMT
+				, SANKO
+				, SANFE
+				, SANKA
+				, ANDAT
+				, SASTU
+		   FROM	bom_list A
+		<if test="lifnr != null and lifnr != ''">
+			   , prd_by_vnd B
+		 WHERE A.matnr = B.matnr
+		   AND A.stlal = B.charg
+		   AND B.lifnr = #{lifnr}   
+		</if>
+		<if test="lifnr == null or lifnr == ''">
+		      WHERE 1=1
+		</if>
+		<if test="matnr != null and matnr != ''">
+		    AND A.MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if>  		
+		<if test="cstlal != null and cstlal != ''">
+	 		AND A.STLAL = #{cstlal}
+		</if>		
+		<if test="idnrk != null and idnrk != ''">
+	 		AND A.IDNRK = #{idnrk}
+		</if>		
+	 ORDER BY MATNR,IDNRK, CSTLAL, MAKTX 
+	   LIMIT #{firstIndex}	, #{recordCountPerPage}			
+    </select>   
+             
+   <select id="selectProdInfoListCnt" resultType= "Integer" parameterType="com.spigen.asos.model.DocMgrVO">
+		SELECT COUNT(ID) 
+	      FROM prd_mst
+	      WHERE 1=1
+    <if test="mvgr2 != null and mvgr2 != ''">
+   			AND MVGR2 = #{mvgr2}
+	</if>
+	<if test="mvgr3 != null and mvgr3 != ''">
+	     AND MVGR3 = #{mvgr3}
+	</if>
+	<if test="normt != null and normt != ''">
+	     AND NORMT = #{normt}
+	</if>
+	<if test="matnr != null and matnr != ''">
+	    AND MATNR IN
+		<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+       		 #{matnr}
+    	</foreach>
+	</if>
+    </select>   
+    
+   <select id="selectProdInfoList" resultType= "com.spigen.asos.model.DocMgrVO"  parameterType="com.spigen.asos.model.DocMgrVO">
+		 SELECT MATNR
+				, ERSDA
+				, MTART
+				, MATKL
+				, WGBEZ
+				, NORMT
+				, NTGEW
+				, GEWEI
+				, EAN11
+				, LAENG
+				, BREIT
+				, HOEHE
+				, PRDHA
+				, VTEXT
+				, KOMTX
+				, ENMTX
+				, ZWON
+				, MVGR1
+				, MVGT1
+				, MVGR2
+				, MVGT2
+				, MVGR3
+				, MVGT3
+				, MVGR4
+				, MVGT4
+				, company
+				, ZPSTAU
+				, ZSTOC
+				, CHARG
+				, ZINBQ
+				, ZOUBQ
+				, VKORG
+				, VTWEG
+				, ZPACS
+				, PDIM
+				, RDIM
+				, BRGEW
+				, GROES2
+				, GROES
+		   FROM	prd_mst
+	      WHERE 1=1
+    <if test="mvgr2 != null and mvgr2 != ''">
+   			AND MVGR2 = #{mvgr2}
+	</if>
+	<if test="mvgr3 != null and mvgr3 != ''">
+	     AND MVGR3 = #{mvgr3}
+	</if>
+	<if test="normt != null and normt != ''">
+	     AND NORMT = #{normt}
+	</if>
+	<if test="matnr != null and matnr != ''">
+	    AND MATNR IN
+		<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+       		 #{matnr}
+    	</foreach>
+	</if>	
+	    ORDER BY MVGT2, MVGT3, NORMT
+	   LIMIT #{firstIndex}	, #{recordCountPerPage}			
+    </select>  
+    
+    <select id="prodDocMasterMtrList" resultType= "com.spigen.asos.model.DocMgrVO">
+         SELECT  A.IDNRK
+                 , A.CSTLAL
+                 , A.ZTEXT 
+                 , B.REQ
+                 , B.FIN_YN
+                 , A.IWGBEZ
+                 , ( SELECT COUNT(DISTINCT IDNRK,CSTLAL) AS CNT 
+                       FROM bom_list A
+                      WHERE 1=1 
+					<if test="matnr != null and matnr != ''">
+					    AND A.MATNR IN
+						<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+			        		 #{matnr}
+			     		</foreach>
+					</if>            
+					<if test="idnrk != null and idnrk != ''">
+					     AND A.IDNRK = #{idnrk}
+					</if>	 
+					<if test="imatkl != null and imatkl != ''">
+					     AND A.IMATKL = #{imatkl}
+					</if>					  
+                   ) AS CNT                 
+	        FROM bom_list A 
+ LEFT OUTER JOIN reqrd_docs_mtr B 
+	          ON (A.IDNRK = B.IDNRK 
+	             AND A.CSTLAL = B.CSTLAL
+				 )
+           WHERE 1=1 
+		<if test="matnr != null and matnr != ''">
+		    AND A.MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if>            
+		<if test="idnrk != null and idnrk != ''">
+		     AND A.IDNRK = #{idnrk}
+		</if>	
+		<if test="imatkl != null and imatkl != ''">
+		     AND A.IMATKL = #{imatkl}
+		</if>	
+	    GROUP BY A.IDNRK, A.CSTLAL
+   		ORDER BY IDNRK, CSTLAL, ZTEXT 
+	    LIMIT #{firstIndex}	, #{recordCountPerPage}
+    </select>
+    
+    <select id="selectCntRqrdDocsMtr" resultType= "Integer" parameterType="com.spigen.asos.model.DocMgrVO">
+		 SELECT COUNT(IDNRK|CSTLAL) AS cnt
+           FROM reqrd_docs_mtr 
+           WHERE 1=1 
+		<if test="matnr != null and matnr != ''">
+		    AND MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if>            
+		<if test="idnrk != null and idnrk != ''">
+		     AND IDNRK = #{idnrk}
+		</if>
+		<if test="cstlal != null and cstlal != ''">
+		     AND CSTLAL = #{cstlal}
+		</if>
+    </select>
+    
+    <insert id="insertRqrdDocsMtr" parameterType="com.spigen.asos.model.DocMgrVO">
+	  INSERT INTO reqrd_docs_mtr 
+	              ( IDNRK
+			        , CSTLAL
+			        , REQ
+			        , CRT_DTM
+			        , UPD_DTM
+			       ) 
+			       SELECT IDNRK
+			                , CSTLAL
+			                , #{req}
+			                , CURRENT_TIMESTAMP   
+			                , CURRENT_TIMESTAMP 
+			           FROM bom_list
+						 WHERE IDNRK = #{idnrk}
+						   AND CSTLAL = #{cstlal}
+				  GROUP BY IDNRK, CSTLAL						 
+    </insert>
+    
+    <update id="updateRqrdDocsMtr" parameterType="com.spigen.asos.model.DocMgrVO">
+    	UPDATE reqrd_docs_mtr
+    	  SET REQ = #{req}
+		 WHERE IDNRK = #{idnrk}
+		   AND CSTLAL = #{cstlal}
+    </update> 
+    
+    <select id="selectProcDocMgrListSKUCnt" resultType= "Integer" parameterType="com.spigen.asos.model.DocMgrVO">
+	SELECT COUNT(*) AS CNT
+	  FROM (
+				SELECT A.MVGR2
+			           , A.MVGT2
+			           , A.MVGR3
+			           , A.MVGT3
+			           , A.NORMT
+			           , A.MATNR
+			           , IFNULL(A.MAKTX,'N/A') AS MAKTX
+			           , A.IDNRK
+			           , A.FIN_YN AS FINYN
+			           , A.DREQ AS DREQ
+			           , A.AREQ AS AREQ
+			           , '' AS SEQD
+			           , '' AS SEQA
+			           , '' AS FILENMD
+			           , '' AS FILENMA
+			           , '' AS PATHD
+			           , '' AS PATHA           
+			           , '' AS FILETYPED
+			           , '' AS FILETYPEA           
+			    
+				  FROM ( 
+					    SELECT DISTINCT
+					           A.MVGR2
+					           , A.MVGT2
+					           , A.MVGR3
+					           , A.MVGT3
+					           , A.NORMT
+					           , A.MATNR
+					           , A.MAKTX
+					           , A.IDNRK
+					           , IFNULL(B.FIN_YN, 'N') AS FIN_YN
+					           , IFNULL(B.D_REQ,'N') AS DREQ
+					           , IFNULL(B.A_REQ,'N') AS AREQ
+					     FROM bom_list A
+				   LEFT OUTER 
+				         JOIN reqrd_docs_sku B 
+						        ON (A.MVGR3 = B.MVGR3 
+						             AND A.MVGR2 = B.MVGR2
+						             AND A.NORMT = B.NORMT
+						             AND A.MATNR = B.MATNR )
+				       WHERE A.NORMT != ''
+					    	<if test="mvgr2 != null and mvgr2 != ''">
+					    	   AND A.MVGR2 = #{mvgr2}
+					    	</if>
+					    	<if test="mvgr3 != null and mvgr3 != ''">
+					    	   AND A.MVGR3 = #{mvgr3}
+					    	</if>
+					    	<if test="normt != null and normt != ''">
+					    	   AND A.NORMT = #{normt}
+					    	</if>
+							<if test="matnr != null and matnr != ''">
+							    AND A.MATNR IN
+								<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+					        		 #{matnr}
+					     		</foreach>
+							</if>  
+						 GROUP BY MVGR2, MVGR3, NORMT, MATNR, A.IDNRK
+					) A
+				  WHERE	A.DREQ = 'N' 
+				    AND A.AREQ = 'N' 	    
+				UNION ALL
+					SELECT D.MVGR2
+				           , D.MVGT2
+				           , D.MVGR3
+				           , D.MVGT3
+				           , D.NORMT
+				           , D.MATNR
+			               , IFNULL(D.MAKTX,'N/A') AS MAKTX
+				           , D.IDNRK
+				           , D.FIN_YN 
+				           , D.DREQ 
+				           , D.AREQ 
+				           , CASE D.DREQ WHEN 'Y' THEN D.SEQ END AS SEQ_D
+				           , CASE D.AREQ WHEN 'Y' THEN D.SEQ END AS SEQ_A
+				           , CASE D.DREQ WHEN 'Y' THEN D.FILE_NM END AS FILE_NM_D
+				           , CASE D.AREQ WHEN 'Y' THEN D.FILE_NM END AS FILE_NM_A
+				           , CASE D.DREQ WHEN 'Y' THEN CONCAT(D.PATH,D.FILE_NM) END AS PATH_D
+				           , CASE D.AREQ WHEN 'Y' THEN CONCAT(D.PATH,D.FILE_NM) END AS PATH_A   
+				           , CASE D.DREQ WHEN 'Y' THEN D.FILE_TYPE END AS FILE_TYPE_D
+				           , CASE D.AREQ WHEN 'Y' THEN D.FILE_TYPE END AS FILE_TYPE_A
+					  FROM ( 
+							    SELECT 
+							           A.MVGR2
+							           , A.MVGT2
+							           , A.MVGR3
+							           , A.MVGT3
+							           , A.NORMT
+							           , A.MATNR
+							           , A.MAKTX
+							           , A.IDNRK
+							           , IFNULL(C.FIN_YN, 'N') AS FIN_YN
+							           , IFNULL(B.D_REQ,'N') AS DREQ
+							           , IFNULL(B.A_REQ,'N') AS AREQ
+							           , C.SEQ
+							           , C.FILE_NM
+							           , C.PATH
+							           , C.FILE_TYPE
+							           , C.DEL_YN
+							           , C.REQ
+							     FROM bom_list A
+						   LEFT OUTER 
+						         JOIN reqrd_docs_sku B 
+								        ON (A.MVGR3 = B.MVGR3 
+								             AND A.MVGR2 = B.MVGR2
+								             AND A.NORMT = B.NORMT
+								             AND A.MATNR = B.MATNR )
+							LEFT OUTER 
+						         JOIN bom_docs C
+						           ON (A.IDNRK = C.IDNRK) 	             
+						       WHERE A.NORMT != ''
+						    	<if test="mvgr2 != null and mvgr2 != ''">
+						    	   AND A.MVGR2 = #{mvgr2}
+						    	</if>
+						    	<if test="mvgr3 != null and mvgr3 != ''">
+						    	   AND A.MVGR3 = #{mvgr3}
+						    	</if>
+						    	<if test="normt != null and normt != ''">
+						    	   AND A.NORMT = #{normt}
+						    	</if>
+								<if test="matnr != null and matnr != ''">
+								    AND A.MATNR IN
+									<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+						        		 #{matnr}
+						     		</foreach>
+								</if>  
+				     			   AND (C.DEL_YN = 'N' OR C.DEL_YN IS NULL)
+				       GROUP BY MVGR2, MVGR3, NORMT, MATNR, A.IDNRK			   
+						) D 
+				WHERE (D.DREQ = 'Y' OR D.AREQ = 'Y')
+			   ORDER BY MVGT2, MVGT3, NORMT, MATNR, IDNRK 
+		) A	   
+	</select>             
+	
+    <select id="selectProcDocMgrListSKU" resultType= "com.spigen.asos.model.DocMgrVO" parameterType="com.spigen.asos.model.DocMgrVO">
+	SELECT A.MVGR2
+           , A.MVGT2
+           , A.MVGR3
+           , A.MVGT3
+           , A.NORMT
+           , A.MATNR
+           , IFNULL(A.MAKTX,'N/A') AS MAKTX
+           , A.IDNRK
+           , A.FIN_YN AS FINYN
+           , A.DREQ AS DREQ
+           , A.AREQ AS AREQ
+           , '' AS SEQD
+           , '' AS SEQA
+           , '' AS FILENMD
+           , '' AS FILENMA
+           , '' AS PATHD
+           , '' AS PATHA           
+           , '' AS FILETYPED
+           , '' AS FILETYPEA           
+    
+	  FROM ( 
+		    SELECT DISTINCT
+		           A.MVGR2
+		           , A.MVGT2
+		           , A.MVGR3
+		           , A.MVGT3
+		           , A.NORMT
+		           , A.MATNR
+		           , A.MAKTX
+		           , A.IDNRK
+		           , IFNULL(B.FIN_YN, 'N') AS FIN_YN
+		           , IFNULL(B.D_REQ,'N') AS DREQ
+		           , IFNULL(B.A_REQ,'N') AS AREQ
+		     FROM bom_list A
+	   LEFT OUTER 
+	         JOIN reqrd_docs_sku B 
+			        ON (A.MVGR3 = B.MVGR3 
+			             AND A.MVGR2 = B.MVGR2
+			             AND A.NORMT = B.NORMT
+			             AND A.MATNR = B.MATNR )
+	       WHERE A.NORMT != ''
+		    	<if test="mvgr2 != null and mvgr2 != ''">
+		    	   AND A.MVGR2 = #{mvgr2}
+		    	</if>
+		    	<if test="mvgr3 != null and mvgr3 != ''">
+		    	   AND A.MVGR3 = #{mvgr3}
+		    	</if>
+		    	<if test="normt != null and normt != ''">
+		    	   AND A.NORMT = #{normt}
+		    	</if>
+				<if test="matnr != null and matnr != ''">
+				    AND A.MATNR IN
+					<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+		        		 #{matnr}
+		     		</foreach>
+				</if>  
+			 GROUP BY MVGR2, MVGR3, NORMT, MATNR, A.IDNRK
+		) A
+	  WHERE	A.DREQ = 'N' 
+	    AND A.AREQ = 'N' 	    
+	UNION ALL
+		SELECT D.MVGR2
+	           , D.MVGT2
+	           , D.MVGR3
+	           , D.MVGT3
+	           , D.NORMT
+	           , D.MATNR
+               , IFNULL(D.MAKTX,'N/A') AS MAKTX
+	           , D.IDNRK
+	           , D.FIN_YN 
+	           , D.DREQ 
+	           , D.AREQ 
+	           , CASE D.DREQ WHEN 'Y' THEN D.SEQ END AS SEQ_D
+	           , CASE D.AREQ WHEN 'Y' THEN D.SEQ END AS SEQ_A
+	           , CASE D.DREQ WHEN 'Y' THEN D.FILE_NM END AS FILE_NM_D
+	           , CASE D.AREQ WHEN 'Y' THEN D.FILE_NM END AS FILE_NM_A
+	           , CASE D.DREQ WHEN 'Y' THEN CONCAT(D.PATH,D.FILE_NM) END AS PATH_D
+	           , CASE D.AREQ WHEN 'Y' THEN CONCAT(D.PATH,D.FILE_NM) END AS PATH_A   
+	           , CASE D.DREQ WHEN 'Y' THEN D.FILE_TYPE END AS FILE_TYPE_D
+	           , CASE D.AREQ WHEN 'Y' THEN D.FILE_TYPE END AS FILE_TYPE_A
+		  FROM ( 
+				    SELECT 
+				           A.MVGR2
+				           , A.MVGT2
+				           , A.MVGR3
+				           , A.MVGT3
+				           , A.NORMT
+				           , A.MATNR
+				           , A.MAKTX
+				           , A.IDNRK
+				           , IFNULL(C.FIN_YN, 'N') AS FIN_YN
+				           , IFNULL(B.D_REQ,'N') AS DREQ
+				           , IFNULL(B.A_REQ,'N') AS AREQ
+				           , C.SEQ
+				           , C.FILE_NM
+				           , C.PATH
+				           , C.FILE_TYPE
+				           , C.DEL_YN
+				           , C.REQ
+				     FROM bom_list A
+			   LEFT OUTER 
+			         JOIN reqrd_docs_sku B 
+					        ON (A.MVGR3 = B.MVGR3 
+					             AND A.MVGR2 = B.MVGR2
+					             AND A.NORMT = B.NORMT
+					             AND A.MATNR = B.MATNR )
+				LEFT OUTER 
+			         JOIN bom_docs C
+			           ON (A.IDNRK = C.IDNRK) 	             
+			       WHERE A.NORMT != ''
+			    	<if test="mvgr2 != null and mvgr2 != ''">
+			    	   AND A.MVGR2 = #{mvgr2}
+			    	</if>
+			    	<if test="mvgr3 != null and mvgr3 != ''">
+			    	   AND A.MVGR3 = #{mvgr3}
+			    	</if>
+			    	<if test="normt != null and normt != ''">
+			    	   AND A.NORMT = #{normt}
+			    	</if>
+					<if test="matnr != null and matnr != ''">
+					    AND A.MATNR IN
+						<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+			        		 #{matnr}
+			     		</foreach>
+					</if>  
+	     			   AND (C.DEL_YN = 'N' OR C.DEL_YN IS NULL)
+	       GROUP BY MVGR2, MVGR3, NORMT, MATNR, A.IDNRK			   
+			) D 
+	WHERE (D.DREQ = 'Y' OR D.AREQ = 'Y')
+   ORDER BY MVGT2, MVGT3, NORMT, MATNR, IDNRK 
+	</select>       
+	
+	<select id="selectBomInfoListRCnt" resultType= "Integer" parameterType="com.spigen.asos.model.DocMgrVO">
+		SELECT COUNT(*) 
+	      FROM bom_list A
+	      WHERE 1=1
+		<if test="idnrk != null and idnrk != ''">
+	 		AND A.idnrk = #{idnrk}
+		</if>			
+		<if test="ztext != null and ztext != ''">
+	 		AND A.ztext = #{ztext}
+		</if>
+    </select>   
+    
+   <select id="selectBomInfoListR" resultType= "com.spigen.asos.model.DocMgrVO"  parameterType="com.spigen.asos.model.DocMgrVO">
+		 SELECT MATNR
+				, STLAL
+				, MAKTX
+				, ENMTX
+				, ALEVEL
+				, CLEVEL
+				, ZPSTAU
+				, ZSTOC
+				, IMTART
+				, IDNRK
+				, CSTLAL
+				, ZTEXT
+				, ZMNGKO
+				, BMENG
+				, MENGE
+				, BBMENG
+				, MEINS
+				, ZPOSTP
+				, IMATKL
+				, IWGBEZ
+				, HMATNR
+				, HSTLAL
+				, STKTX
+				, MTART
+				, MATKL
+				, WGBEZ
+				, DISPO
+				, DSNAM
+				, PRDHA
+				, VTEXT
+				, MVGR1
+				, MVGT1
+				, MVGR2
+				, MVGT2
+				, MVGR3
+				, MVGT3
+				, MVGR4
+				, MVGT4
+				, NORMT
+				, SANKO
+				, SANFE
+				, SANKA
+				, ANDAT
+				, SASTU
+		   FROM	bom_list
+	      WHERE 1=1
+		<if test="idnrk != null and idnrk != ''">
+	 		AND idnrk = #{idnrk}
+		</if>			
+		<if test="ztext != null and ztext != ''">
+	 		AND ztext = #{ztext}
+		</if>	
+	 ORDER BY MATNR,IDNRK, CSTLAL, MAKTX 
+	   LIMIT #{firstIndex}	, #{recordCountPerPage}			
+    </select>         
+    
+           <select id="selectBomInfoList2" resultType= "com.spigen.asos.model.SheetMgrVO"  parameterType="com.spigen.asos.model.DocMgrVO">
+		 SELECT MATNR
+				, STLAL
+				, MAKTX
+				, ENMTX
+				, ALEVEL
+				, CLEVEL
+				, ZPSTAU
+				, ZSTOC
+				, IMTART
+				, IDNRK
+				, CSTLAL
+				, ZTEXT
+				, ZMNGKO
+				, BMENG
+				, MENGE
+				, BBMENG
+				, MEINS
+				, ZPOSTP
+				, IMATKL
+				, IWGBEZ
+				, HMATNR
+				, HSTLAL
+				, STKTX
+				, MTART
+				, MATKL
+				, WGBEZ
+				, DISPO
+				, DSNAM
+				, PRDHA
+				, VTEXT
+				, MVGR1
+				, MVGT1
+				, MVGR2
+				, MVGT2
+				, MVGR3
+				, MVGT3
+				, MVGR4
+				, MVGT4
+				, NORMT
+				, SANKO
+				, SANFE
+				, SANKA
+				, ANDAT
+				, SASTU
+		   FROM	bom_list
+	      WHERE 1=1
+		<if test="matnr != null and matnr != ''">
+		    AND MATNR IN
+			<foreach collection="qryLs" item="matnr" index="index" separator="," open="(" close=")">
+        		 #{matnr}
+     		</foreach>
+		</if>  		
+		<if test="cstlal != null and cstlal != ''">
+	 		AND STLAL = #{cstlal}
+		</if>		
+		<if test="idnrk != null and idnrk != ''">
+	 		AND IDNRK = #{idnrk}
+		</if>		
+	 ORDER BY MATNR,IDNRK, CSTLAL, MAKTX 
+	   LIMIT #{firstIndex}	, #{recordCountPerPage}			
+    </select>  
+</mapper>
+ 
+
+

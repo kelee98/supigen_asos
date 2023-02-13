@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+<!-- 공통 Config -->
+<head th:replace="popup/popupConfig::configFragment">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Layout Test</title>
+</head>
+<body>
+<div class="container">
+   <h2>수신처 선택</h2>
+	<div class="col-lg-12 well">
+		<div class="row">
+		<form name="uploadForm" id="uploadForm" >
+			<div class="col-sm-12">
+				<div class="row">
+					<div class="col-sm-1" style="width: 0">
+					</div>
+					<div class="col-sm-4 form-group">
+						<label>은행명</label>
+					</div>	
+					<div class="col-sm-3 form-group">
+						<label>지점명</label>
+					</div>	
+					<div class="col-sm-4 form-group">
+						<label>FAX번호</label>
+					</div>		
+				</div>
+				<div class="row" th:each="result :${resultList}">
+					<div class="col-sm-1" style="width: 0">
+						<input type="radio" name="dstnRadio" th:value="${result.seq}" style="margin-top:10px" th:attr="onclick=|selectRadio('${result.faxNum}','${result.bankNm}')|">
+					</div>
+					<div class="col-sm-4 form-group">
+						<input type="text" name="bankNm" class="form-control" th:value="${result.bankNm}" disabled="disabled">
+					</div>	
+					<div class="col-sm-3 form-group">
+						<input type="text" class="form-control" th:value="${result.bankBrch}" disabled="disabled">
+					</div>	
+					<div class="col-sm-4 form-group">
+						<input type="text" class="form-control" th:value="${result.faxNum}" disabled="disabled">
+					</div>		
+				</div>
+				<div class="row">
+					<span class="pointViewL">
+					<button type="button" id="pointBtn" name="pointBtn" value="포인트충전" onclick="chargePoint()" class="btn btn-success btn-sm">
+			  			<span data-feather="search"></span>포인트충전
+			  		</button>
+			  		</span>
+					<span class="pointView">
+					잔여포인트: <span th:text="${fax.point}" id="pointView"></span>
+			  		</span>
+				</div>
+			</div>
+		</form>
+      </div>
+    </div>
+    <div class="col-lg-12" style="margin-top: 30px">
+            <button type="button" class="btn btn-secondary btn" style="width: 49%" onclick="window.close();">취소</button>
+            <button type="button" class="btn btn-primary btn" style="width: 49%" onclick="sendFile();">전송</button>
+    </div>
+</div>
+<script th:inline="javascript">
+$(document).ready(function () {
+	/*<![CDATA[*/
+	var dracBicNm = /*[[${dracBicNm}]]*/;
+	/*]]>*/
+	if(dracBicNm!=""){
+		$('input[name="bankNm"]').each(function (i) {
+			if(dracBicNm==$('input[name="bankNm"]').eq(i).val()){
+	 			$('input[name=dstnRadio]').eq(i).prop("checked", true);
+			}
+			
+		}); 
+	}
+});
+
+function sendFile(){
+	
+	var chkDstn = $('input[name=dstnRadio]:checked').val();
+	if(chkDstn==null){
+		alert("수신처를 선택해주세요.");
+		return;
+	}
+	
+	var chkFileStr = "";
+	var seqStr = "";
+	var qryStr = "";
+	var msg = "";
+	var resendYn = "N";
+	var sendYn = "";
+	
+	$('input[name="chkList"]:checked',opener.document).each(function (i) {  
+		if($('input[name="chkList"]:checked',opener.document).eq(i).next().val()=="Y"){
+			resendYn = "Y";
+		}
+		chkFileStr += $('input[name="chkList"]:checked',opener.document).eq(i).val()+"^";
+		seqStr += $('input[name="chkList"]:checked',opener.document).eq(i).next().next().val()+",";
+		qryStr += $('input[name="chkList"]:checked',opener.document).eq(i).parent().next().next().val()+",";
+		sendYn += $('input[name="chkList"]:checked',opener.document).eq(i).next().val()+",";
+	});  
+
+	if(resendYn=="Y"){
+		msg = "이미 전송된 건이 포함되어 있습니다. 재전송 하시겠습니까?";
+	}else{
+		msg = "문서를 팩스 전송하시겠습니까?";
+	}
+	
+	 if(!confirm(msg)){
+		 return;
+	 }
+	 
+	if($('#pointView').html()<1000){
+		 if(!confirm("잔여포인트가 부족합니다. 이대로 진행하시겠습니까?\n(약 "+Math.floor($('#pointView').html()/40) + "장 전송 가능)")){
+			 return;
+		 }
+	}
+	
+	 
+	var data = {
+			filePath:chkFileStr
+			, fileSeq : seqStr
+			, seq : chkDstn
+			, resendYn: resendYn
+			, faxNum: bankNum
+			, bankNm: bankNm
+			, srchCon: qryStr
+			, sendYn: sendYn
+	};
+	
+	 $.ajax({
+         type : 'POST',
+         data : data,
+         dataType : 'json',
+         url :  '/fax/sendFAX',
+         beforeSend : function(xhr)
+         {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+         }, 
+         success : function(result) {
+        	if(result.result==1){
+           		alert("팩스 전송에 성공하였습니다.\n접수번호: " + result.reqNum);
+        	}else{
+           		alert("팩스 전송에 실패하였습니다.");
+        	}
+           //부모창 재조회
+           window.opener.qryFileList();
+           window.close();
+         },
+         error : function(request,status){
+             alert("조회 실패");
+         }
+	});
+
+}
+var bankNum;
+var bankNm;
+function selectRadio(number, bank){
+	bankNum = number;
+	bankNm = bank;
+}
+
+
+function chargePoint(){
+	 $.ajax({
+         type : 'POST',
+         dataType : 'json',
+         url :  '/fax/chargePointURL',
+         success : function(result) {
+         	window.open(result.chargePointURL);
+         },
+         error : function(request,status){
+             alert("조회 실패");
+         }
+	});
+}
+</script>
+</body>
+</html>

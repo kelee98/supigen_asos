@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- 공통 Config -->
+  <head th:replace="config::configFragment">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v4.0.1">
+
+  </head>
+  <!-- 공통 헤더-->
+  <header th:replace="topbar::topbarFragment"></header>
+  <body>
+  	<form name="menuFrm">
+   		<input type="hidden"> 	
+   	</form>
+  	<form name="updFrm">
+   		<input type="hidden" id="selectedBankNm"  > 	
+   		<input type="hidden" id="selectedUseYn"  > 	
+   		<input type="hidden" id="selectedSeq" > 	
+   	</form>
+    <form name="searchFrm" id="searchFrm">
+    <div class="container-fluid">
+      <div class="row">	
+      
+      	<!-- left메뉴 -->
+  		<nav th:replace="nav::sidebarMenu"></nav> 
+  		
+		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>FAX 기본 정보</h2>
+		  <div class="search">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			<ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">은행명</span></label>                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <input type="text" id="bankNm" name="bankNm" hname="은행명" maxlength="100" class="inp_type" >                                                                                                                                                                                                                                                                                                                                                                                                                                         
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">지점명</span></label>                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <input type="text" id="bankBrch" name="bankBrch" hname="지점명" maxlength="100" class="inp_type" >                                                                                                                                                                                                                                                                                                                                                                                                                                         
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			</ul>
+			<ul>
+			  <li class="title4">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <label class="lb1"><span>사용여부</span></label>
+			  <select id="useYn" name="useYn" class="inp_type_w70">
+			  	<option value="">전체</option>
+			  	<option value="Y">사용</option>
+			  	<option value="N">미사용</option>
+			  </select>                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			  <li class="title5">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+				<button type="button" id="qryBtn" name="qryBtn" onclick="qryBankInfoList()" class="btn btn-secondary btn-sm">
+				<span data-feather="search"></span> 조회
+				</button>
+			  </li>
+			</ul>
+		  </div>
+		    <article class="article_list_table2">
+            <div class="list-table2">
+              <table id="gridList" class="table table-striped table-sm">
+              	<colgroup>
+					<col width="11%">
+					<col width="10%">
+					<col width="13%">
+					<col width="10%">
+					<col width="13%">
+					<col width="13%">
+					<col width="5%">
+					<col width="12%">
+					<col width="13%">
+				</colgroup>
+                <thead>
+                  <tr>
+					<th scope="col" class="center">은행명</th>
+					<th scope="col" class="center">지점명</th>
+					<th scope="col" class="center">FAX번호</th>
+					<th scope="col" class="center">담당자</th>
+					<th scope="col" class="center">담당자 전화번호</th>
+					<th scope="col" class="center">담당자 내선번호</th>
+					<th scope="col" class="center">사용여부</th>
+					<th scope="col" class="center">등록자ID</th>
+					<th scope="col" class="center">등록일자</th>
+                  </tr>
+                </thead>
+                <tbody>
+                	<tr>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                	</tr>
+                </tbody>
+              </table>
+            </div>
+              	<div style="float: right">
+              		<button type="button" id="sendNumMgrBtn"  name="sendNumMgrBtn" class="btn btn-secondary btn-sm" onclick="sendNumMgr()">발신번호 관리</button>
+              		<button type="button" id="rgtBankInfoBtn"  name="rgtBankInfoBtn" class="btn btn-primary btn-sm" onclick="rgtBankInfo()">등록</button>
+              		<button type="button" id="updBankInfoBtn"  name="updBankInfoBtn" class="btn btn-secondary btn-sm" onclick="updBankInfo()" style="display: none;">수정</button>
+       	         </div>
+            </article>
+          </div>
+      </main>
+      </div>
+     </div>
+     </form>
+<script>
+$(document).ready(function(){
+	
+	feather.replace();
+	
+	fnInitMenu("nav5");
+
+});
+
+
+function accordianMenu(obj){
+
+	var myArticle = $(obj).next();
+	var article = (".gridListAcc .showTr"); 
+          if($(myArticle).hasClass('hideTr')) { 
+              $(article).removeClass('showTr').addClass('hideTr'); 
+              $(myArticle).removeClass('hideTr').addClass('showTr'); 
+          } 
+          else { 
+              $(myArticle).addClass('hideTr').removeClass('showTr'); 
+          } 
+	
+}
+
+//은행정보 조회
+function qryBankInfoList(){
+	//공백제거
+	trim();
+	
+	var sendData = $('#searchFrm').serialize();
+//	alert(sendData);
+
+   	$.ajax({
+          type : 'POST',
+          data : sendData,
+          dataType : 'json',
+          beforeSend : function(xhr)
+          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+          },
+          url :  '/bankInfo/bankInfoListQry',
+          success : function(result) {
+             //var obj = jQuery.parseJSON(result);
+             //alert(result.resultList[0]);
+             onSuccess(result.resultList);
+          },
+          error : function(request,status){
+              alert("조회 실패");
+          }
+	});
+   	
+	$('#updBankInfoBtn').hide();
+
+}
+
+function onSuccess(resultList){
+	
+	var htmltext="";    
+    if(resultList.length == 0) {
+        htmltext += "<tr>";
+        htmltext += "<td colspan=\"9\" class='center'>조회 결과가 없습니다.</td>";
+        htmltext += "</tr>";
+    }else{
+
+		for(var n = 0 ; n<resultList.length ; n ++){
+			var resultVO = resultList[n];      
+		    htmltext += "<tr onclick=\"selectRow(this,\'"+resultVO.bankNm+"\',\'"+resultVO.seq+"\',\'"+resultVO.useYn+"\', event)\" style=\"cursor:pointer\">>";
+		    htmltext += "<td class='center'>"+resultVO.bankNm+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.bankBrch+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.faxNum+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mngrNm+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mngrNum+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mngrNum2+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.useYnNm+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.rgtId+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.rgtDtm+"</td>";
+		    htmltext += "</tr>";
+		}
+
+    }
+    $("#gridList > tbody").html(htmltext);
+}
+
+var currentSelector = null;
+function selectRow(obj, bankNm, seq, useYn){
+
+	$(obj).css('background-color', '#ffffd9');
+	
+	if(currentSelector != null && currentSelector != obj){
+		$(currentSelector).css('background-color','');
+	}
+	currentSelector = obj;
+	
+	$('#selectedBankNm').val(bankNm);
+	$('#selectedUseYn').val(useYn);
+	$('#selectedSeq').val(seq);
+	
+	$('#updBankInfoBtn').show();
+}
+
+//은행 정보 등록 팝업 호출
+function rgtBankInfo(){
+	
+	var url = "/bankInfo/bankInfoRgtScreen";
+	
+	openPopup(url, 770, 640);
+}
+
+//은행 정보 수정 팝업 호출
+function updBankInfo(){
+	
+	var url = "/bankInfo/bankInfoUpdScreen?seq="+$('#selectedSeq').val();
+	
+	openPopup(url, 770, 640);
+}
+
+
+function sendNumMgr(){
+	
+	$.ajax({
+        type : 'POST',
+        dataType : 'json',
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        url :  '/bankInfo/getSenderNumberMgtURL',
+        success : function(result) {
+        	window.open(result.numMgrURL);
+        },
+        error : function(request,status){
+            alert("조회 실패");
+        }
+	});
+}
+
+</script>
+</body>
+</html>

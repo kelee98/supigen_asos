@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- 공통 Config -->
+  <head th:replace="config::configFragment">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v4.0.1">
+  </head>
+  <!-- 공통 헤더-->
+  <header th:replace="topbar::topbarFragment"></header>
+  <body>
+  	<form name="menuFrm">
+   		<input type="hidden"> 	
+   	</form>
+	<form id="printFrm" name="printFrm">
+		<input type ="hidden" id="chkFiles"  name="chkFiles" value="">
+	</form>
+    <form name="searchFrm" id="searchFrm">
+    <div class="container-fluid">
+      <div class="row">	
+      	<!-- left메뉴 -->
+  		<nav th:replace="nav::sidebarMenu"></nav> 
+		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>매출정산 자료</h2>
+		   <div class="search">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			<ul>
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <label class="lb1"><span class="tx">* 구분</span></label>
+			  	  <input type="radio" name="docType" value="A" style="margin-left: 5px" checked="checked" onchange="chkDiv(this)"> Amazon
+			  	  <input type="radio" name="docType" value="C" style="margin-left: 5px" onchange="chkDiv(this)"> Amazon CSO
+			  	  <input type="radio" name="docType" value="P" style="margin-left: 5px" onchange="chkDiv(this)"> PowerArc
+			  </li> 
+			  <li class="title6">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">* 조회기간</span></label>
+			  <select class="inp_type_w10" id="qryYear" name="qryYear">
+			  	<option value="2021" selected="selected">2021</option>
+			  	<option value="2020">2020</option>
+			  	<option value="2019">2019</option>
+			  	<option value="2018">2018</option>
+			  	<option value="2017">2017</option>
+			  </select>                                                                                                                                                                                                                                                                                                                                                                                                                                      
+			  <input type="radio" name="qryQuarter" style="margin-left: 5px" checked="checked" value="1"> 1분기			  
+			  <input type="radio" name="qryQuarter" style="margin-left: 5px" value="2"> 2분기		  
+			  <input type="radio" name="qryQuarter" style="margin-left: 5px" value="3"> 3분기		  
+			  <input type="radio" name="qryQuarter" style="margin-left: 5px" value="4"> 4분기		  
+			  </li>
+			</ul>
+			<ul>
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <label class="lb1"><span class="tx">* 국가</span></label>
+			  	<select class="inp_type_w10" id="nationAmz" name="nationA" >
+			  		<option value="">선택없음</option>
+			  		<option value="Amazon CY JP">CY JP</option>
+			  		<option value="Amazon DE">DE</option>
+			  		<option value="Amazon ES">ES</option>
+			  		<option value="Amazon FR">FR</option>
+			  		<option value="Amazon IT">IT</option>
+			  		<option value="Amazon JP(SH)">JP(SH)</option>
+			  		<option value="Amazon JP(SP)">JP(SP)</option>
+			  		<option value="Amazon MH DE">MH DE</option>
+			  		<option value="Amazon MH UK">MH UK</option>
+			  		<option value="Amazon SG">SG</option>
+			  		<option value="Amazon UK">UK</option>
+			  		<option value="PAN-EU">PAN-EU</option>
+			  	</select>
+			  	<select class="inp_type_w10" id="nationAmzCSO" name="nationC" style="display: none;">
+			  		<option value="">선택없음</option>
+			  		<option value="DE">DE</option>
+			  		<option value="ES">ES</option>
+			  		<option value="FR">FR</option>
+			  		<option value="IT">IT</option>
+			  		<option value="JP">JP</option>
+			  		<option value="NL">NL</option>
+			  		<option value="SE">SE</option>
+			  		<option value="UK">UK</option>
+			  	</select>
+			  </li> 
+			  <li class="title6">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  </li>
+			  <li class="title7">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+				<button type="button" id="qryBtn" name="qryBtn" value="조회" onclick="qryFileList()" class="btn btn-secondary btn-sm">
+			  	<span data-feather="search"></span> 조회
+			  	</button>
+			  </li>			  
+			</ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+		  </div>
+		  <article class="article_list_table2">
+            <div class="list-table2">
+              <table id="gridList" class="table table-striped table-sm" style="width: 100%">
+              	<colgroup>
+					<col width="5%">
+					<col width="35%">
+					<col width="45%">
+					<col width="15%">
+				</colgroup>
+                <thead>
+                  <tr>
+					<th scope="col" class='center'><input type="checkbox" id="checkAll" class="checkAll"></th>
+					<th scope="col" class='center'>파일명</th>
+					<th scope="col" class='center'>파일경로</th>
+					<th scope="col" class='center'>파일형식</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	              </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="btnDivBtm">
+              	<button type="button" id="printBtn" name="printBtn" value="PRINT" onclick="printFile()" class="btn btn-outline-primary btn-sm" style="display: none;">
+              	<span data-feather="printer"></span> 인쇄
+              	</button>
+            </div>
+            </article>
+        	<!-- pagging -->
+			<div class="paginate_complex">
+				<div id="paging" class="paging">
+					<div id="boardNavigation" class="boardNavigation">
+						<input type="hidden" id="pageIndex" name="pageIndex" value="1"/>
+						<div id="pagination" class="pagination"></div>
+					</div>
+				</div>
+			</div>
+			<!-- //pagging -->                 
+          </div>
+     	<iframe id="iFramePdf" src="" style="display: none;"></iframe>
+      </main>
+      </div>
+     </div>
+         <!-- progress bar -->
+	<div id="progress"></div>
+	<!-- end progress --> 
+     </form>
+  </body>
+<script>
+$(document).ready(function(){
+	
+	//분기 세팅
+	var quarter = Math.ceil( currentMonth() / 3 );
+	var year = currentYear();
+	$('#qryYear').val(year);
+	$("input[name=qryQuarter][value=" + quarter + "]").attr("checked", true);
+
+	//전체선택
+	$(".checkAll").click(function(){
+		$(".chkList").prop("checked", this.checked);
+	});
+	
+	feather.replace();
+	
+	fnInitMenu("nav10");
+
+});
+
+//현재 월 반환 함수
+function currentMonth() {
+	var d = new Date();
+	var caledmonth;
+	
+	if( d.getMonth() < 9 ){
+		caledmonth = '0'+(d.getMonth()+1);
+	}else{
+		caledmonth = d.getMonth()+1;
+	}
+	
+	return caledmonth; // 현재 월만 반환
+}
+
+//현재 연도 반환 함수
+function currentYear() {
+var d = new Date();
+
+return d.getFullYear(); // 현재 연도만 반환
+}
+
+
+function qryFileList(){
+	
+	var sendData = $('#searchFrm').serialize();
+	console.log(sendData);
+    fc_spinner();
+
+   	$.ajax({
+          type : 'POST',
+          data : sendData,
+          beforeSend : function(xhr)
+          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+          },          
+          dataType : 'json',
+          url :  '/fileAmazon/selectAmazonRptMgrListQry',
+          success : function(result) {
+             onSuccess(result);
+         	spinner.stop();
+             $(".checkAll").prop("checked", false);
+          },
+          error : function(request,status){
+              alert("조회 실패");
+          }
+	});
+	
+}
+
+function fileViewer(obj, name, path, type){
+	
+	var url = "/fileAmazon/ftpFileViewer?filePath=" + encodeURI(path) + "&fileType="+ type + "&fileNm="+ encodeURI(name);
+
+	if(type=="pdf"){
+		openPopup(url, 850, 800);
+	}else{
+		location.href = url;
+	}
+}
+
+function onSuccess(result){
+	
+	var htmltext="";    
+    if(result.resultList.length == 0) {
+        htmltext += "<tr>";
+        htmltext += "<td colspan=\"48\" class='center'>조회 결과가 없습니다.</td>";
+        htmltext += "</tr>";
+		$('#printBtn').hide();
+    }else{
+
+		for(var n = 0 ; n<result.resultList.length ; n ++){
+			var resultVO = result.resultList[n];      
+		    htmltext += "<tr>";
+		    htmltext += "<td class='center'><input type='checkbox' name='chkList' value='"+resultVO.filePath+"' class='chkList'></td>";
+		    htmltext += "<td class='center'><a href=\"javascript:fileViewer(this,\'"+resultVO.fileNm+"\',\'"+resultVO.filePath+"\',\'"+resultVO.fileType+"\', event)\" style='cursor:hand;'>"+resultVO.fileNm+"</a></td>";
+		    htmltext += "<td>"+resultVO.filePath+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.fileType+"</td>";
+		}
+		$('#printBtn').show();
+    }
+    $("#gridList > tbody").html(htmltext);
+}
+
+
+var printFg = false;
+//인쇄
+function printFile(){
+	
+	if($('input[name="chkList"]:checked').size()==0 ){
+		alert("인쇄할 서류를 선택해주세요.");
+		return;
+	}
+	
+	if(!confirm("수출입 서류를 인쇄하시겠습니까?")){
+		 return;
+	}
+	
+	var chkFileStr = "";
+	var chkFileNameStr = "";
+
+	$('input[name="chkList"]:checked').each(function (i) {  
+		var tmpType = $('input[name="chkList"]:checked').eq(i).parent().next().next().text();
+		chkFileStr += $('input[name="chkList"]:checked').eq(i).val()+",";
+		chkFileNameStr += $('input[name="chkList"]:checked').eq(i).parent().next().text()+",";
+	});  
+
+	
+	var data = {
+			filePath:chkFileStr,
+			fileNm:chkFileNameStr
+	};
+
+	$.ajax({
+	          type : 'POST',
+	          data : data,
+	          dataType : 'json',
+	          beforeSend : function(xhr)
+	          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+					xhr.setRequestHeader(header, token); 
+	          },   
+	          url :  '/fileAmazon/ftpPrintFile',
+	          success : function(result) {
+	        	  //alert(result.filePath);
+	        	  $('#iFramePdf').attr("src",result.reqURL+"/file/fileViewer?filePath="+ result.filePath + "&fileType=pdf");
+				  printFg = true; 
+	          },
+	          error : function(request,status){
+	              alert("조회 실패");
+	          }
+	});
+}
+
+//프레임 로드 후 실행
+$('#iFramePdf').load( function(){
+  	if(printFg){
+ 		printPdf();
+  	}
+});
+
+//pdf 프레임 출력
+function printPdf(){
+ 		
+	var getMyFrame = document.getElementById("iFramePdf");
+
+   	getMyFrame.focus();
+   	getMyFrame.contentWindow.print();   
+}
+
+function chkDiv(obj){
+	
+	var chkFlag = $(obj).val();
+	if(chkFlag=="A"){
+		$('#nationAmz').show();
+		$('#nationAmzCSO').val("");
+		$('#nationAmzCSO').hide();
+		$('#nationAmzCSO').prop("disabled", false);
+		$('#nationAmz').prop("disabled", false);
+	}else if(chkFlag=="C"){
+		$('#nationAmzCSO').show();
+		$('#nationAmz').val("");
+		$('#nationAmz').hide();
+		$('#nationAmzCSO').prop("disabled", false);
+		$('#nationAmz').prop("disabled", false);
+	}else{
+		$('#nationAmzCSO').val("");
+		$('#nationAmz').val("");
+		$('#nationAmzCSO').prop("disabled", true);
+		$('#nationAmz').prop("disabled", true);
+
+	}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+ <!-- 공통 Config -->
+  <head th:replace="config::configFragment">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v4.0.1">
+  </head>
+  <!-- 공통 헤더-->
+  <header th:replace="topbar::topbarFragment"></header>
+  <body>
+  	<form name="menuFrm">
+   		<input type="hidden"> 	
+   	</form>
+   	<form name="searchFrm" id="searchFrm">
+    <div class="container-fluid">
+      <div class="row">	
+      
+      	<!-- left메뉴 -->
+  		<nav th:replace="nav::sidebarMenu"></nav> 
+    
+<script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+<script src="/js/Pagination.js"></script>
+<script type="text/javascript"></script>
+
+<script>
+$(document).ready(function(){
+
+	feather.replace();
+	fnInitMenu("nav24");
+
+
+});
+window.onload = function () {
+    feather.replace();
+	}
+$( function() {
+    $( ".datepicker" ).datepicker();
+    format="yy/dd/mm"
+} );
+
+//Bootstrap datepicker
+    $('.input-daterange input').each(function() {
+    $(this).datepicker('clearDates');
+    });
+
+    
+
+    
+
+    // Re-draw the table when the a date range filter changes
+    $('.date-range-filter').change(function() {
+    table.draw();
+    });
+
+    $('#ex_filter').hide();
+    
+    
+    $(document).ready(function(){
+        //최상단 체크박스 클릭
+        $("#checkall").click(function(){
+            //클릭되었으면
+            if($("#checkall").prop("checked")){
+                //input태그의 name이 chk인 태그들을 찾아서 checked옵션을 true로 정의
+                $("input[name=_selected_]").prop("checked",true);
+                //클릭이 안되있으면
+            }else{
+                //input태그의 name이 chk인 태그들을 찾아서 checked옵션을 false로 정의
+                $("input[name=_selected_]").prop("checked",false);
+            }
+        })
+    })
+    
+    $.ajax({
+    	method: "GET",
+        url: "/ex_waiting/data",
+        dataType: "json"
+        })
+        .done(function( data ) {
+       console.log( "Data return :", data );
+       let container = $('#page');
+       container.pagination({
+     	  dataSource:data,
+     	    showGoInput: true,
+     	    showGoButton: true,
+     	  callback: function(data, pagination){
+     		 $( "#waitingable" ).empty();
+     		  var dataHtml = "<tr>";
+     		  $.each(data, function(index, item){
+     			
+     			  dataHtml +=
+     				 "<tr>" +
+     				"<td>" + "<input type=checkbox id='_selected_' name='_selected_' value="+ item.idx + " >" + "</td>" +
+     	      		  "<td>" + item.idx + "</td>" +
+     	      		"<td>" + item.deleyn + "</td>" +
+     	      		"<td>" + item.orddat + "</td>" +
+     	      		"<td>" + item.sddate + "</td>" +
+     	      		"<td>" + item.wktynm + "</td>" +
+     	      		"<td>" + item.box + "</td>" +
+     	      		"<td>" + item.wkonum + "</td>" +
+     	      		"<td>" + item.wktynm + "</td>" +
+     	      		"<td>" + item.name1 + "</td>" +
+     	      		"<td>" + item.assycd + "</td>" +
+     	      		"<td>" + item.komtx + "</td>" +
+     	      		"<td>" + item.otbxlb + "</td>" +
+     	      		"<td>" + item.wkstat + "</td>" +
+     	      		"<td>" + item.qtyhtim + "</td>" +
+     	      		"<td>" + item.qtyout + "</td>" +
+     	      		"<td>" + item.OUTQTY + "</td>" +
+     	      		
+     	      		"<td>" + item.qtyout1 + "</td>" +
+     	      		
+     	      		"<td>" + item.QTY + "</td>" +
+     	      		"<td>" + item.INPUTQTY + "</td>" ;
+         		  dataHtml += "</tr>";
+     		  });
+     		  $("#waitingable").append(dataHtml);
+     	 }
+       })
+     });
+    
+    
+    $.ajax({
+        method: "GET",
+        url: "/ex_waiting/waitinglist/data",
+        dataType: "json"
+      })
+        .done(function( data ) {
+       console.log( "Data return :", data );
+       let container = $('#page2');
+       container.pagination({
+     	  dataSource:data,
+     	    showGoInput: true,
+     	    showGoButton: true,
+     	  callback: function(data, pagination){
+     		 $( "#waitList" ).empty();
+     		  var dataHtml = "<tr>";
+     		  $.each(data, function(index, item){
+     			
+     			  dataHtml +=
+     				  "<tr>" +    				
+     	      		  "<td>" + item.idx + "</td>" +
+     	      		  "<td>" + item.idx + "</td>" +
+     	      	      "<td>" + item.asndky + "</td>" +
+  	      		      "<td>" + item.asndit + "</td>" +
+  	      	          "<td>" + item.wkonum + "</td>" +
+  	                  "<td>" + item.cornum + "</td>" +
+  	                  "<td>" + item.name1 + "</td>" +
+  	                  "<td>" + item.assycd + "</td>" +
+  	                  "<td>" + item.komtx + "</td>" +
+  	                  "<td>" + item.otbxlb + "</td>" +
+  	                  "<td>" + item.qtyout + "</td>" +
+  	                  "<td>" + item.outdat + "</td>" +
+  	                  "<td>" + item.outtim + "</td>";
+         		  dataHtml += "</tr>";
+     		  });
+     		  $("#waitList").append(dataHtml);
+     	 }
+       })
+     });
+
+    
+    
+    
+    function search() {
+ 	   alert($("#companyName").val());
+ 	  $.ajax({
+ 		 method: "GET",
+         url: "/api/v1/get/data4",
+         dataType: "json",
+        data:{
+       	  value: $("#companyName").val()
+         },
+ 	        })
+ 	        .done(function( data ) {
+ 	       console.log( "Data return :", data );
+ 	       let container = $('#page');
+ 	       container.pagination({
+ 	     	  dataSource:data,
+ 	     	    showGoInput: true,
+ 	     	    showGoButton: true,
+ 	     	  callback: function(data, pagination){
+ 	     		 $( "#waitingable" ).empty();
+ 	     		  var dataHtml = "<tr>";
+ 	     		  $.each(data, function(index, item){
+ 	     			 var knstk;
+ 	           	  if(item.kndstk==1){
+ 	         			knstk="완제품";
+ 	         		}
+ 	         		else{
+ 	         			knstk="원자재";
+ 	         		}
+ 	     			  dataHtml +=
+ 	     				 "<tr>" +
+ 	     				"<td>" + "<input type=checkbox id='_selected_' name='_selected_' value="+ item.idx + " >" + "</td>" +
+ 	     	      		  "<td>" + item.idx + "</td>" +
+ 	     	      		"<td>" + knstk + "</td>" +
+ 	     	      		"<td>" + item.bu_sort1 + "</td>" +
+ 	     	            "<td>" + item.assycd + "</td>" +
+ 	     	            	"<td>" + item.komtx + "</td>" +
+ 	     	            	"<td>" + item.qtyitm + "</td>" ;
+ 	         		  dataHtml += "</tr>";
+ 	     		  });
+ 	     		  $("#waitingable").append(dataHtml);
+ 	     	 }
+ 	       })
+ 	     });
+      
+    }
+    
+    
+    function update() {
+		var chk = confirm("출고일자를 확정하시겠습니까?"); //팝업창 
+		if(chk==1){                           //확인
+		   var checkArr = new Array();
+		  // var param = $("form[name=form]").serialize();
+		   var title = $("input[name='title']").val();
+		   var content=$("input[name='content']").val();
+		   var createdate = $("input[name='createDate']").val();
+		   var updatedate = $("input[name='updateDate']").val();
+		   
+		   var list = $("input[name='_selected_']");
+		   console.log(list);
+		    for(var i = 0; i < list.length ; i++){
+		        if(list[i].checked){ //선택되어 있으면 배열에 값을 저장함
+		            checkArr.push(list[i].value);
+		            console.log(list[i].value);
+		        }
+		    }
+		 	console.log()
+		$.ajax({ 
+			type: "post",
+			url : "/ex_waiting/modify",
+			traditional:true,
+			datatype:"json",
+			data : { _selected_ : checkArr,
+				title:title,
+				content:content,
+				createdate:createdate,
+				updatedate:updatedate
+				    },
+		
+			})
+			.done(function( data ) {
+				alert("성공");
+		          console.log( "Data return :", data );
+		          $( "#waitList" ).empty()
+ 				  $( "#waitingable" ).empty()
+		          data.forEach(function(item) {
+		            $( "#waitList" ).append(
+		                "<tr>" +
+		                
+		                "<td>" + item.idx + "</td>" +
+		              	"<td>" + item.cancellation + "</td>" +
+		              	"<td>" + item.asn + "</td>" +
+		              	"<td>" + item.asnitem + "</td>" +
+		              	"<td>" + item.insnumber + "</td>" +
+		              	"<td>" + item.companycode + "</td>" +
+		              	"<td>" + item.companyname + "</td>" +
+		              	"<td>" + item.finishcode + "</td>" +
+		              	"<td>" + item.finishpname + "</td>" +
+		              	"<td>" + item.outboxnum + "</td>" +
+		              	"<td>" + item.quantity + "</td>" +
+		              	"<td>" + item.shippingDate + "</td>" +
+		              	"<td>" + item.shippingTime + "</td>" +
+		                	
+		                "</tr>" );
+		            $.ajax({
+		                method: "GET",
+		                url: "/ex_waiting/data",
+		                dataType: "json"
+		              })
+		              .done(function( data ) {
+		                console.log( "Data return :", data );
+		                $( "#waitingable" ).empty()
+		               data.forEach(function(item) {
+		            	   
+		                  $( "#waitingable" ).append( 
+		                		  "<tr>" +
+		                		  "<td>" + "<input type=checkbox id='_selected_' name='_selected_' value="+ item.idx + " >" + "</td>" +
+		                		  "<td>" + item.idx + "</td>" +
+		                      	"<td>" + item.cancellation + "</td>" +
+		                      	"<td>" + item.insDate + "</td>" +
+		                      	"<td>" + item.dueDate + "</td>" +
+		                      	"<td>" + item.worktypeNum + "</td>" +
+		                      	"<td>" + item.box + "</td>" +
+		                      	"<td>" + item.insnumber + "</td>" +
+		                      	"<td>" + item.worktypeName + "</td>" +
+		                      	"<td>" + item.companyname + "</td>" +
+		                      	"<td>" + item.finishcode + "</td>" +
+		                      	"<td>" + item.finishpname + "</td>" +
+		                      	"<td>" + item.outboxnum + "</td>" +
+		                      	"<td>" + item.stquantity + "</td>" +
+		                      	"<td>" + item.exquantity + "</td>" +
+		                      	"<td>" + item.Shipmentquantity + "</td>" +
+		                      	"<td>" + item.Shipmentablequantity + "</td>" +
+		                      	"<td>" + item.quantity + "</td>" +
+		                        "</tr>" );
+		                })
+		              })
+
+		           
+		          })
+		           
+		        })
+		       .fail(function(){
+		    	   console.log( "Data return :", data );
+			alert("error");
+			});
+		
+			}
+	}
+</script>
+
+
+    <!-- ///////////////////////////////////////////////////////////-->
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+	<h2>출고대기</h2>
+     <div class="search">
+         <div class="card-body">
+         <!--  <form name="form2">-->
+             <div class="row">
+                 <div class="col-md-3 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">업체명 </label>
+                         <select id="companyName" name="companyName" class="form-control">
+                         		 <option value="NULL">선택</option>
+	                         <option th:each="inList : ${inLists}" 
+							  		 th:value="${inList.lifnr}" 
+							  		 th:text="${inList.lifnr} + ' : ' + ${inList.bu_sort1}">
+							  </option>
+                         </select>
+                         </div>
+                 </div>
+                 <div class="col-md-3 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">지시일자</label>
+                         <input type="text" id="min-date" class="form-control date-range-filter datepicker" placeholder="From:">
+                         <input type="text" id="max-date" class="form-control date-range-filter datepicker"  placeholder="To:">
+                     </div>
+                 </div>
+                 <div class="col-md-3 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">지시번호 </label>
+                         <input type="text" id="Age" name="Age" class="form-control" placeholder="Age">
+                     </div>
+                 </div>
+                 <div class="col-md-3 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">상품코드</label>
+                         <input type="text" id="Age" name="Age" class="form-control" placeholder="상품코드">
+                     </div>
+                 </div>
+                 <div class="col-md-3 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">상품명 </label>
+                         <input type="text" id="Age" name="Age" class="form-control" placeholder="Age">
+                     </div>
+                 </div>
+                 <div class="col-md-3 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">납기일</label>
+                         <input type="text" id="duedate" class="form-control date-range-filter datepicker" placeholder="From:">
+                     </div>
+                 </div>
+                 <div class="col-md-3 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">중단여부</label>
+                         <select name="JobID" class="form-control">
+                                 <option>중단</option>
+                                 <option>정상</option>
+                         </select>
+                         </div>
+                 </div>
+                 <div class="col-md-3 pl-1">
+                     <div class="form-group">
+			             <div class="search-btn-div">
+			             	<button class="btn btn-dark btn-lg " type="submit" onclick="search()">조회</button>
+			             </div>
+			          </div>
+			     </div>
+             </div>
+             
+            <!--   </form>-->
+         </div>
+     </div>
+ 
+    
+        <div class="page-header">
+        <h4><b>출고일자 작성</b></h4>
+        </div>
+        <div class="search">
+         <div class="card-body">
+         
+             <div class="row"  >
+                 <div class="col-md-2 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">업체코드</label>
+                          <select id="companyName"name="companyName" class="form-control">
+                                 <option value="">선택</option>
+	                       <!--  <option th:each="boardList : ${boardList}" 
+							  		 th:value="${boardList.companyname}" 
+							  		 th:text="${boardList.companyname}" >
+							  </option> --> 
+                         </select>
+                         </div>
+                 </div>
+                 <div class="col-md-2 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">업체명</label>
+                         <input name="content" type="text" id="company"  class="form-control" placeholder="업체명">
+                     </div>
+                 </div>
+                 <div class="col-md-2 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">출고 일자</label>
+                         <input name="createDate" type="text" id="min-date1"  class="form-control date-range-filter datepicker"   placeholder="출고일자">
+                     </div>
+                 </div>
+                 <div class="col-md-2 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">출고 시간</label>
+                         <input  name="updateDate" type="time" id="ex-time" class="form-control"  placeholder="출고시간">
+                     </div>
+                 </div>
+                
+                 <div class="col-md-4 pl-1">
+                     <div class="form-group">
+			             <div class="search-btn-div">
+			             <button class="btn btn-dark btn-lg " type="submit" onclick="update()">확인</button>
+			             	 
+			             </div>
+			          </div>
+			     </div>
+             </div>
+           
+         </div>
+     </div>
+        
+        <div class="pt-3 pb-2 mb-3 border-bottom">
+        <h4><b>출고대기 가능 목록</b></h4>
+      <div class="table-responsive">
+   
+        <table id="dataTable" class="table table-striped table">
+          <thead class="thead-dark">
+                   
+                        <tr >
+                        	<th ><input type="checkbox" id="checkall" /></th>
+                            <th >번호</th>
+                            <th >취소여부</th>
+                            <th >지시날자</th>
+                            <th >납기일</th>
+                            <th >작업유형</th>
+                            <th >박스현품표</th>
+                            <th >지시번호</th>
+                            <th >작업유형</th>
+                            <th >업체명</th>
+                            <th >완제품코드</th>
+                            <th >완제품명</th>
+                            <th >아웃 box 번호</th>
+                            <th >재고수량</th>
+                            <th >출고수량</th>
+                            <th >출하 수량</th>
+                            <th >출고 가능 수량</th>
+                            <th >수량</th>
+                        </tr>
+                    </thead>
+                    <tbody  ID="waitingable">
+                                  
+                     
+                       
+                    </tbody>
+                </table>
+                  <div id="page"></div>
+            </div>
+           
+    </div>
+
+         
+           <h4><b>출고대기  목록</b></h4>
+             <div class="table-responsive">
+        <table id="dataTable2" class="table table-striped table">
+          <thead class="thead-dark">
+                   
+                        <tr >
+                        <th >No</th>
+                            <th >취소여부</th>
+                            <th >ASN 번호</th>
+                            <th >ASN ITEM 번호</th>
+                            <th >지시번호</th>
+                            <th >업체코드</th>
+                            <th >업체명</th>
+                            <th >완제품코드</th>
+                            <th >완제품명</th>
+                            <th >아웃 box 번호</th>
+                            <th >수량</th>
+                            <th >출고일자</th>
+                            <th >출고 시간</th>
+                        	
+                            
+                            
+                        </tr>
+                    </thead>
+                    <tbody class="waitList" ID="waitList">
+                     
+                     
+                    </tbody>
+                
+            </table>
+                  <div id="page2"></div>
+            </div>
+          
+    </main>
+  
+    
+    <!-- 이 위치에 Bootstrap/Jquery core JavaScript가 구성된다. -->
+    
+    <!-- Page level plugin JavaScript-->
+    <th:block layout:fragment="contentsScript">
+    </th:block>
+    <!-- Custom scripts for this pages-->
+    <th:block layout:fragment="customScript">
+    </th:block>
+</body>
+</html>

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- 공통 Config -->
+  <head th:replace="config::configFragment">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v4.0.1">
+
+  </head>
+  <!-- 공통 헤더-->
+  <header th:replace="topbar::topbarFragment"></header>
+  <body>
+  	<form name="menuFrm">
+   		<input type="hidden"> 	
+   	</form>
+  	<form name="searchFrm" id="searchFrm">
+  		<input type="hidden" id="selectedMvgr2" name="selectedMvgr2" >
+  		<input type="hidden" id="selectedMvgr3" name="selectedMvgr3" >
+  		<input type="hidden" id="selectedNormt" name="selectedNormt" >
+  		<input type="hidden" id="selectedDocType" name="selectedDocType" >
+  		<input type="hidden" id="selectedSeq" name="selectedSeq" >
+  		<input type="hidden" id="selectedFilem" name="selectedFilem" >
+  		<input type="hidden" id="selectedMatnr" name="selectedMatnr" >
+  		<input type="hidden" id="selectedIdnrk" name="selectedIdnrk" >
+  		<input type="hidden" id="selectedBomSeq" name="selectedBomSeq" >
+    <div class="container-fluid">
+      <div class="row">	
+      
+      	<!-- left메뉴 -->
+  		<nav th:replace="nav::sidebarMenu"></nav> 
+  		
+  		
+		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>모델별 서류 조회</h2>
+		  <div class="search">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			<ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">* 제조사</span></label>    
+				<select id="mvgr2" name="mvgr2" hname="제조사" class="inp_type" onchange="qryProdInfo('2',this.value)" required="required">
+				  	<option value="">전체</option>
+			  	</select>                                                                                                                                                                                                                                                                                                                                                                                                                                                
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <label class="lb1"><span>기종</span></label>     
+			  	<select id="mvgr3" name="mvgr3" class="inp_type" onchange="qryProdInfo('3',this.value)">
+				  	<option value="">전체</option>
+			  	</select>                                                                                                                                                                                                                                                                                                                                                                                                                                               
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			</ul>
+			<ul>
+		  	<li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">모델명</span></label>
+			  	<select id="normt" name="normt" class="inp_type">
+				  	<option value="">전체</option>
+			  	</select>   		  
+			  </li> 
+			  <li class="title6">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">* SKU</span></label>
+			  	<input type="text" id="matnr" name="matnr" class="inp_type" maxlength="40" placeholder="구분자 (,)로 복수입력 가능">
+			  	<button type="button" id="searchHelper" onclick="searchHelperPopup()" class="btn btn-outline-secondary btn-sm">
+			  		<span data-feather="plus"></span>
+			  	</button>
+			  </li>
+			  <li class="title7">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+				<button type="button" id="qryBtn" name="qryBtn" onclick="qrySDocMgrList()" class="btn btn-secondary btn-sm">
+				<span data-feather="search"></span> 조회
+				</button>
+			  </li> 
+			</ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+		  </div>
+		    <article class="article_list_table2">
+            <div class="list-table2">
+              <table id="gridList" class="gridListAcc"  style="width: 100%">
+              	<colgroup>
+					<col width="15%">
+					<col width="15%">
+					<col width="20%">
+					<col width="10%">
+					<col width="20%">
+					<col width="20%">
+				</colgroup>
+                <thead>
+                  <tr>
+					<th scope="col" class="center">제조사</th>
+					<th scope="col" class="center">기종</th>
+					<th scope="col" class="center">모델명</th>
+					<th scope="col" class="center">완료여부</th>
+					<th scope="col" class="center">시방서</th>
+					<th scope="col" class="center">승인원</th>
+                  </tr>
+                </thead>
+                <tbody>
+                	<tr>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                	</tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="btnDivR2">
+            	<button type="button" id="downBtn" name="downBtn" onclick="prodDocDown()" class="btn btn-success btn-sm" disabled="disabled">
+				<span data-feather="download"></span> 다운
+				</button>
+            	<button type="button" id="deleteBtn" name="deleteBtn" onclick="deleteProdDoc()" class="btn btn-danger btn-sm" disabled="disabled">
+				<span data-feather="trash-2"></span> 삭제
+				</button>
+            	<button type="button" id="updBtn" name="updBtn" onclick="prodDocUpd()" class="btn btn-warning btn-sm" disabled="disabled">
+				<span data-feather="edit"></span> 수정
+				</button>
+<!--             	<button type="button" id="copyBtn" name="copyBtn" onclick="copyTrackback(); return false;" class="btn btn-warning btn-sm" disabled="disabled"> -->
+<!-- 				<span data-feather=""></span>URL복사 -->
+<!-- 				</button> -->
+<!--             	<button type="button" id="rgtAllBtn" name="rgtAllBtn" onclick="prodDocRgtAll()" class="btn btn-primary btn-sm"> -->
+<!-- 				<span data-feather="edit"></span> 일괄등록 -->
+<!-- 				</button> -->
+            </div>
+            </article>
+			<!-- pagging -->
+			<div class="paginate_complex">
+				<div id="paging" class="paging">
+					<div id="boardNavigation" class="boardNavigation">
+						<input type="hidden" id="pageIndex" name="pageIndex" value="1"/>
+						<div id="pagination" class="pagination"></div>
+					</div>
+				</div>
+			</div>
+			<!-- //pagging -->            
+          </div>
+      </main>
+      </div>
+     </div>
+      </form>
+<script>
+jQuery(document).ready(function(){
+	qryProdInfo("1","");
+	feather.replace();
+	fnInitMenu("nav16");
+
+});
+
+
+//제조사,기종 등 콤보박스 조회
+function qryProdInfo(qryFlag, qryValue){
+	
+	var mvgr2 = $('#mvgr2 option:selected').val();
+	var mvgr3 = $('#mvgr3 option:selected').val();
+
+	var sendData = JSON.stringify({qryFlag:qryFlag, mvgr2:mvgr2, mvgr3:mvgr3}); 
+	
+	$.ajax({
+        type : 'POST',
+        data : sendData,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        dataType : 'json',
+        url :  '/cm/selectProdInfoList',
+        contentType:"application/json;charset=UTF-8",
+        success : function(result) {
+           //alert(result.resultList[0]);
+           setSelectBox(qryFlag, result.resultList);
+           $('#pageIndex').val(1);
+        },
+        error : function(request,status){
+            alert("조회 실패");
+        }
+	});
+}
+
+//콤보박스 세팅
+function setSelectBox(qryFlag, resultList){
+	var htmltext="";    
+    htmltext += "<option value=''>전체</option>";
+    for(var i = 0 ; i < resultList.length ; i++){
+		var resultVO = resultList[i];    
+		if(qryFlag=="1"){
+    		htmltext += "<option value=\'"+resultVO.mvgr2+"\'>"+resultVO.mvgt2+"</option>";
+		}else if(qryFlag=="2"){
+    		htmltext += "<option value=\'"+resultVO.mvgr3+"\'>"+resultVO.mvgt3+"</option>";
+		}else{
+    		htmltext += "<option value=\'"+resultVO.normt+"\'>"+resultVO.normt+"</option>";
+		}
+    }
+	if(qryFlag=="1"){
+    	$("#mvgr2").html(htmltext);
+	}else if(qryFlag=="2"){
+    	$("#mvgr3").html(htmltext);
+	}else{
+    	$("#normt").html(htmltext);
+	}
+}
+
+function accordianMenu(obj){
+
+	var myArticle = $(obj).parent().parent().next();
+	var article = (".gridListAcc .showTr"); 
+          if($(myArticle).hasClass('hideTr')) { 
+              //$(article).removeClass('showTr').addClass('hideTr'); 
+              $(myArticle).removeClass('hideTr').addClass('showTr'); 
+              $(obj).children().children().attr('data-feather','chevron-up');
+          }else if($(myArticle).hasClass('showTr')) { 
+              $(myArticle).addClass('hideTr').removeClass('showTr'); 
+          } 
+}
+
+function allOpen(){
+	if($('.hideTr').length >0 ){
+		$('.hideTr').removeClass('hideTr').addClass('showTr'); 
+	}else{
+		$('.showTr').removeClass('showTr').addClass('hideTr'); 
+	}
+}
+//필수값 입력 유효성 체크 펑션
+
+function validCheck(){
+	  
+		var rgtFlag = true;
+		
+		if($('#mvgr2').val()=="" && $('#matnr').val()==""){
+			alert("제조사 or SKU는 필수 입력 항목입니다.");
+			rgtFlag = false;
+		}		
+		return rgtFlag;
+	}
+
+function qrySDocMgrList(){
+	
+	
+	if(validCheck()){
+		
+		//공백제거
+		trim();
+		
+		var sendData = $('#searchFrm').serialize();
+
+	   	$.ajax({
+	          type : 'POST',
+	          data : sendData,
+	          beforeSend : function(xhr)
+	          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+	  				xhr.setRequestHeader(header, token); 
+	          },
+	          dataType : 'json',
+	          url :  '/prodMgrListModel/selectProdMgrListModel',
+	          success : function(result) {
+	             //var obj = jQuery.parseJSON(result);
+	             //alert(result.resultList[0]);
+	             onSuccess(result);
+	          },
+	          error : function(request,status){
+	              alert("조회 실패");
+	          }
+		});
+	   	
+	    $('#selectedMvgr2').val('');
+	    $('#selectedMvgr3').val('');
+	    $('#selectedNormt').val('');
+	    $('#selectedDocType').val('');
+	    $('#selectedSeq').val('');
+	    $('#selectedMatnr').val('');
+	    $('#selectedIdnrk').val('');
+	    $('#selectedBomSeq').val('');
+	    $('#selectedFilem').val('');
+	    $('#deleteBtn').prop("disabled",true);
+	    $('#updBtn').prop("disabled",true);
+	}
+	
+    $('#copyBtn').prop("disabled",false);
+}
+
+function onSuccess(result){
+	
+	var htmltext="";    
+    if(result.resultList.length == 0) {
+        htmltext += "<tr>";
+        htmltext += "<td class='center' colspan=\"8\">조회 결과가 없습니다.</td>";
+        htmltext += "</tr>";
+    }else{
+ 		var rownum = 0;
+		for(var n = 0 ; n<result.resultList.length ; n ++){
+			var cnt=0;
+			var resultVO = result.resultList[n];   
+		    htmltext += "<tr class='mainTitle'>";
+			    htmltext += "<td class='center' name='header'>"+resultVO.mvgt2+"</td>";
+			    htmltext += "<td class='center' name='header'>"+resultVO.mvgt3+"</td>";
+			    htmltext += "<td class='center' name='header'>"+resultVO.normt+"</td>";
+		    if(resultVO.finYn=="N"){
+		    htmltext += "<td class='center' name='header'><button type='button' class='btn btn-danger btn-sm'>미완료</button></td>";
+		    }else{
+			htmltext += "<td class='center' name='header'><button type='button' class='btn btn-success btn-sm'>완　료</button></td>";
+		    }
+		    if(resultVO.sreq=="Y"){
+		    	htmltext += "<td class='center' name='header'><button type='button' class='btn btn-primary btn-sm' onclick=\"prodDocRgt(\'S\',\'"+resultVO.mvgr2+"\',\'"+resultVO.mvgr3+"\',\'"+resultVO.normt+"\')\">등록</button></td>";
+		    }else if(resultVO.sreq=="N"){
+			    htmltext += "<td class='center' name='header'><button type='button' class='btn btn-secondary btn-sm' disabled='disabled'>등록</button></td>";
+		    }else{
+		    	if(resultVO.fileNmS==""){
+		    		 htmltext +="<td name='header'></td>";
+		    	}else{
+			    	if(resultVO.fileNmS.length > 30){
+					    htmltext += "<td name='header'>";
+					    var strSeqS = resultVO.seqS.split(',');
+					    for(var i = 0; i<strSeqS.length; i++){
+						    htmltext += "<input type='checkbox' name='chkFile' onclick=\"selectChk(this,\'S\',\'"+resultVO.mvgr2+"\',\'"+resultVO.mvgr3+"\',\'"+resultVO.normt+"\',\'"+resultVO.seqS.split(',')[i] +"\',\'"+resultVO.fileNmS.split(',')[i] +"\')\" value='"+ resultVO.pathS.split(',')[i] +"'><a href=\"javascript:fileViewer(this,\'"+resultVO.pathS.split(',')[i]+"\',\'"+resultVO.fileTypeS.split(',')[i]+"\', event)\" style='cursor:hand;'>"+resultVO.fileNmS.split(',')[i].substring(0,30)+"..."+"</a>";
+						    htmltext += "<br>";
+					    }
+					    htmltext += "</td>";
+			    	}else{
+					    htmltext += "<td name='header'>";
+					    var strSeqS = resultVO.seqS.split(',');
+					    for(var i = 0; i<strSeqS.length; i++){
+						    htmltext += "<input type='checkbox' name='chkFile' onclick=\"selectChk(this,\'S\',\'"+resultVO.mvgr2+"\',\'"+resultVO.mvgr3+"\',\'"+resultVO.normt+"\',\'"+resultVO.seqS.split(',')[i] +"\',\'"+resultVO.fileNmS.split(',')[i] +"\')\" value='"+ resultVO.pathS.split(',')[i] +"'><a href=\"javascript:fileViewer(this,\'"+resultVO.pathS.split(',')[i]+"\',\'"+resultVO.fileTypeS.split(',')[i]+"\', event)\" style='cursor:hand;'>"+resultVO.fileNmS.split(',')[i]+"</a>";
+						    htmltext += "<br>";
+					    }
+					    htmltext += "</td>";			    	
+					}
+		    	}
+		    }
+		    if(resultVO.areq=="Y"){
+		    	htmltext += "<td class='center' name='header'><button type='button' class='btn btn-primary btn-sm' onclick=\"prodDocRgt(\'A\',\'"+resultVO.mvgr2+"\',\'"+resultVO.mvgr3+"\',\'"+resultVO.normt+"\')\">등록</button></td>";
+		    }else if(resultVO.areq=="N"){
+			    htmltext += "<td class='center' name='header'><button type='button' class='btn btn-secondary btn-sm' disabled='disabled'>등록</button></td>";
+		    }else{
+		    	if(resultVO.fileNmA==""){
+		    		 htmltext +="<td name='header'></td>";
+		    	}else{
+			    	if(resultVO.fileNmA.length > 30){
+					    htmltext += "<td name='header'>";
+					    var strSeqA = resultVO.seqA.split(',');
+					    for(var i = 0; i<strSeqA.length; i++){
+					    	htmltext += "<input type='checkbox' name='chkFile' onclick=\"selectChk(this,\'A\',\'"+resultVO.mvgr2+"\',\'"+resultVO.mvgr3+"\',\'"+resultVO.normt+"\',\'"+resultVO.seqA.split(',')[i] +"\',\'"+resultVO.fileNmA.split(',')[i] +"\')\" value='"+ resultVO.pathA.split(',')[i] +"'><a href=\"javascript:fileViewer(this,\'"+resultVO.pathA.split(',')[i]+"\',\'"+resultVO.fileTypeA.split(',')[i]+"\', event)\" style='cursor:hand;'>"+resultVO.fileNmA.split(',')[i].substring(0,30)+"..."+"</a>";
+						    htmltext += "<br>";
+					    }
+					    htmltext += "</td>";
+			    	}else{
+					    htmltext += "<td name='header'>";
+					    var strSeqA = resultVO.seqA.split(',');
+					    for(var i = 0; i<strSeqA.length; i++){
+					    	htmltext += "<input type='checkbox' name='chkFile' onclick=\"selectChk(this,\'A\',\'"+resultVO.mvgr2+"\',\'"+resultVO.mvgr3+"\',\'"+resultVO.normt+"\',\'"+resultVO.seqA.split(',')[i] +"\',\'"+resultVO.fileNmA.split(',')[i] +"\')\" value='"+ resultVO.pathA.split(',')[i] +"'><a href=\"javascript:fileViewer(this,\'"+resultVO.pathA.split(',')[i]+"\',\'"+resultVO.fileTypeA.split(',')[i]+"\', event)\" style='cursor:hand;'>"+resultVO.fileNmA.split(',')[i]+"</a>";
+						    htmltext += "<br>";
+					    }
+					    htmltext += "</td>";
+			    	}
+		    	}
+		    }
+		    htmltext += "<td class='center' name='header'></td>";
+		    htmltext += "<td class='center' name='header'></td>";
+
+		    htmltext += "</tr>";
+		}
+    }
+    $("#gridList > tbody").html(htmltext);
+    rowSpan();
+	feather.replace();
+    $("#pagination").quickPager( {
+        pageSize: result.paginationInfo.pageSize,
+        pageUnit: result.paginationInfo.recordCountPerPage,
+        pageIndexId: "pageIndex",
+        callback:function() {
+        	qrySDocMgrList();
+        },
+        currentPage: result.paginationInfo.currentPageNo,
+        totalCount: result.paginationInfo.totalRecordCount,
+        searchUrl: "#_"
+    }); 
+}
+
+function rowSpan(){
+	
+$(".first").each(function() {
+	  var rows = $(".first:contains('" + $(this).text() + "')");
+	  var rowsNext = $(".first:contains('" + $(this).text() + "')").next();
+	  if (rows.length > 1) {
+	    rows.eq(0).attr("rowspan", rows.length);
+	    rows.not(":eq(0)").remove();
+	    
+	    rowsNext.eq(0).attr("rowspan", rows.length);
+	    rowsNext.not(":eq(0)").remove();
+	  }
+	});
+
+}
+//제품 서류 등록화면 호출
+function prodDocRgt(type, mvgr2, mvgr3, normt){
+	
+	var url = "/prodDocMgrList/prodDocRgtPopupScreen?docType="+type+"&mvgr2="+mvgr2+"&mvgr3="+mvgr3+"&normt="+normt;
+	
+	openPopup(url, 1000, 700);
+}
+
+//제품 서류 수정화면 호출
+function prodDocUpd(){
+	if($('#selectedBomSeq').val()==""){
+		var url = "/prodDocMgrList/prodDocUpdPopupScreen?docType="+$('#selectedDocType').val()+"&mvgr2="+$('#selectedMvgr2').val()+"&mvgr3="+$('#selectedMvgr3').val()+"&normt="+$('#selectedNormt').val()+"&seq="+$('#selectedSeq').val();
+		openPopup(url, 1000, 700);
+	}else{
+		goToBomList(null, ($('#selectedMatnr').val()));
+	}
+	
+}
+
+function onSuccessDetail(resultList){
+	
+	var htmltext="";    
+    if(resultList.length == 0) {
+        htmltext += "<tr>";
+        htmltext += "<td colspan=\"10\">조회 결과가 없습니다.</td>";
+        htmltext += "</tr>";
+    }else{
+
+		for(var n = 0 ; n<resultList.length ; n ++){
+			var resultVO = resultList[n];      
+		    htmltext += "<tr>";
+		    htmltext += "<td class='center'>"+resultVO.mvgt2+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mvgt3+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.normt+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.matnr+"</td>";
+		    if(resultVO.sreq =="Y"){
+			    htmltext += "<td class='center'><input type='checkbox' name='sReqDetail' checked='checked' onChange=\"sDocRgtIdv(this,\'"+resultVO.mvgr2+"\',\'"+resultVO.mvgr3+"\',\'"+resultVO.normt+"\',\'"+resultVO.matnr+"\', 'N', event)\"></td>";
+
+		    }else{
+			    htmltext += "<td class='center'><input type='checkbox' name='sReqDetail' onChange=\"sDocRgtIdv(this,\'"+resultVO.mvgr2+"\',\'"+resultVO.mvgr3+"\',\'"+resultVO.normt+"\',\'"+resultVO.matnr+"\', 'N', event)\"></td>";
+		    }
+		    htmltext += "</tr>";
+		}
+
+    }
+    $("#gridDetailList > tbody").html(htmltext);
+    $("#pagination").quickPager( {
+        pageSize: result.paginationInfo.pageSize,
+        pageUnit: result.paginationInfo.recordCountPerPage,
+        pageIndexId: "pageIndex",
+        callback:function() {
+         	qryHeaderList();
+        },
+        currentPage: result.paginationInfo.currentPageNo,
+        totalCount: result.paginationInfo.totalRecordCount,
+        searchUrl: "#_"
+    });    
+}
+
+
+function fileViewer(obj, path, type){
+
+	var url = "/sDocMgrList/fileViewer?filePath=" + encodeURI(path) + "&fileType="+ type;
+
+	if(type=="pdf"){
+		openPopup(url, 850, 800);
+	}else{
+		location.href = url;
+	}
+	
+}
+
+function selectChk(obj, docType, mvgr2, mvgr3, normt, seq, fileNm){
+    $('#selectedMatnr').val('');
+    $('#selectedIdnrk').val('');
+    $('#selectedBomSeq').val('');
+	if ($(obj).prop('checked')) {
+	    $('input[type="checkbox"][name="chkFile"]').prop('checked', false);
+	    $(obj).prop('checked', true);
+	    $('#downBtn').prop("disabled",false);
+	    $('#deleteBtn').prop("disabled",false);
+	    $('#updBtn').prop("disabled",false);
+	    
+	    $('#selectedMvgr2').val(mvgr2);
+	    $('#selectedMvgr3').val(mvgr3);
+	    $('#selectedNormt').val(normt);
+	    $('#selectedDocType').val(docType);
+	    $('#selectedSeq').val(seq);
+	    $('#selectedFilem').val(fileNm);
+	}else{
+	    $('#downBtn').prop("disabled",true);
+	    $('#deleteBtn').prop("disabled",true);
+	    $('#updBtn').prop("disabled",true);
+	    
+	    $('#selectedMvgr2').val('');
+	    $('#selectedMvgr3').val('');
+	    $('#selectedNormt').val('');
+	    $('#selectedDocType').val('');
+	    $('#selectedSeq').val('');
+	    $('#selectedFilem').val('');
+	}
+}
+
+function selectChkSku(obj, matnr, idnrk , seq){
+    $('#selectedMvgr2').val('');
+    $('#selectedMvgr3').val('');
+    $('#selectedNormt').val('');
+    $('#selectedDocType').val('');
+    $('#selectedSeq').val('');
+	if ($(obj).prop('checked')) {
+	    $('input[type="checkbox"][name="chkFile"]').prop('checked', false);
+	    $(obj).prop('checked', true);
+	    $('#downBtn').prop("disabled",false);
+	    $('#deleteBtn').prop("disabled",false);
+	    $('#updBtn').prop("disabled",false);
+	    
+	    $('#selectedMatnr').val(matnr);
+	    $('#selectedIdnrk').val(idnrk);
+	    $('#selectedBomSeq').val(seq);
+	}else{
+	    $('#downBtn').prop("disabled",true);
+	    $('#deleteBtn').prop("disabled",true);
+	    $('#updBtn').prop("disabled",true);
+	    
+	    $('#selectedMatnr').val('');
+	    $('#selectedIdnrk').val('');
+	    $('#selectedBomSeq').val('');
+	}
+}
+
+function deleteProdDoc(){
+	
+	if($('#selectedBomSeq').val()!=""){
+		goToBomList(null, ($('#selectedMatnr').val()));
+		
+	}else{
+		if(!confirm("첨부파일을 삭제하시겠습니까?")){
+		return;
+		}
+		var sendData = JSON.stringify({mvgr2:$('#selectedMvgr2').val(), mvgr3:$('#selectedMvgr3').val(), normt:$('#selectedNormt').val(), seq:$('#selectedSeq').val(), docType:$('#selectedDocType').val(), fileNm:$('#selectedFilem').val()}); 
+	
+	
+		$.ajax({
+	        type : 'POST',
+	        data : sendData,
+	        beforeSend : function(xhr)
+	        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+					xhr.setRequestHeader(header, token); 
+	        },
+	        dataType : 'json',
+	        url :  '/prodDocMgrList/deleteProdDoc',
+	        contentType:"application/json;charset=UTF-8",
+	        success : function(result) {
+	        	if(result.result>0){
+	        		alert("삭제가 완료되었습니다.");
+	        		qrySDocMgrList();
+	        	}
+	        },
+	        error : function(request,status){
+	            alert("조회 실패");
+	        }
+		});
+	}
+}
+
+function prodDocDown(){
+
+	if($('#selectedBomSeq').val()!=""){
+		var url = "/prodDocMgrList/downloadProdDoc?seq=" + $('#selectedBomSeq').val();
+		location.href = url;
+	}else{
+		var url = "/prodDocMgrList/downloadProdDoc?seq=" + $('#selectedSeq').val() + "&docType="+ $('#selectedDocType').val();
+		location.href = url;
+	}	
+}
+
+function goToBomList(obj, matnr){
+	if(!confirm("파일 등록,수정 삭제를 위해 [제품 서류 관리(BOM)] 화면으로 이동하시겠습니까?")){
+		return;
+	}
+
+	var url = "/bomMgrList/bomMgrListScreen?matnr=" + matnr;
+
+	location.href = url;
+}
+
+function searchHelperValue(value){
+
+    $('#matnr').val(value);
+
+}
+
+
+function prodDocRgtAll(){
+	var url = "/prodDocMgrList/prodDocRgtAllPopupScreen";
+	
+	openPopup(url, 1200, 850);
+}
+
+
+function copyTrackback(){
+// 	var URL = $(location).attr("origin")+"/sDocMgrList2?mvgr2="+$("#selectedMvgr2").val()+"&mvgr3="+$("#selectedMvgr3").val()+"&normt="+$("#selectedNormt").val()+"&matnr="+$("#selectedMatnr").val();
+	var URL = $(location).attr("origin")+"/sDocMgrList2?mvgr2="+$("#mvgr2").val()+"&mvgr3="+$("#mvgr3").val()+"&normt="+$("#normt").val()+"&matnr="+$("#matnr").val();
+	var IE=(document.all)?true:false;
+	if (IE) {
+	if(confirm("이 글의 트랙백 주소를 클립보드에 복사하시겠습니까?"))
+		window.clipboardData.setData("Text", URL);
+	} else {
+		temp = prompt("이 글의 트랙백 주소입니다. Ctrl+C를 눌러 클립보드로 복사하세요", URL);
+	}
+}
+
+
+</script>
+</body>
+</html>

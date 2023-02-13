@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<title>Spigen ASOS</title>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">        
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+
+<script>
+window.onload = function () {
+    feather.replace();
+	}
+$.datepicker.setDefaults({
+    dateFormat: 'yy-mm-dd',
+    prevText: '이전 달',
+    nextText: '다음 달',
+    monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+    monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+    dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+    showMonthAfterYear: true,
+    yearSuffix: '년',
+   	beforeShow: function (input, inst) {
+            var rect = input.getBoundingClientRect();
+            setTimeout(function () {
+    	        inst.dpDiv.css({ top: rect.top  -200, left: rect.left - 20 });
+            }, 0);
+        }
+  });
+$(function() {
+    $("#min-date1, #max-date1").datepicker();
+  });
+$(function() {
+    $("#min-date2, #max-date2").datepicker();
+  });
+
+</script>
+
+<style>
+        * {
+            box-sizing: border-box;
+        }
+.tableWrapper {
+    width: 1500px;
+    height: 400px;
+    overflow: auto;
+}
+
+#userListTable {
+    width: 500px;
+    border: 0px;
+    border-collapse: collapse;
+}
+
+#userListTable th {
+    position: sticky;
+    top: 0px;
+    background-color: gray !important;
+}
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+      
+	body {
+		font: 90%/1.45em "Helvetica Neue", HelveticaNeue, Verdana, Arial, Helvetica, sans-serif;
+		margin: 0;
+		padding: 0;
+		color: #333;
+		background-color: #fff;
+	}
+
+	.search {
+		padding: 5px 3px;
+		border-width: 2px;
+		border-color: #f7f7f7;
+		border-style: solid;
+		background: #f7f7f7;
+	}
+
+	.search-btn-div {
+		text-align: right;
+		margin-top: 1rem;
+	}
+
+	.searchLbl {
+		font-weight: bold;
+		color: #000000;
+	}
+
+	table{
+		font-size: 1rem;
+	}
+
+	h2{
+		font-weight: bold;
+		margin-top: 0.5rem;
+	}
+</style>
+  <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet">
+    </head>
+<body>
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Spigen ASOS</a>
+      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+      <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+          <a class="nav-link" href="#">Sign out</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+          <div class="sidebar-sticky pt-3">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">
+                  <i data-feather="home"></i>
+                  Dashboard <span class="sr-only">(current)</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="shopping-cart"></span>
+                  Products
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="file"></span>
+                  Orders
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="users"></span>
+                  Customers
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="bar-chart-2"></span>
+                  Reports
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="layers"></span>
+                  Integrations
+                </a>
+              </li>
+            </ul>
+    
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+              <span>Saved reports</span>
+              <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
+                <span data-feather="plus-circle"></span>
+              </a>
+            </h6>
+            <ul class="nav flex-column mb-2">
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="file-text"></span>
+                  Current month
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="file-text"></span>
+                  Last quarter
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="file-text"></span>
+                  Social engagement
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  <span data-feather="file-text"></span>
+                  Year-end sale
+                </a>
+              </li>
+            </ul>
+
+          
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+              <span>작업관리</span>
+              <a class="d-flex align-items-center text-muted" href="#">
+              </a>
+            </h6>
+            <ul class="nav flex-column mb-2">
+              <li class="nav-item">
+                <a class="nav-link" href="/orderWork">
+                  <span data-feather="file-text"></span>
+                  작업지시(수기)
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/assignWork">
+                  <span data-feather="file-text"></span>
+                  작업할당
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/startWork">
+                  <span data-feather="file-text"></span>
+                  작업시작
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/completeWork">
+                  <span data-feather="file-text"></span>
+                  작업완료
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/manageWork">
+                  <span data-feather="file-text"></span>
+                  작업지시관리
+                </a>
+              </li>
+            </ul>
+           </div>
+        </nav>
+        
+    <!-- ///////////////////////////////////////////////////////////-->
+        
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+	<h2>작업완료</h2>
+     <div class="search">
+         <div class="card-body">
+             <div class="row">
+                 <div class="col-md-3 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">임가공업체</label>
+                         <select id="VdrList" class="form-control">
+	                         <option value="">선택</option>
+	                         <option th:each="VendorList : ${VendorLists}" 
+							  		 th:value="${VendorList.lifnr}" 
+							  		 th:text="${VendorList.lifnr} + ' : ' + ${VendorList.bu_sort1}">
+							  </option>
+                         </select>
+					</div>
+                  </div>
+                  <div class="col-md-3 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">상품코드</label>
+                         <input type="text" id="Code" name="Code" class="form-control" placeholder="Code">
+                     </div>
+                 </div>
+                 <div class="col-md-3 pl-1">
+                                      <div class="form-group">
+                         <label class="searchLbl">상품명</label>
+                         <input type="text" id="Name" name="Name" class="form-control" placeholder="Name">
+                     </div>
+                     
+                 </div>
+                 <div class="col-md-3 pl-1">
+                 	<div class="form-group">
+                         <label class="searchLbl">중단여부</label>
+                         <select name="JobID" class="form-control">
+                                 <option>정상</option>
+                                 <option>중단</option>
+                                 <option>전체</option>
+                         </select>
+                    </div>
+                 </div>
+             </div>
+             <div class="row">
+                 <div class="col-md-2 pl-1">
+					<div class="form-group">
+                         <label class="searchLbl">납기일자</label>
+                         <input type="text" id="min-date1" class="form-control date-range-filter datepicker"  placeholder="To">
+                     </div>
+                 </div>
+                 <div class="col-md-2 pl-1">
+                 	<div class="form-group">
+                         <label class="searchLbl">-</label>
+                         <input type="text" id="max-date1" class="form-control date-range-filter datepicker" placeholder="From">
+                     </div>
+                 </div>
+                 <div class="col-md-2 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">지시일자</label>
+                         <input type="text" id="min-date2" class="form-control date-range-filter datepicker" placeholder="From">
+                     </div>
+                 </div>
+                 <div class="col-md-2 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">-</label>
+                         <input type="text" id="max-date2" class="form-control date-range-filter datepicker"  placeholder="To">
+                     </div>
+                 </div>
+                 <div class="col-md-4 pl-1">
+                     <div class="form-group">
+			             <div class="search-btn-div">
+			             	<button class="btn btn-dark btn-lg" id="search">조회</button> 
+			             </div>
+			          </div>
+			     </div>
+             </div>			
+			
+         </div>
+     </div>
+    <div class="pt-3 pb-2 mb-3 border-bottom">
+      <div class="table-responsive">
+      <div class = "tableWrapper">
+        <table id="dataTable" class="table table-striped table">
+          <thead class="thead-dark">
+            <tr>
+              <th>#</th>
+              <th>지시번호</th>
+              <th>지시자이름</th>
+              <th>지시자부서</th>
+              <th>지시일자</th>
+              <th>납기일자</th>
+              <th>완제품코드</th>
+              <th>완제품명</th>
+              <th>단위</th>
+              <th>수량</th>
+              <th>작업유형</th>
+              <th>비고</th>
+            </tr>
+          </thead>
+			<tbody>
+			 <tbody class="OdrListT" id = "OdrListT">
+          </tbody>
+        </table>
+      </div>
+    </div>
+    </div>
+        <div class="pt-5 pb-2 mb-3 border-bottom">
+      <div class="table-responsive">
+       <div class = "tableWrapper">
+        <table id="dataTable" class="table table-striped table">
+          <thead class="thead-dark">
+            <tr>
+              <th>#</th>
+              <th>지시번호</th>
+              <th>지시자이름</th>
+              <th>지시자부서</th>
+              <th>지시일자</th>
+              <th>납기일자</th>
+              <th>완제품코드</th>
+              <th>완제품명</th>
+              <th>수량</th>
+              <th>작업유형</th>
+              <th>비고</th>
+            </tr>
+          </thead>
+			<tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    </div>
+</main>
+</div>
+</div>
+<script>
+$(document).ready(function() {
+	feather.replace();
+
+    $("#search").click(function(){
+        $.ajax({ //지시목록
+        	method: "GET",
+            url: "/api/v1/get/OdrList",
+            dataType: "json",
+            data:{
+             value: $("#VdrList").val()
+                    },
+                  })
+         .done(function( data ) {
+        	 console.log( "Data return :", data );
+             $( "#OdrListT" ).empty();
+             data.forEach(function(item, index) {//전달인자로 함수(인자1: 배열원소의값 인자2:인덱스 인자3: 배열 그 자체) map도 가능
+             console.log("@@@"+ item.odrcode);
+             $( "#OdrListT" ).append(
+             		"<tr>" +
+         		 	"<td>" + (index+1) + "</td>" +
+                     "<td>" + "<input type=checkbox id='selected' name='selected' value="+ item.wkonum + " >" + "</td>" +
+                     "<td>" +"<a href= '"+item.wkonum+"'" + "target="+ '"_top"' +">"+item.wkonum+ "</a>"+ "</td>" +
+                   	"<td>" + item.worder + "</td>" +
+                   	"<td>" + item.orddat + "</td>" +
+                   	"<td>" + item.credat + "</td>" +
+                   	"<td>" + item.wktype + "</td>" +
+                   	"<td>" + item.remark + "</td>" +
+                   "</tr>"
+                         );
+                   })
+            });
+      });
+});
+</script>
+
+</body>
+</html> 

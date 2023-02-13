@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- 공통 Config -->
+  <head th:replace="config::configFragment">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v4.0.1">
+  </head>
+  <!-- 공통 헤더-->
+  <header th:replace="topbar::topbarFragment"></header>
+  <body>
+  	<form name="menuFrm">
+   		<input type="hidden"> 	
+   	</form>
+  	<form name="searchFrm">
+   		<input type="hidden" id="selectLifnr" name="selectLifnr"> 	
+   	</form>
+    <div class="container-fluid">
+      <div class="row">	
+      
+      	<!-- left메뉴 -->
+  		<nav th:replace="nav::sidebarMenu"></nav> 
+  		
+		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>벤더별 상품 관리(수기)</h2>
+
+		    <article class="article_list_table2">
+<!-- 			<div class="btnDivR"> -->
+<!--             	<button type="button" id="btnSubmit" class="btn btn-primary btn-sm" onclick="gnrCdRgt();">등록</button> -->
+<!--             	<button type="button" id="btnUpdate" class="btn btn-dark btn-sm" onclick="gnrCdUpd();">수정</button> -->
+<!--             </div>	 -->
+		    <div class="leftDiv">
+         <div class="card-body">
+         <form id="clear">
+             <div class="row">
+                 <div class="col-md-11 pl-2">
+                     <div class="form-group">
+                         <label class="searchLbl">업체명 </label>
+                         <input type="text" id="vdrNm" name="vdrNm" class="form-control" onkeyup="qryVdrList(this)">
+                     </div>
+                 </div>
+             </div>
+             </form>
+         </div>
+		     <div class="list-table4">
+              <table id="gridList" class="table table-striped table-sm" style="width: 100%">
+              	<colgroup>
+					<col width="30%">
+					<col width="70%">
+				</colgroup>
+                <thead>
+                  <tr>
+					<th scope="col" class='center'>업체코드</th>
+					<th scope="col" class='center'>업체명</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+	                <td></td>
+	                <td></td>
+	              </tr>
+                </tbody>
+              </table>
+            </div>
+		    </div>
+		    <div class="rightDiv">
+	         <div class="card-body">
+	         <form id="clear">
+	             <div class="row">
+	                 <div class="col-md-11 pl-2">
+	                     <div class="form-group">
+	                         <label class="searchLbl">SKU </label>
+	                         <input type="text" id="matnr" name="matnr" class="form-control" onkeyup='qryDetailList(this)'>
+	                     </div>
+	                 </div>
+	             </div>
+	             </form>
+	         </div>		    
+		   	<div class="list-table4">
+              <table id="gridList2" class="table table-striped table-sm" style="width: 100%">
+              	<colgroup>
+					<col width="5%">
+					<col width="30%">
+					<col width="50%">
+					<col width="15%">
+				</colgroup>
+                <thead>
+                  <tr>
+					<th scope="col" class='center'></th>
+					<th scope="col" class='center'>SKU</th>
+					<th scope="col" class='center'>품명</th>
+					<th scope="col" class='center'>배치</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	                <td></td>
+	              </tr>
+                </tbody>
+              </table>
+            </div>
+		    </div>
+            </article>
+          </div>
+      </main>
+                    <!-- progress bar -->
+	<div id="progress"></div>
+	<!-- end progress --> 
+      </div>
+     </div>
+<script>
+$(document).ready(function(){
+
+	feather.replace();
+	fnInitMenu("nav31");
+	qryVdrList();
+
+
+});
+
+function qryVdrList(obj){
+	
+	var sendData = JSON.stringify({vdrNm:$(obj).val()}); 
+
+   	$.ajax({
+          type : 'POST',
+          data : sendData,
+          dataType : 'json',
+          contentType:"application/json;charset=UTF-8",
+          beforeSend : function(xhr)
+          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+          },
+          url :  '/cm/prdByVndrMgrList',
+          success : function(result) {
+             //var obj = jQuery.parseJSON(result);
+             //alert(result.resultList[0]);
+             onSuccess(result.resultList);
+          },
+          error : function(request,status){
+              alert("조회 실패");
+          }
+	});
+	
+}
+
+function onSuccess(resultList){
+	
+	var htmltext="";    
+    if(resultList.length == 0) {
+        htmltext += "<tr>";
+        htmltext += "<td colspan=\"2\" class='center'>조회 결과가 없습니다.</td>";
+        htmltext += "</tr>";
+    }else{
+
+		for(var n = 0 ; n<resultList.length ; n ++){
+			var resultVO = resultList[n];      
+		    htmltext += "<tr onclick=\"selectRow(this,\'"+resultVO.lifnr+"\', event)\" style=\"cursor:pointer\">>";
+		    htmltext += "<td class='center'>"+resultVO.lifnr+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.vdrNm+"</td>";
+		    htmltext += "</tr>";
+		}
+
+    }
+    $("#gridList > tbody").html(htmltext);
+}
+
+var currentSelector = null;
+function selectRow(obj, lifnr){
+
+	$(obj).css('background-color', '#ffffd9');
+	
+	if(currentSelector != null && currentSelector != obj){
+		$(currentSelector).css('background-color','');
+	}
+	currentSelector = obj;
+	
+	$("#selectLifnr").val(lifnr);
+	
+	qryDetailList(null);
+	
+}
+
+function qryDetailList(obj){
+	
+	var matnr = "";
+	
+	if($(obj).val()!=null){
+		matnr = $(obj).val();
+	}
+	var sendData = JSON.stringify({lifnr:$("#selectLifnr").val(),matnr:matnr}); 
+    //fc_spinner();
+
+   	$.ajax({
+          type : 'POST',
+          data : sendData,
+          dataType : 'json',
+          beforeSend : function(xhr)
+          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+          },
+          url :  '/cm/vndrBySKUList',
+          contentType:"application/json;charset=UTF-8",
+          success : function(result) {
+             onSuccessDetail(result.resultList);
+             //spinner.stop();
+          },
+          error : function(request,status){
+              alert("조회 실패");
+          }
+	});
+
+}
+
+
+function onSuccessDetail(resultList){
+
+	var htmltext="";    
+    if(resultList.length == 0) {
+        htmltext += "<tr>";
+        htmltext += "<td class='center' colspan=\"4\">조회 결과가 없습니다.</td>";
+        htmltext += "</tr>";
+    }else{
+
+		for(var n = 0 ; n<resultList.length ; n ++){
+			var resultVO = resultList[n];      
+		    htmltext += "<tr>";
+		    if(resultVO.chkYn=="Y"){
+			    htmltext += "<td class='center'><input type='checkbox' checked='checked' value="+resultVO.matnr+" onclick='chkMatnr(this)'></td>";
+		    }else{
+			    htmltext += "<td class='center'><input type='checkbox' value="+resultVO.matnr+" onclick='chkMatnr(this)'></td>";
+		    }
+		    htmltext += "<td class='center'>"+resultVO.matnr+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.komtx+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.charg+"</td>";
+		    htmltext += "</tr>";
+		}
+
+    }
+    $("#gridList2 > tbody").html(htmltext);
+
+}
+
+
+function chkMatnr(obj){
+	if($(obj).is(":checked")){
+		matnrRgt(obj);
+	}else{
+		matnrDelete(obj);
+	}
+}
+
+//상품 등록
+function matnrRgt(obj){
+
+	var sendData = JSON.stringify({lifnr:$("#selectLifnr").val(),matnr:$(obj).val(),charg:$(obj).parent().next().next().next().text()}); 
+
+    $.ajax({
+        type: 'POST',
+        dataType : 'json', 
+        data : sendData,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        url :  '/cm/insertSKUByVndr',
+        contentType:"application/json;charset=UTF-8",
+        success: function (data) {
+        	if(data.result>0){
+                // 재조회
+                // qryDetailList(obj);
+        	}
+        		
+        },
+        error: function (e) {
+            alert("등록 실패");
+        }
+    });
+}
+
+//상품 삭제
+function matnrDelete(obj){
+
+	var sendData = JSON.stringify({lifnr:$("#selectLifnr").val(),matnr:$(obj).val(),charg:$(obj).parent().next().next().next().text()}); 
+
+    $.ajax({
+        type: 'POST',
+        dataType : 'json', 
+        data : sendData,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        url :  '/cm/deleteSKUByVndr',
+        contentType:"application/json;charset=UTF-8",
+        success: function (data) {
+        	if(data.result>0){
+                // 재조회
+                // qryDetailList(obj);
+        	}
+        		
+        },
+        error: function (e) {
+            alert("등록 실패");
+        }
+    });
+}
+
+
+</script>
+</body>
+</html>

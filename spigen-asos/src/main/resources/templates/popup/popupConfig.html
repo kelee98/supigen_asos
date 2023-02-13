@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+  <head th:fragment="configFragment">
+  <link href="/css/popup.css" rel="stylesheet">
+   	<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+	<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <meta charset="utf-8">
+  <!-- 팝업공통 CSS -->
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<link rel="stylesheet" href="/css/bootstrap-multiselect.css">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  	<link rel="stylesheet" href="/css/awesome-bootstrap-checkbox.css"/>
+   	<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet" />
+  
+  
+  <!-- 공통 JS -->
+  <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script src="http://malsup.github.com/jquery.form.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="/js/bootstrap-filestyle.min.js"></script>
+    <script src="/js/spin.js"></script>
+    <script src="/js/bootstrap-multiselect.js"></script>
+  
+  <!-- 공통 스크립트 -->
+  <script type="text/javascript">
+  var token = $("meta[name='_csrf']").attr("content");
+  var header = $("meta[name='_csrf_header']").attr("content");
+  //필수값 입력 유효성 체크 펑션
+  function validRequired(){
+	  
+		var rgtFlag = true;
+		
+		$(':input').each(function(index){
+			
+			var dataType = $(this).attr('dataType');
+			var hname = $(this).attr('hname');
+			
+			//입력값 미존재
+			if($(this).val()==""){
+				//필수 입력 항목 체크
+				if($(this).attr('required')=="required"){
+					alert(hname +"(은/는) 필수 입력 항목입니다.");
+					$(this).focus();
+					rgtFlag = false;
+					return false;
+				}
+			// 입력값 존재	
+			}else{ 
+				switch(dataType){
+			 	//숫자만(정수)입력했는지 체크
+				case 'INT':
+					if(!isNum($(this).val())){
+						alert(hname +"는 숫자만 입력 가능합니다.");
+						$(this).focus();
+						rgtFlag = false;
+						return false;
+					}
+					break;
+			 	//이메일
+				case 'EMAIL':
+					if(!isEmail($(this).val())){
+						alert(hname +"형식이 올바르지 않습니다.\n(example@spigen.com)");
+						$(this).focus();
+						rgtFlag = false;
+						return false;
+					}
+					break;
+			 	//영문과 숫자
+				case 'ALPHA_INT':
+					if(!isAlphaInt($(this).val())){
+						alert(hname +"는 영문+숫자만 입력 가능합니다.");
+						$(this).focus();
+						rgtFlag = false;
+						return false;
+					}
+					break;
+			 	//영문+숫자 필수
+				case 'ALPHA_N_INT':
+					if(!isAlphaIntComb($(this).val())){
+						alert(hname +"는 영문과 숫자의 조합으로 입력해주세요.");
+						$(this).focus();
+						rgtFlag = false;
+						return false;
+					}
+					break;
+				//문자만(한글)	
+				case 'KOR':
+					alert("글자다앙");
+					break;
+				}
+					
+			}
+				
+		});
+		
+		return rgtFlag;
+	}
+  
+  
+  //숫자인지 체크
+  function isNum(objValue){
+      var bool = true;
+
+      if(objValue == null || objValue == ""){
+          bool = false;
+      }else{
+          for (var i=0; i<objValue.length; i++){
+              ch = objValue.charCodeAt(i);
+
+              if(!((ch >= 0x30 && ch <= 0x39) || ch == 0x2E)){
+                  bool = false;
+                  break;
+              }
+          }
+      }
+
+      return bool;
+  }
+  
+  //이메일인지 체크
+  function isEmail(objValue){
+      var bool = true;
+      var exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+      if(objValue == null || objValue == ""){
+          bool = false;
+      }else{
+    	  if (exptext.test(objValue)!=true){
+    		bool = false;
+    	  }
+      }
+
+      return bool;
+  }
+  
+  //알파벳+숫자인지 체크
+  function isAlphaInt(objValue){
+      var bool = true;
+      var exptext = /^[A-Za-z0-9+]*$/;
+      if(objValue == null || objValue == ""){
+          bool = false;
+      }else{
+    	  if (exptext.test(objValue)!=true){
+    		bool = false;
+    	  }
+      }
+
+      return bool;
+  }
+  
+	//=== 영문, 숫자 혼용 확인
+	//혼용이면 true, 아니면 false
+	function isAlphaIntComb(str){
+		var chk_num = str.search(/[0-9]/g);
+		var chk_eng = str.search(/[a-z]/ig);
+	
+		if(chk_num < 0 || chk_eng < 0){
+	 	return false;
+		}
+	
+		return true;
+	}
+	
+	//=== 영문, 숫자 확인
+	//영문 또는 숫자이면 true, 아니면 false
+	function rtn_engnum_chk(str){
+		for( var i = 0; i <= str.length -1 ; i++ ){
+		 if('a' <= str.charAt(i) && str.charAt(i) <= 'z' || str.charAt(i) >= '0' && str.charAt(i) <= '9'){
+			 
+		 }else{
+		  return false;
+		 }
+		}
+		return true;
+	}
+
+
+
+//스피너
+  var spinner = "";
+  var target = "";
+  function fc_spinner(){
+  	var opts = {	lines: 12
+  					,length: 26
+  					,width: 14
+  					,radius: 42
+  					,scale: 0.5
+  					,corners:  1
+  					,color: '#A7A7A7'
+  					,opacity: 0.25
+  					,rotate: 0
+  					,direction: 1
+  					,speed: 1
+  					,trail :60
+  					,fps: 20
+  					,zIndex: 2e9
+  					,className: 'spinner'
+  					,top: '55%'
+  					,left: '60%'
+  					,shadow: true
+  					,hwaccel: true
+  					,position: 'absolute'
+  				};
+  		target = document.getElementById("progress");
+  		spinner = new Spinner(opts).spin(target);
+  		target.appendChild(spinner.el);
+  }
+  
+  $(function () {
+	    $('.list-group.checked-list-box .list-group-item').each(function () {
+	        
+	        // Settings
+	        var $widget = $(this),
+	            $checkbox = $('<input type="checkbox" class="hidden" />'),
+	            color = ($widget.data('color') ? $widget.data('color') : "primary"),
+	            style = ($widget.data('style') == "button" ? "btn-" : "list-group-item-"),
+	            settings = {
+	                on: {
+	                    icon: 'glyphicon glyphicon-check'
+	                },
+	                off: {
+	                    icon: 'glyphicon glyphicon-unchecked'
+	                }
+	            };
+	            
+	        $widget.css('cursor', 'pointer')
+	        $widget.append($checkbox);
+
+	        // Event Handlers
+	        $widget.on('click', function () {
+	            $checkbox.prop('checked', !$checkbox.is(':checked'));
+	            $checkbox.triggerHandler('change');
+	            updateDisplay();
+	        });
+	        $checkbox.on('change', function () {
+	            updateDisplay();
+	        });
+	          
+
+	        // Actions
+	        function updateDisplay() {
+	            var isChecked = $checkbox.is(':checked');
+
+	            // Set the button's state
+	            $widget.data('state', (isChecked) ? "on" : "off");
+
+	            // Set the button's icon
+	            $widget.find('.state-icon')
+	                .removeClass()
+	                .addClass('state-icon ' + settings[$widget.data('state')].icon);
+
+	            // Update the button's color
+	            if (isChecked) {
+	                $widget.addClass(style + color + ' active');
+	            } else {
+	                $widget.removeClass(style + color + ' active');
+	            }
+	        }
+
+	        // Initialization
+	        function init() {
+	            
+	            if ($widget.data('checked') == true) {
+	                $checkbox.prop('checked', !$checkbox.is(':checked'));
+	            }
+	            
+	            updateDisplay();
+
+	            // Inject the icon if applicable
+	            if ($widget.find('.state-icon').length == 0) {
+	                $widget.prepend('<span class="state-icon ' + settings[$widget.data('state')].icon + '"></span>');
+	            }
+	        }
+	        init();
+	    });
+	    
+	    $('#get-checked-data').on('click', function(event) {
+	        event.preventDefault(); 
+	        var checkedItems = {}, counter = 0;
+	        $("#check-list-box li.active").each(function(idx, li) {
+	            checkedItems[counter] = $(li).text();
+	            counter++;
+	        });
+	        $('#display-json').html(JSON.stringify(checkedItems, null, '\t'));
+	    });
+	});
+  
+  function progress(percents){
+		progressbar = $("#progressbar");
+		progressLabel = $(".progress-label");
+	    progressbar.progressbar({
+		    value: percents,
+		    change: function() {
+		    progressLabel.text("처리율: " + Math.round(percents) + "%");
+		    },
+		    complete: function() {
+			progressLabel.text("처리율: " + "100%");
+		    $(".ui-dialog button").last().trigger("focus");
+		    }
+		});
+	}
+  
+var popup;
+  
+  function openPopup(url, width, height){
+		
+		var settings = "toolbar=0, ststus=0, menubar=0, scrollbars=yes, height="+ height + ", width=" + width;
+		var target = url;
+		popup = window.open(url, "popup_name", settings);
+		
+	}
+  function openPopup(url, width, height, popupName){
+		
+		var settings = "toolbar=0, ststus=0, menubar=0, scrollbars=yes, height="+ height + ", width=" + width;
+		var target = url;
+		popup = window.open(url, popupName, settings);
+		
+	}
+  </script>
+   </head>
+</html>

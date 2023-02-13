@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+  <head th:fragment="configFragment">
+  <meta charset="utf-8">
+  	<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+	<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+  <!-- 공통 CSS -->
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
+  <link href="/assets/dist/css/bootstrap.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/jquery-ui.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.css"/>
+<!--   <link rel="stylesheet" href="/css/styles.css"> -->
+
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+    
+    *{
+	box-sizing: border-box;
+}
+
+#userListTable {
+    width: 500px;
+    border: 0px;
+    border-collapse: collapse;
+}
+
+#userListTable th {
+    position: sticky;
+    top: 0px;
+    background-color: gray !important;
+}
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+      
+	body {
+		font: 90%/1.45em "Helvetica Neue", HelveticaNeue, Verdana, Arial, Helvetica, sans-serif;
+		margin: 0;
+		padding: 0;
+		color: #333;
+		background-color: #fff;
+	}
+
+	.search-btn-div {
+		text-align: right;
+		margin-top: 1rem;
+	}
+
+	.searchLbl {
+		font-weight: bold;
+		color: #000000;
+	}
+
+	table{
+		font-size: 1rem;
+	}
+
+	h2{
+		font-weight: bold;
+		margin-top: 0.5rem;
+	}
+  </style>
+  
+  <!-- 공통 JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="/assets/dist/js/bootstrap.bundle.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+  <script src="http://malsup.github.com/jquery.form.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.min.js"></script>
+  <script src="/js/quickpager.mod.jquery.js"></script>
+  <script src="/js/jquery-ui.js"></script>
+  <script src="/js/spin.js"></script>
+  <script src="/js/jquery.ajax-cross-origin.min.js"></script>
+<!--   <script src="./jquery-ui-1.12.1/datepicker-ko.js"></script> -->
+
+
+
+ 
+  <!-- 공통 스크립트 -->
+  <script th:inline="javascript">
+  var token = $("meta[name='_csrf']").attr("content");
+  var header = $("meta[name='_csrf_header']").attr("content");
+  var initYn = "";
+  
+  function changeMenu(obj){
+		$(".nav-link active").attr("class","nav-link");
+		$(obj).children("a").attr("class","nav-link active");
+		var frm = document.menuFrm;
+		
+		var url = "";
+		
+		var result = chkPassInit();
+		
+		if($(obj).attr("id")=="nav1"){
+			url = "/file";
+		}else if($(obj).attr("id")=="nav2"){
+			url = "/fax";
+		}else if($(obj).attr("id")=="nav3"){
+			url = "/prodDocMaster";
+		}else if($(obj).attr("id")=="nav4"){
+			url = "/sDocMgrList";
+		}else if($(obj).attr("id")=="nav5"){
+			url = "/bankInfo";
+		}else if($(obj).attr("id")=="nav6"){
+			url = "/fax/faxSendHisScreen";
+		}else if($(obj).attr("id")=="nav7"){
+			url = "/cm/gnrCdScreen";
+		}else if($(obj).attr("id")=="nav8"){
+			url = "/prodDocMasterSKU";
+		}else if($(obj).attr("id")=="nav9"){
+			url = "/bomMgrList/bomMgrListScreen";
+		}else if($(obj).attr("id")=="nav10"){
+			url = "/fileAmazon";
+		}else if($(obj).attr("id")=="nav11"){
+			url = "/userMgrList";
+		}else if($(obj).attr("id")=="nav12"){
+			url = "/sDocMgrList2";
+		}else if($(obj).attr("id")=="nav13"){
+			url = "/bomInfoList/bomInfoListScreen";
+		}else if($(obj).attr("id")=="nav14"){
+			url = "/prodInfoList/prodInfoListScreen";
+		}else if($(obj).attr("id")=="nav15"){
+			url = "/prodDocMasterMtr";
+		}else if($(obj).attr("id")=="nav16"){
+			url = "/prodMgrListModel/prodMgrListModelScreen";
+		}else if($(obj).attr("id")=="nav17"){
+			url = "/prodMgrListSKU/prodMgrListSKUScreen";
+		}
+		else if($(obj).attr("id")=="nav18"){
+			url = "/orderWork";
+		}
+		else if($(obj).attr("id")=="nav19"){
+			url = "/assignWork";
+		}
+		else if($(obj).attr("id")=="nav20"){
+			url = "/prodMgrListSKU/prodMgrListSKUScreen";
+		}
+		else if($(obj).attr("id")=="nav21"){
+			url = "/prodMgrListSKU/prodMgrListSKUScreen";
+		}
+		else if($(obj).attr("id")=="nav22"){
+			url = "/prodMgrListSKU/prodMgrListSKUScreen";
+		}else if($(obj).attr("id")=="nav23"){
+			url = "/in_management";
+		}else if($(obj).attr("id")=="nav24"){
+			url = "/ex_waiting";
+		}else if($(obj).attr("id")=="nav25"){
+			url = "/ex_processing";
+		}else if($(obj).attr("id")=="nav30"){
+			url = "/bomInfoList/bomInfoListRScreen";
+		}else if($(obj).attr("id")=="nav31"){
+			url = "/cm/prdByVndrMgrListScreen";
+		}
+		else{
+			url = "/index";
+		}		
+		if(result=="Y"){
+			openPopup("/login/pwInitPopupScreen", "500", "350");
+		}
+		frm.action = url;
+		frm.submit();
+		
+   }
+  
+  function chkPassInit(){
+	  	var str="";
+		var sendData = $('#loginFrm').serialize();
+	   	$.ajax({
+	          type : 'GET',
+	          data : sendData,
+	          async: false,
+	          beforeSend : function(xhr)
+	          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+					xhr.setRequestHeader(header, token); 
+	          },
+	          dataType : 'json',
+	          url :  '/login/pwInitOpenYn',
+	          success : function(result) {
+	        	  if(result.initYn=="Y"){
+	        		  str = "Y";
+	        	  }else{
+	        		  str = "N";
+	        	  }
+	          },
+	          error : function(request,status){
+	              alert("조회 실패");
+	          }
+		});
+	   	
+	   	return str;
+  }
+  
+  
+var popup;
+  
+  function openPopup(url, width, height){
+		
+		var settings = "toolbar=0, ststus=0, menubar=0, scrollbars=yes, height="+ height + ", width=" + width;
+		var target = url;
+		popup = window.open(url, "popup_name", settings);
+		
+	}
+  
+  function searchHelperPopup(){
+	  openPopup("/cm/searchHelper", "320", "750");
+  }
+  
+  //필수값 입력 유효성 체크 펑션
+  function validRequired(){
+		var rgtFlag = true;
+		
+		$(':input').each(function(index){
+			
+			var dataType = $(this).attr('dataType');
+			var hname = $(this).attr('hname');
+			//입력값 미존재
+			if($(this).val()==""){
+				//필수 입력 항목 체크
+				if($(this).attr('required')=="required"){
+					alert(hname +"(은/는)  필수 입력 항목입니다.");
+					$(this).focus();
+					rgtFlag = false;
+					return false;
+				}
+			// 입력값 존재	
+			}else{ 
+				switch(dataType){
+				 	//숫자만(정수)입력했는지 체크
+					case 'INT':
+						if(!isNum($(this).val())){
+							alert(hname +"는 숫자만 입력 가능합니다.");
+							$(this).focus();
+							rgtFlag = false;
+							return false;
+						}
+						break;
+				 	//이메일
+					case 'EMAIL':
+						if(!isEmail($(this).val())){
+							alert(hname +"형식이 올바르지 않습니다.");
+							$(this).focus();
+							rgtFlag = false;
+							return false;
+						}
+						break;
+				 	//영문과 숫자
+					case 'ALPA_INT':
+						if(!isEmail($(this).val())){
+							alert(hname +"형식이 올바르지 않습니다.");
+							$(this).focus();
+							rgtFlag = false;
+							return false;
+						}
+						break;
+					//문자만(한글)	
+					case 'KOR':
+						alert("글자다앙");
+						break;
+						
+				}
+					
+			}
+				
+		});
+		
+		return rgtFlag;
+	}
+  
+  
+  //숫자인지 체크
+  function isNum(objValue){
+      var bool = true;
+
+      if(objValue == null || objValue == ""){
+          bool = false;
+      }else{
+          for (var i=0; i<objValue.length; i++){
+              ch = objValue.charCodeAt(i);
+
+              if(!((ch >= 0x30 && ch <= 0x39) || ch == 0x2E)){
+                  bool = false;
+                  break;
+              }
+          }
+      }
+
+      return bool;
+  }
+  
+  //이메일인지 체크
+  function isEmail(objValue){
+      var bool = true;
+      var exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+      if(objValue == null || objValue == ""){
+          bool = false;
+      }else{
+    	  if (exptext.test(objValue)!=true){
+    		bool = false;
+    	  }
+      }
+
+      return bool;
+  }
+  
+  $(function () {
+	    $('.list-group.checked-list-box .list-group-item').each(function () {
+	        
+	        // Settings
+	        var $widget = $(this),
+	            $checkbox = $('<input type="checkbox" class="hidden" />'),
+	            color = ($widget.data('color') ? $widget.data('color') : "primary"),
+	            style = ($widget.data('style') == "button" ? "btn-" : "list-group-item-"),
+	            settings = {
+	                on: {
+	                    icon: 'glyphicon glyphicon-check'
+	                },
+	                off: {
+	                    icon: 'glyphicon glyphicon-unchecked'
+	                }
+	            };
+	            
+	        $widget.css('cursor', 'pointer')
+	        $widget.append($checkbox);
+
+	        // Event Handlers
+	        $widget.on('click', function () {
+	            $checkbox.prop('checked', !$checkbox.is(':checked'));
+	            $checkbox.triggerHandler('change');
+	            updateDisplay();
+	        });
+	        $checkbox.on('change', function () {
+	            updateDisplay();
+	        });
+	          
+
+	        // Actions
+	        function updateDisplay() {
+	            var isChecked = $checkbox.is(':checked');
+
+	            // Set the button's state
+	            $widget.data('state', (isChecked) ? "on" : "off");
+
+	            // Set the button's icon
+	            $widget.find('.state-icon')
+	                .removeClass()
+	                .addClass('state-icon ' + settings[$widget.data('state')].icon);
+
+	            // Update the button's color
+	            if (isChecked) {
+	                $widget.addClass(style + color + ' active');
+	            } else {
+	                $widget.removeClass(style + color + ' active');
+	            }
+	        }
+
+	        // Initialization
+	        function init() {
+	            
+	            if ($widget.data('checked') == true) {
+	                $checkbox.prop('checked', !$checkbox.is(':checked'));
+	            }
+	            
+	            updateDisplay();
+
+	            // Inject the icon if applicable
+	            if ($widget.find('.state-icon').length == 0) {
+	                $widget.prepend('<span class="state-icon ' + settings[$widget.data('state')].icon + '"></span>');
+	            }
+	        }
+	        init();
+	    });
+	    
+	    $('#get-checked-data').on('click', function(event) {
+	        event.preventDefault(); 
+	        var checkedItems = {}, counter = 0;
+	        $("#check-list-box li.active").each(function(idx, li) {
+	            checkedItems[counter] = $(li).text();
+	            counter++;
+	        });
+	        $('#display-json').html(JSON.stringify(checkedItems, null, '\t'));
+	    });
+	});
+  
+  //D-1 날짜 구하기
+  function getDate(minus){
+	  
+	  var caledmonth, caledday, caledYear;
+
+	  var currentDate= new Date();
+
+	  var v = new Date(Date.parse(currentDate) - minus*1000*60*60*24);
+
+
+	  caledYear = v.getFullYear();
+
+	  if( v.getMonth() < 9 ){
+
+	   caledmonth = '0'+(v.getMonth()+1);
+
+	  }else{
+
+	   caledmonth = v.getMonth()+1;
+
+	  }
+
+	  if( v.getDate() < 10 ){
+
+	   caledday = '0'+v.getDate();
+
+	  }else{
+
+	   caledday = v.getDate();
+
+	  }
+
+	return caledYear+ "-"+caledmonth+"-" + caledday;
+  }
+  
+  function fnInitMenu(sideBarId){
+		$('#sidebarMenu').find('#'+sideBarId).parents().parents().addClass("open");
+		$('#sidebarMenu').find('#'+sideBarId).parents().css("display", "block");
+		$('#sidebarMenu').find('#'+sideBarId).children().css('color', '#3498db');
+	}
+  
+  window.onload = function () {
+	    feather.replace();
+		}
+	$.datepicker.setDefaults({
+	    dateFormat: 'yy-mm-dd',
+	    prevText: '이전 달',
+	    nextText: '다음 달',
+	    monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	    monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+	    dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+	    dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+	    showMonthAfterYear: true,
+	    yearSuffix: '년',
+	   	beforeShow: function (input, inst) {
+	            var rect = input.getBoundingClientRect();
+	            setTimeout(function () {
+	    	        //inst.dpDiv.css({ top: rect.top  -100, left: rect.left - 20 });
+	            }, 0);
+	        }
+	  });
+	$(function() {
+	    $("#min-date1, #max-date1").datepicker();
+	  });
+	$(function() {
+	    $("#min-date2, #max-date2").datepicker();
+	  });
+	
+	//공백제거
+	function trim(){
+	   var str = document.getElementsByTagName("INPUT");
+	   for (var i=0;i<str.length;i++) {
+		    if (str[i].type == "text") {
+		    	str[i].value = str[i].value.trim();
+		    }
+	   }
+
+	}
+	
+	//스피너
+	  var spinner = "";
+	  var target = "";
+	  function fc_spinner(){
+	  	var opts = {	lines: 12
+	  					,length: 26
+	  					,width: 14
+	  					,radius: 42
+	  					,scale: 0.5
+	  					,corners:  1
+	  					,color: '#A7A7A7'
+	  					,opacity: 0.25
+	  					,rotate: 0
+	  					,direction: 1
+	  					,speed: 1
+	  					,trail :60
+	  					,fps: 20
+	  					,zIndex: 2e9
+	  					,className: 'spinner'
+	  					,top: '55%'
+	  					,left: '60%'
+	  					,shadow: true
+	  					,hwaccel: true
+	  					,position: 'absolute'
+	  				};
+	  		target = document.getElementById("progress");
+	  		spinner = new Spinner(opts).spin(target);
+	  		target.appendChild(spinner.el);
+	  }
+	
+   </script>
+   </head>
+</html>

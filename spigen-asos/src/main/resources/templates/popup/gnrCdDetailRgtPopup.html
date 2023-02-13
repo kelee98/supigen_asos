@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<!-- 공통 Config -->
+<head th:replace="config::configFragment">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>상세코드 등록</title>
+</head>
+<body>
+<div>
+<h3>상세코드 등록</h3>
+</div>
+<article>
+	<form name="uploadForm" id="uploadForm" action="/cm/updateGnrCdUpd">
+		<input id="gnrCd" name="gnrCd" type="hidden" th:value="${gnrCd}" >
+    	<table class="list_table_detail">
+			<caption></caption>
+			<col width="20%">
+			<col width="30%">
+			<col width="20%">
+			<col width="30%">
+			<tbody>
+			<tr>
+			<th>상세코드</th>
+			<td><input type="text" id="dtlCd" name="dtlCd" maxlength="50" class="inp_type_w150" ></td>
+			</tr>
+			<tr>
+			<th>상세코드명</th>
+			<td><input type="text" id="dtlNm" name="dtlNm" maxlength="50" class="inp_type_w150"></td>
+			</tr>
+			<tr>
+			<th>코드내용</th>
+			<td><input type="text" id="dtlCts" name="dtlCts" maxlength="100" class="inp_type_w150" ></td>
+			</tr>
+			<tr>
+			<th>사용여부</th>
+			<td>
+				<select id="useYn" name="useYn">
+					<option value="Y">사용</option>
+					<option value="N">미사용</option>
+				</select>
+			</td>
+			</tr>
+			<tr>
+			<th>비고</th>
+			<td>
+			<textarea id="caption" name="caption">
+			</textarea>
+			</tr>
+			</tbody>
+		</table>
+	</form>
+		<div style="float: right;padding-right: 10px;">
+	        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm" onclick="gnrCdRgt();">등록</button>
+	        <button type="button" id="btnCancel" class="btn btn-secondary btn-sm" onclick="window.close();">취소</button>
+        </div>
+</article>
+<script>
+
+$(document).ready(function () {
+	
+});
+
+
+//일반코드 등록
+function gnrCdRgt(){
+
+	//첨부 완료된 건들 재등록 여부
+	if(!confirm("상세코드를 등록하시겠습니까?")){
+	return;
+	}
+	
+	var sendData = $('#uploadForm').serialize();
+
+    $.ajax({
+        type: 'POST',
+        dataType : 'json', 
+        data : sendData,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        url :  '/cm/insertGnrCdDetailRgt',
+        success: function (data) {
+        	if(data.result>0){
+        		alert("등록 성공하였습니다.");
+                //부모창 재조회
+                window.opener.qryDetailList(this, $('#gnrCd').val());
+        		window.close();
+        	}else{
+        		alert("등록 실패하였습니다.");
+        		window.close();
+        	}
+        		
+        },
+        error: function (e) {
+            alert("등록 실패");
+        }
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+ <!-- 공통 Config -->
+  <head th:replace="config::configFragment">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v4.0.1">
+  </head>
+  <!-- 공통 헤더-->
+  <header th:replace="topbar::topbarFragment"></header>
+  <body>
+  	<form name="menuFrm">
+   		<input type="hidden"> 	
+   	</form>
+   	<form name="searchFrm" id="searchFrm">
+    <div class="container-fluid">
+      <div class="row">	
+      
+      	<!-- left메뉴 -->
+  		<nav th:replace="nav::sidebarMenu"></nav> 
+        
+    <!-- ///////////////////////////////////////////////////////////-->
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+	<h2>재고 현황</h2>
+     <div class="search2">
+         <div class="card-body">
+
+             <div class="row">
+                 <div class="col-md-3 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">업체명 </label>
+                         <select id="companyName" name="companyName" class="form-control">
+                         		 <option value=" ">선택</option>
+	                         <option th:each="inList : ${inLists}" 
+							  		 th:value="${inList.lifnr}" 
+							  		 th:text="${inList.lifnr} + ' : ' + ${inList.bu_sort1}">
+							  </option>
+                         </select>
+                      
+             
+                         </div>
+                 </div>
+                 <div class="col-md-3 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">완제품코드</label>
+                         <input type="text" id="productcode" name="productcode" class="form-control" placeholder="완제품코드">
+                     	 <button type="button" id="searchHelper" onclick="searchHelperPopup()" class="btn btn-outline-secondary btn-sm">
+			  			 <span data-feather="plus"></span>
+			  			</button>
+                     </div>
+                 </div>
+                 <div class="col-md-4 pl-1">
+                     <div class="form-group">
+			             <div class="search-btn-div">
+			               <button class="btn btn-dark btn-lg " type="submit" onclick="search()">검색</button>
+			             </div>
+			          </div>
+			     </div>
+		
+                
+             </div>
+         </div>
+     </div>
+     
+ 
+         
+        <div class="pt-3 pb-2 mb-3 border-bottom">
+        <h4><b>재고 현황 리스트</b></h4>
+      <div class="table-responsive">
+        <table id="dataTable" class="table table-striped table">
+          <thead class="thead-dark">
+                   
+                        <tr >
+                        	
+                            <th >번호</th>
+                            <th >재고종류</th>
+                            <th >업체명</th>
+                            <th >완제품코드</th>
+                            <th >완제품명</th>
+                            <th >재고수량</th>
+                            
+                           
+                        </tr>
+                    </thead>
+                    <tbody class="HI" ID="HI">
+                 
+                    </tbody>
+                 
+                </table>
+                <div id="page"></div>
+            </div> 
+          
+        </div>
+        </main>
+    </div>
+ 
+    
+    <!-- 이 위치에 Bootstrap/Jquery core JavaScript가 구성된다. -->
+- 
+    <!--
+ <th:block layout:fragment="contentsScript">
+    </th:block>
+    
+    <th:block layout:fragment="customScript">
+    </th:block> -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="/assets/dist/js/bootstrap.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script src="/js/Pagination.js"></script>
+    <script type="text/javascript"></script>
+
+   <script>
+   $(document).ready(function(){
+
+		feather.replace();
+		fnInitMenu("nav23");
+
+
+	});
+   
+//    $.ajax({
+//        method: "GET",
+//        url: "/in_management/data",
+//        dataType: "json",
+//       data:{
+//      	  value: $("#companyName").val(),
+//      	  code:$("#productcode").val()
+//        },
+//      })
+//      .done(function( data ) {
+//     console.log( "Data return :", data );
+//     let container = $('#page');
+//     container.pagination({
+//   	  dataSource:data,
+//   	    showGoInput: true,
+//   	    showGoButton: true,
+//   	  callback: function(data, pagination){
+//   		 console.log( "pagination return :", pagination.direction );
+//   		 $( "#HI" ).empty();
+//   		  var dataHtml = "<tr>";
+  		 
+//   		  $.each(data, function(index, item){
+//   			 var knstk;
+  		
+//         	  if(item.kndstk==1){
+//       			knstk="완제품";
+//       		}
+//       		else{
+//       			knstk="원자재";
+//       		}
+//   			  dataHtml +=
+//   				 "<tr>" +
+//   	      		  "<td>" +index + "</td>" +
+//   	      		"<td>" + knstk + "</td>" +
+//   	      		"<td>" + item.bu_sort1 + "</td>" +
+//   	            "<td>" + item.assycd + "</td>" +
+//   	            	"<td>" + item.komtx + "</td>" +
+//   	            	"<td>" + item.qtyitm + "</td>" ;
+//       		  dataHtml += "</tr>";
+//   		  });
+//   		  $("#HI").append(dataHtml);
+//   	 }
+//     })
+//   });
+   function search() {
+	  
+	   $.ajax({
+	       method: "GET",
+	       url: "/in_management/data",
+	       dataType: "json",
+	      data:{
+	     	  value: $("#companyName").val(),
+	     	  code:$("#productcode").val()
+	       },
+	     })
+	     .done(function( data ) {
+	    console.log( "Data return :", data );
+	    let container = $('#page');
+	    container.pagination({
+	  	  dataSource:data,
+	  	    showGoInput: true,
+	  	    showGoButton: true,
+	  	  callback: function(data, pagination){
+	  		 console.log( "pagination return :", pagination.direction );
+	  		 //$( "#HI" ).empty();
+	  		  var dataHtml = "<tr>";
+	  		 
+	  		  $.each(data, function(index, item){
+	  			 var knstk;
+	  		
+	        	  if(item.kndstk==1){
+	      			knstk="완제품";
+	      		}
+	      		else{
+	      			knstk="원자재";
+	      		}
+	  			  dataHtml +=
+	  				 "<tr>" +
+	  	      		  "<td>" +index + "</td>" +
+	  	      		"<td>" + knstk + "</td>" +
+	  	      		"<td>" + item.bu_sort1 + "</td>" +
+	  	            "<td>" + item.assycd + "</td>" +
+	  	            	"<td>" + item.komtx + "</td>" +
+	  	            	"<td>" + item.qtyitm + "</td>" ;
+	      		  dataHtml += "</tr>";
+	  		  });
+	  		  $("#HI").append(dataHtml);
+	  	 }
+	    })
+	  });
+//       $.ajax({
+//           method: "GET",
+//           url: "/in_management/data",
+//           dataType: "json",
+//          data:{
+//         	  value: $("#companyName").val(),
+//         	  code:$("#productcode").val()
+//           },
+//         })
+//         .done(function( data ) {
+//        console.log( "Data return :", data );
+//        let container = $('#page');
+//        container.pagination({
+//      	  dataSource:data,
+//      	    showGoInput: true,
+//      	    showGoButton: true,
+//      	  callback: function(data, pagination){
+//      		 console.log( "pagination return :", pagination.direction );
+//      		 $( "#HI" ).empty();
+//      		  var dataHtml = "<tr>";
+     		 
+//      		  $.each(data, function(index, item){
+//      			 var knstk;
+     		
+//            	  if(item.kndstk==1){
+//          			knstk="완제품";
+//          		}
+//          		else{
+//          			knstk="원자재";
+//          		}
+//      			  dataHtml +=
+//      				 "<tr>" +
+//      	      		  "<td>" +index + "</td>" +
+//      	      		"<td>" + knstk + "</td>" +
+//      	      		"<td>" + item.bu_sort1 + "</td>" +
+//      	            "<td>" + item.assycd + "</td>" +
+//      	            	"<td>" + item.komtx + "</td>" +
+//      	            	"<td>" + item.qtyitm + "</td>" ;
+//          		  dataHtml += "</tr>";
+//      		  });
+//      		  $("#HI").append(dataHtml);
+//      	 }
+//        })
+//      });
+        
+   }
+ 
+   function searchHelperValue(value){
+
+	    $('#productcode').val(value);
+
+	}
+      
+    </script>
+</body>
+</html>

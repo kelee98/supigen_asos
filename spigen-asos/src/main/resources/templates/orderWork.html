@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- 공통 Config -->
+  <head th:replace="config::configFragment">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v4.0.1">
+
+  </head>
+  <!-- 공통 헤더-->
+  <header th:replace="topbar::topbarFragment"></header>
+  <body>
+  	<form name="menuFrm">
+   		<input type="hidden"> 	
+   	</form>
+    <form name="searchFrm" id="searchFrm">
+      	<input type="hidden" id="selectedMatnr" name="selectedMatnr" >
+  		<input type="hidden" id="selectedIdnrk" name="selectedIdnrk" >
+  		<input type="hidden" id="selectedSeq" name="selectedSeq" >
+  		<input type="hidden" id="selectedCstlal" name="selectedCstlal" >
+  	</form>
+    <div class="container-fluid">
+      <div class="row">	
+      	<!-- left메뉴 -->
+  		<nav th:replace="nav::sidebarMenu"></nav> 
+		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+	<h2>작업지시(수기)</h2>
+     <div class="search2">
+         <div class="card-body">
+             <div class="row">
+                 <div class="col-md-5 pl-1">
+                     <div class="form-group">
+                         <label class="searchLbl">임가공업체</label>
+                         <select id = "VdrList" name="VdrList" class="form-control">
+	                         <option value="">선택</option>
+	                         <option th:each="VendorList : ${VendorLists}" 
+							  		 th:value="${VendorList.lifnr}" 
+							  		 th:text="${VendorList.lifnr} + ' : ' + ${VendorList.bu_sort1}">
+							  </option>
+                         </select>
+					</div>
+                  </div>
+                  <div class="col-md-4 pl-1">
+                     <div class="form-group">
+			             <div class="search-btn-div">
+			             	<button class="btn btn-dark btn-lg" id="search">조회</button> 
+			             </div>
+			          </div>
+			     </div>
+             </div>			
+         </div>
+              
+     </div>
+<br>
+     <div class="pb-2 mb-3 border-bottom">
+     <h4><b>지시목록</b></h4>
+      <div class="table-responsive">
+       <div class = "tableWrapper">
+        <table id="OdrListTable" class="table table-striped table-hover table">
+          <thead class="thead-dark">
+            <tr>
+              <th>#</th>
+              <th>선택</th>
+              <th>지시번호</th>
+              <th>상품코드</th>
+              <th>외주발주내부순번</th>
+              <th>지시수량</th>
+              <th>지시자</th>
+              <th>지시일자</th>
+              <th>납기일자</th>
+              <th>작업유형</th>
+              <th>비고</th>
+            </tr>
+          </thead>
+			<tbody id = "OdrListT">
+          </tbody>
+          </table>
+      </div>
+    </div>
+    </div>
+   <form id="registerOrder" name="registerOrder">
+    <div class="pt-3 pb-2 mb-3 border-bottom">
+    <div class= "row">
+    	<h4><b>지시하기(수기)</b></h4>
+    	<button type="button" class="btn btn-outline-secondary" onclick="AddOrd()">추가</button>
+    </div> 
+      <div class="table-responsive">
+      <div class = "tableWrapper">
+        <table id="orderTable" class="table table-striped table-hover table">
+          <thead class="thead-dark">
+            <tr>
+              <th>#</th>
+              <th>상품코드</th>
+              <th>지시자이름</th>
+              <th>지시일자</th>
+              <th>납기일자</th>
+              <th>작업유형</th>
+              <th>비고</th>
+            </tr>
+          </thead>
+			<tbody id = "Addord">
+			<tr>
+				<td>1</td>
+				<td><input class = "form-control" type="text" size="6" name="assycd"></td>
+				<td><input class = "form-control" type="text" size="6" name="creusr" value="심재원"></td>
+				<td><input type="text" id="min-date" name="credat"class="form-control date-range-filter datepicker" placeholder="지시일자" size = "6"></td>
+				<td><input type="text" id="max-date" name="sddate"class="form-control date-range-filter datepicker" placeholder="납기일자" size = "6"></td>
+				<td><select class= "form-control" name="wktype">
+						<option value="1011482001">선택1 : 1011482001</option>
+						<option value="선택2">선택2</option>
+					</select></td>
+				<td><input class = "form-control" name="remark" type="text" size="6"></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td><input class = "form-control" type="text" size="6" name="assycd" value=""></td>
+				<td><input class = "form-control" type="text" size="6" name="creusr" value="심재원"></td>
+				<td><input type="text" id="min-date" name="credat"class="form-control date-range-filter datepicker" placeholder="지시일자" size = "6"></td>
+				<td><input type="text" id="max-date" name="sddate"class="form-control date-range-filter datepicker" placeholder="납기일자" size = "6"></td>
+				<td><select class= "form-control" name="wktype">
+						<option value="1011482001">선택1 : 1011482001</option>
+						<option value="선택2">선택2</option>
+					</select></td>
+				<td><input class = "form-control" name="remark" type="text" size="6"></td>
+			</tr>
+						<tr>
+				<td>3</td>
+				<td><input class = "form-control" type="text" size="6" name="assycd" value=""></td>
+				<td><input class = "form-control" type="text" size="6" name="creusr" value="심재원"></td>
+				<td><input type="text" id="min-date" name="orddat"class="form-control date-range-filter datepicker" placeholder="지시일자" size = "6"></td>
+				<td><input type="text" id="max-date" name="credat"class="form-control date-range-filter datepicker" placeholder="납기일자" size = "6"></td>
+				<td><select class= "form-control" name="wktype">
+						<option value="1011482001">선택1 : 1011482001</option>
+						<option value="선택2">선택2</option>
+					</select></td>
+				<td><input class = "form-control" name="remark" type="text" size="6"></td>
+			</tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    </div>
+   </form>
+    	<button type="button" class="btn btn-dark btn-lg" name="btnRegisterOrder" id="btnRegisterOrder" onclick="workOrder()">등록</button> 
+    	<button type="button" class="btn btn-dark btn-lg" name="btnDeleteOrder" id="btnDeleteOrder">삭제</button> 
+    	
+
+</main>
+      </div>
+     </div>
+     <script>
+     function AddOrd(){
+    	    $( "#Addord" ).append(
+    	   		 "<tr>" +
+    	   		 	"<td>"  + "</td>" +
+    	   		 	"<td>" + "<input class = 'form-control' type='text' size='6' name='pkcode' value=''>" + "</td>" +
+    	   		 	"<td>" + "<input class = 'form-control' type='text' size='6' name='pkcode' value='심재원'>" + "</td>" +
+    	   		 	"<td>" + "<input type='text' id='min-date' name='orddat' class='form-control date-range-filter datepicker' placeholder='지시일자' size = '6'>" + "</td>" +
+    	   		 	"<td>" + "<input type='text' id='max-date' name='orddat' class='form-control date-range-filter datepicker' placeholder='지시일자' size = '6'>" + "</td>" +
+    	   		 	"<td>" + "<select class= 'form-control' name='wktype'><option value='선택1'>선택1</option><option value='선택2'>선택2</option></select>" + "</td>" +
+    	   		 	"<td>" + "<input class = 'form-control' type='text' size='6' name='pkcode' value=''>" + "</td>" +	
+    	   		 	"</tr>"
+    	                );
+    	}
+
+    	$(document).ready(function() {
+    		//debugger;
+    		feather.replace();
+    		fnInitMenu("nav18");
+    	    
+    		
+    	    $("#search").click(function(){
+    		var htmlText = "";
+    	        $.ajax({ //지시목록
+    	            type : 'POST',
+    	            url: "/api/v1/get/OdrList",
+    	            dataType: "json",
+    	            beforeSend : function(xhr)
+    	            {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+    	  				xhr.setRequestHeader(header, token); 
+    	            },
+    	            data:{
+    	             value: $("#VdrList").val()
+    	                    },
+    	                  })
+    	         .done(function( data ) {
+    	        	 alert($("#VdrList").val());
+    	          	console.log("data return: ",data)
+
+    	            // $( "#OdrListT" ).empty();
+    	             data.forEach(function(item, index) {//전달인자로 함수(인자1: 배열원소의값 인자2:인덱스 인자3: 배열 그 자체) map도 가능
+    	            	 htmlText += "<tr>" +
+			            		 	"<td>" + (index+1) + "</td>" +
+			                        "<td>" + "<input type=checkbox id='selected' name='selected' value="+ item.wkonum + " >" + "</td>" +
+			                        "<td>" + item.wkonum + "</td>" +
+			                      	"<td>" + item.assycd + "</td>" +
+			                      	"<td>" + item.ospser + "</td>" +
+			                      	"<td>" + item.qtyord + "</td>" +
+			                      	"<td>" + item.creusr + "</td>" +
+			                      	"<td>" + item.credat + "</td>" +
+			                      	"<td>" + item.sddate + "</td>" +
+			                      	"<td>" + item.wktype + "</td>";
+			                     if(item.remark==null||item.remark==""){
+			                    	 htmlText += "<td></td>";
+			                     }else{
+			                    	 htmlText += "<td>" + item.remark + "</td>";
+			                     }
+			                     htmlText += "</tr>";
+    	            	 
+    
+    	            });
+	            	 $( "#OdrListT" ).html(htmlText);
+	             })
+    	      });
+    	   
+    	    
+//     	    $("#btnRegisterOrder").click(function(){ //지시하기 등록
+//     	       	//alert($("#registerOrder").serialize());
+//     	    	if($("#VdrList").val() != ""){
+//     		       	$.ajax({
+//     		            type : 'POST',
+//     		            data : $("#registerOrder").serialize() + "&cornum=" + $("#VdrList").val(),
+//     		            dataType: 'json',
+//     		            url :  '/api/v1/get/registerOdr',
+    		            
+//     		            success : function(data) { //http요청에 성공했을경우
+//     		            	alert("등록 완료");
+//     		            	console.log( "Data return :", data );
+//     		             //$( "#OdrListT" ).empty();
+//     		             data.forEach(function(item, index) {//전달인자로 함수(인자1: 배열원소의값 인자2:인덱스 인자3: 배열 그 자체) map도 가능
+//     		             //console.log("@@@"+ item.wkonum);
+//     		             $( "#OdrList" ).append(
+//     		            		 "<tr>" +
+//     		            		 	"<td>" + (index+1) + "</td>" +
+//     		                        "<td>" + "<input type=checkbox id='selected' name='selected' value="+ item.wkonum + " >" + "</td>" +
+//     		                        "<td>" + item.wkonum + "</td>" +
+//     		                      	"<td>" + item.assycd + "</td>" +
+//     		                      	"<td>" + item.ospser + "</td>" +
+//     		                      	"<td>" + item.qtyord + "</td>" +
+//     		                      	"<td>" + item.creusr + "</td>" +
+//     		                      	"<td>" + item.credat + "</td>" +
+//     		                      	"<td>" + item.sddate + "</td>" +
+//     		                      	"<td>" + item.wktype + "</td>" +
+//     		                      	"<td>" + item.remark + "</td>" +
+//     		                      "</tr>"
+//     		                         );
+//     		                   })
+//     		            },
+//     		            error : function(request,status){
+//     		            	alert("등록 실패");
+//     		            }
+//     		  		});
+//     		       	//return false;
+//     	    	}
+//     	    	else{
+//     	    		alert("공급업체 선택하쇼")
+//     	    	}
+//     	    	//return false;
+//     	      });
+    	    
+    	    $("#btnDeleteOrder").click(function(){ //지시하기 등록
+    	       	//alert($("#registerOrder").serialize());
+
+    	 		   var checkArr = new Array();
+    	 		  // var param = $("form[name=form]").serialize();
+    	 		   var list = $("input[name='selected']");
+    	 		   console.log(list);
+    	 		    for(var i = 0; i < list.length ; i++){
+    	 		        if(list[i].checked){ //선택되어 있으면 배열에 값을 저장함
+    	 		            checkArr.push(list[i].value);
+    	 		            console.log("@@@"+list[i].value);
+    	 		        }
+    	 		    }
+    	 		    console.log("chekArr=" + checkArr);
+    	            console.log("hihi=" +$("#VdrList").val() );
+
+    	 		    $.ajax({
+    		            type : 'POST',
+    		            data : {select : checkArr, hi: $("#VdrList").val() },
+    		            dataType: 'json',
+    		            traditional:true,
+    		            url :  "/api/v1/get/deleteOdr",
+    		            success : function(data) { //http요청에 성공했을경우
+    		            	alert("삭제 완료");
+    			           	 console.log( "Data return :", data );
+    			             $( "#OdrListT" ).empty();
+    			             data.forEach(function(item, index) {//전달인자로 함수(인자1: 배열원소의값 인자2:인덱스 인자3: 배열 그 자체) map도 가능
+    			             console.log("@@@"+ item.odrcode);
+    			             $( "#OdrListT" ).append(
+    			            		 "<tr>" +
+    			            		 	"<td>" + (index+1) + "</td>" +
+    			                        "<td>" + "<input type=checkbox id='selected' name='selected' value="+ item.wkonum + " >" + "</td>" +
+    			                        "<td>" + item.wkonum + "</td>" +
+    			                      	"<td>" + item.worder + "</td>" +
+    			                      	"<td>" + item.orddat + "</td>" +
+    			                      	"<td>" + item.credat + "</td>" +
+    			                      	"<td>" + item.wktype + "</td>" +
+    			                      	"<td>" + item.remark + "</td>" +
+    			                      "</tr>"
+    			                         );
+    			                   })
+    		            },
+    		            error : function(request,status){
+    		            	alert("삭제 실패");
+    		            }
+    		  		});
+    	      });
+    	});
+    	
+ 
+ function workOrder(){
+// 	 var trLength = $('#registerOrder input').length;
+// 	 alert(trLength);
+// 	  var ArrayCount = new Array;
+
+// 	  for(var i=0 ;i<trLength;i++){
+// 	    var checkBtn = $("#addr"+i);
+// 		var td = checkBtn.children();
+// 			var ArrayInfo = new Array(5);
+// 			ArrayInfo[0] = td.eq(0).text();
+// 			ArrayInfo[1] = td.eq(1).text();
+// 			ArrayInfo[2] = td.eq(2).text();
+// 			ArrayInfo[3] = td.eq(3).text();
+// 			ArrayInfo[4] = td.eq(4).text();
+// 			ArrayCount[i] = ArrayInfo;
+// 			ArrayIndex++;
+// 	  }
+// 	  objectJSON = JSON.stringify(ArrayCount);
+
+// 	 send("message:" +objectJSON );
+	 
+	var jArray = new Array();
+
+	
+	var assycd = $('input[name=assycd]');
+	var creusr = $('input[name=creusr]');
+	var credat = $('input[name=credat]');
+	var sddate = $('input[name=sddate]');
+	var wktype = $('input[name=wktype]');
+	var remark = $('input[name=remark]');
+	console.log(assycd);
+	for(var i = 0; i < assycd.length; i++){
+		var jObj = new Object();
+		jObj.assycd = assycd.eq(i).val();
+		jObj.creusr = creusr.eq(i).val();
+		jObj.credat = credat.eq(i).val();
+		jObj.sddate = sddate.eq(i).val();
+		jObj.wktype = wktype.eq(i).val();
+		jObj.remark = remark.eq(i).val();
+		jArray.push(jObj);
+	}
+
+	 console.log(jArray);
+	 
+	 var objectJSON = JSON.stringify(jArray);
+	 
+	 console.log(objectJSON);
+
+	 
+ 	if($("#VdrList").val() != ""){
+    	$.ajax({
+         type : 'POST',
+         data : objectJSON,
+         contentType: "application/json",
+         beforeSend : function(xhr)
+         {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+         },
+         dataType: 'json',
+         url :  '/api/v1/get/registerOdr',
+         success : function(data) { //http요청에 성공했을경우
+         	alert("등록 완료");
+         	console.log( "Data return :", data );
+          //$( "#OdrListT" ).empty();
+          data.forEach(function(item, index) {//전달인자로 함수(인자1: 배열원소의값 인자2:인덱스 인자3: 배열 그 자체) map도 가능
+          //console.log("@@@"+ item.wkonum);
+          $( "#OdrList" ).append(
+         		 "<tr>" +
+         		 	"<td>" + (index+1) + "</td>" +
+                     "<td>" + "<input type=checkbox id='selected' name='selected' value="+ item.wkonum + " >" + "</td>" +
+                     "<td>" + item.wkonum + "</td>" +
+                   	"<td>" + item.assycd + "</td>" +
+                   	"<td>" + item.ospser + "</td>" +
+                   	"<td>" + item.qtyord + "</td>" +
+                   	"<td>" + item.creusr + "</td>" +
+                   	"<td>" + item.credat + "</td>" +
+                   	"<td>" + item.sddate + "</td>" +
+                   	"<td>" + item.wktype + "</td>" +
+                   	"<td>" + item.remark + "</td>" +
+                   "</tr>"
+                      );
+                })
+         },
+         error : function(request,status){
+         	alert("등록 실패");
+         }
+		});
+    	//return false;
+	}
+	else{
+		alert("공급업체를 선택해주세요")
+	}
+	//return false;
+	
+ }
+     </script>
+     </body>
+     </html>

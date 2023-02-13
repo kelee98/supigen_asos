@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<!-- 공통 Config -->
+<head th:replace="config::configFragment">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Layout Test</title>
+</head>
+<body>
+<div>
+<h3>일반코드 수정</h3>
+</div>
+<article>
+	<form name="uploadForm" id="uploadForm" action="/cm/insertGnrCdRgt">
+    	<table class="list_table_detail">
+			<caption></caption>
+			<col width="20%">
+			<col width="30%">
+			<col width="20%">
+			<col width="30%">
+			<tbody>
+			<tr>
+			<th>코드</th>
+			<td><input type="text" id="gnrCd" name="gnrCd" maxlength="50" readonly="readonly" class="inp_type_w150" th:value="${resultVO.gnrCd}" ></td>
+			</tr>
+			<tr>
+			<th>코드명</th>
+			<td><input type="text" id="gnrNm" name="gnrNm" maxlength="50" class="inp_type_w150" th:value="${resultVO.gnrNm}"></td>
+			</tr>
+			<tr>
+			<th>길이</th>
+			<td><input type="text" id="length" name="length" maxlength="20" class="inp_type_w150" th:value="${resultVO.length}" ></td>
+			</tr>
+			<tr>
+			<th>사용여부</th>
+			<td>
+				<select id="useYn" name="useYn">
+					<option value="Y">사용</option>
+					<option value="N">미사용</option>
+				</select>
+			</td>
+			</tr>
+			</tbody>
+		</table>
+	</form>
+		<div style="float: right;padding-right: 10px;">
+	        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm" onclick="gnrCdUpd();">등록</button>
+	        <button type="button" id="btnCancel" class="btn btn-secondary btn-sm" onclick="window.close();">취소</button>
+        </div>
+</article>
+<script th:inline="javascript">
+
+$(document).ready(function () {
+	/*<![CDATA[*/
+	var useYn = /*[[${resultVO.useYn}]]*/;
+	$('#useYn').val(useYn);
+	/*]]>*/
+});
+
+
+//일반코드 수정
+function gnrCdUpd(){
+
+	if(!confirm("일반코드를 등록하시겠습니까?")){
+	return;
+	}
+	
+	var sendData = $('#uploadForm').serialize();
+
+    $.ajax({
+        type: 'POST',
+        dataType : 'json', 
+        data : sendData,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        url :  '/cm/updateGnrCdUpd',
+        success: function (data) {
+        	if(data.result>0){
+        		alert("<spring:message code='rgt.success'/>");
+                //부모창 재조회
+                window.opener.qryHeaderList();
+        		window.close();
+        	}else{
+        		alert("등록 실패하였습니다.");
+        		window.close();
+        	}
+        		
+        },
+        error: function (e) {
+            alert("등록 실패");
+        }
+    });
+}
+</script>
+</body>
+</html>

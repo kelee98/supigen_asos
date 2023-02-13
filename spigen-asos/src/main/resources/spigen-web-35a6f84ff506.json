@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "spigen-web",
+  "private_key_id": "35a6f84ff506d3a329c72c9cd0007fef4e2872c4",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC6XnPlaTZnYrG7\nCxUA04Rp1az0VjOw3/EBJDxPzQ1tr0+8H2DGHUSICOF5qAUbnhpt8U3/nPDhT8Jl\nPI7nBHxUE2VPlH0c0okGUmf0Qly1Q84z69v+c63mgluny89/5a0Hha3V0AkbnILS\nDgFVcpx2CLty0XTNZPy6iV0VDcylW8UA1z4Lu4aKrG7gxsXjYNh2opcc8W9N4AEY\nNhJzIhhQlhWxtoZ2swIh4879TfyiuIIoevu/GVFtv0odHCE124UaR1ynnUljTbPc\nkDehMlgZdJIdTyh0nPYNI1lW9xDDp3/1ceACy9+Ah/8dilO339+t/KHdY30JZxNS\nHqmd4okjAgMBAAECggEAB7wj00GqoF/YQIsVNBOTS1Ey/HEXdB/XQNTgK++2vvan\nuIcU3SQZ1AuKUCJJE/xb3HRHaHR7Ct7kko8Q30WwY0zqx4LCLpAOX9TLu7eFYYCO\n7li7qLPkY8zFQRGUaxp9M/K4ZEdeGWdFhrJOG93F4KA8J2fKETw/wP4yfs0z0SkL\nwU6KrvQ9nx9vrvcrFGgQvQB04NESJ0ZNw6PHCopadLL82PO9smR6T+lm+ywIlHsj\n/ecrTnNY7OpL77OOszNnAgih3svP7z0GcSbavH4xOzJOdAc3HdDK9b07/vcbrKsT\nuA1iGVhS71kYYS+gatQrH6MyV1zNAhUBpuIasizVAQKBgQDfgtkrBHQoAT6r+67r\nb5e+cFzFa20Ks6tCfzo6AYCtgFfQFXsxiZahtCw/r3WMWS0DfW5ByV6yXLjwGgXO\nPMBKfhYm1sIcJ/a4CuKHP209qNIB9GwvTEFn7JBBQG+gESMK5KGT6Pl+5IOLnoM2\nsRmfEwSObF+x6NXvpWqq6rscPQKBgQDVdX5zo/3nQWxeJrUGihPpW/7dnuL76TjJ\ntXNPkR9w7Rh6ssO9wr3Q9OWX6KrotZ5GGW8/dFmM+KCf2PhbX075WHYdBce4PSG+\nP9zCIzA8MQ4UFMbRh/1dUwDcNdxGLV1ElTpCbq0Ul9+VKfHhUCGNDBF9XYTjU5PM\nuGWKWBew3wKBgQCs/RXd4HWSXNxHueT5HYaBg2+Z8HoVtVdQgS3spSsVnebZCzcs\n8QNfphY1ODSvanmXYOYMDrG3NGKCmnFx3L0rKok0iDT2G8wtR2dqLCH9fgMENkvh\nE5DvwT0o85kxdvH7RVb1JnSrzGsvjYCavNlKsCpvnNs31DB4aTu0izZENQKBgEq6\nIjWboIR329cuF8udRRE52oR9Xhswb2f19NNTC7290wcJVAs3hLoFMec3VbW39xu1\nRcPiGIOIerra+z8Jo50ZAehxIJT4Gbr/omn4Zad8yN/w0hWCVQl5yGBPHrkWooMi\n9s1Q75i4/lW65GmrYsN9CRZpSd9HYAOYPjvrUQfjAoGAJSwjnq+pagGmYJHo2QbN\nqr8dTm6rBXqYrSwIsG9HIyBTP2pLmY2qaRLXpeP380ZXUauxD1eLFuzDwVzp4JtH\nqpgeeK0bSHyUyAR1xEsmObmt4DqIRWTT83SqzJAapLHKcQhpTEUXPZmndR2aLerH\nKs2yWlqe3pd/te5wpjRyIqY=\n-----END PRIVATE KEY-----\n",
+  "client_email": "hyjeong@spigen-web.iam.gserviceaccount.com",
+  "client_id": "101613863268951433783",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/hyjeong%40spigen-web.iam.gserviceaccount.com"
+}

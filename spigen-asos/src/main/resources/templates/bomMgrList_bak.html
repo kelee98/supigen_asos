@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- 공통 Config -->
+  <head th:replace="config::configFragment">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v4.0.1">
+
+  </head>
+  <!-- 공통 헤더-->
+  <header th:replace="topbar::topbarFragment"></header>
+  <body>
+  	<form name="menuFrm">
+   		<input type="hidden"> 	
+   	</form>
+    <form name="searchFrm" id="searchFrm">
+      	<input type="hidden" id="selectedMatnr" name="selectedMatnr" >
+  		<input type="hidden" id="selectedVtext" name="selectedVtext" >
+  		<input type="hidden" id="selectedKomtx" name="selectedKomtx" >
+  		<input type="hidden" id="selectedSeq" name="selectedSeq" >
+    <div class="container-fluid">
+      <div class="row">	
+      
+      	<!-- left메뉴 -->
+  		<nav th:replace="nav::sidebarMenu"></nav> 
+  		
+		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>BOM 관리</h2>
+		  <div class="search">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			<ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">* 제조사</span></label>    
+				<select id="mvgr2" name="mvgr2" hname="제조사" class="inp_type" onchange="qryProdInfo('2',this.value)" required="required">
+				  	<option value="">전체</option>
+			  	</select>                                                                                                                                                                                                                                                                                                                                                                                                                                                
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <label class="lb1"><span>기종</span></label>     
+			  	<select id="mvgr3" name="mvgr3" class="inp_type" onchange="qryProdInfo('3',this.value)">
+				  	<option value="">전체</option>
+			  	</select>                                                                                                                                                                                                                                                                                                                                                                                                                                               
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			</ul>
+			<ul>
+		  	<li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">모델명</span></label>
+			  	<select id="normt" name="normt" class="inp_type">
+				  	<option value="">전체</option>
+			  	</select>   		  
+			  </li> 
+			  <li class="title6">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">SKU</span></label>
+			  	<input id="matnr" name="matnr" class="inp_type" maxlength="40">
+			  </li>
+			  <li class="title7">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+				<button type="button" id="qryBtn" name="qryBtn" onclick="qryBomList()" class="btn btn-secondary btn-sm">
+				<span data-feather="search"></span> 조회
+				</button>
+			  </li> 
+			</ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+		  </div>
+		    <article class="article_list_table2">
+            <div class="list-table2">
+              <table id="gridList" class="table table-striped table-sm" style="width: 320%">
+              	<colgroup>
+					<col width="3%">
+					<col width="2%">
+					<col width="4%">
+					<col width="3%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="4%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+					<col width="2%">
+				</colgroup>
+                <thead>
+                  <tr>
+					<th scope="col" class="center">제품코드</th>
+					<th scope="col" class="center">대체번호</th>
+					<th scope="col" class="center">제품내역</th>
+					<th scope="col" class="center">상위레벨</th>
+					<th scope="col" class="center">레벨번호</th>
+					<th scope="col" class="center">품목상태</th>
+					<th scope="col" class="center">재고등급</th>
+					<th scope="col" class="center">자재유형</th>
+					<th scope="col" class="center">자재</th>
+					<th scope="col" class="center">완료여부</th>
+					<th scope="col" class="center">첨부파일</th>
+					<th scope="col" class="center">배치</th>
+					<th scope="col" class="center">비고</th>
+					<th scope="col" class="center">구성수량</th>
+					<th scope="col" class="center">확인된 수량</th>
+					<th scope="col" class="center">구성부품<br>수량</th>
+					<th scope="col" class="center">확인된 수량</th>
+					<th scope="col" class="center">기본 단위</th>
+					<th scope="col" class="center">조달구분</th>
+					<th scope="col" class="center">자재 그룹</th>
+					<th scope="col" class="center">자재 그룹 내역</th>
+					<th scope="col" class="center">상위일련번호자재</th>
+					<th scope="col" class="center">대체번호</th>
+					<th scope="col" class="center">대체BOM<br>텍스트</th>
+					<th scope="col" class="center">자재유형</th>
+					<th scope="col" class="center">자재그룹</th>
+					<th scope="col" class="center">자재그룹<br>내역</th>
+					<th scope="col" class="center">MRP 관리자</th>
+					<th scope="col" class="center">MRP 관리자이름</th>
+					<th scope="col" class="center">제품 계층구조</th>
+					<th scope="col" class="center">내역</th>
+					<th scope="col" class="center">브랜드</th>
+					<th scope="col" class="center">내역</th>
+					<th scope="col" class="center">제조사</th>
+					<th scope="col" class="center">내역</th>
+					<th scope="col" class="center">기종</th>
+					<th scope="col" class="center">내역</th>
+					<th scope="col" class="center">색상</th>
+					<th scope="col" class="center">내역</th>
+					<th scope="col" class="center">모델명</th>
+					<th scope="col" class="center">지시자(엔지니어링)</th>
+					<th scope="col" class="center">지시자(생산관련)</th>
+					<th scope="col" class="center">지시자(원가계산)</th>
+					<th scope="col" class="center">생성일</th>
+					<th scope="col" class="center">대체조회</th>
+                  </tr>
+                </thead>
+                <tbody>
+                	<tr>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                		<td></td>
+                	</tr>
+                </tbody>
+              </table>
+            </div>
+              <div class="btnDivR2">
+            	<button type="button" id="downBtn" name="downBtn" onclick="prodDocDown()" class="btn btn-success btn-sm" disabled="disabled">
+				<span data-feather="download"></span> 다운
+				</button>
+            	<button type="button" id="deleteBtn" name="deleteBtn" onclick="deleteProdDoc()" class="btn btn-danger btn-sm" disabled="disabled">
+				<span data-feather="trash-2"></span> 삭제
+				</button>
+            	<button type="button" id="updBtn" name="updBtn" onclick="prodDocUpd()" class="btn btn-warning btn-sm" disabled="disabled">
+				<span data-feather="edit"></span> 수정
+				</button>
+            </div>
+            </article>
+			<!-- pagging -->
+			<div class="paginate_complex">
+				<div id="paging" class="paging">
+					<div id="boardNavigation" class="boardNavigation">
+						<input type="hidden" id="pageIndex" name="pageIndex" value="1"/>
+						<div id="pagination" class="pagination"></div>
+					</div>
+				</div>
+			</div>
+			<!-- //pagging -->             
+          </div>
+      </main>
+      </div>
+     </div>
+     </form>
+<script th:inline="javascript">
+$(document).ready(function(){
+	qryProdInfo("1","");
+	feather.replace();
+	/*<![CDATA[*/
+	var matnr = /*[[${matnr}]]*/;
+	if(matnr!=null){
+		$('#matnr').val(matnr);
+		qryBomList();
+	}
+	/*]]>*/
+});
+
+//제조사,기종 등 콤보박스 조회
+function qryProdInfo(qryFlag, qryValue){
+	
+	var mvgr2 = $('#mvgr2 option:selected').val();
+	var mvgr3 = $('#mvgr3 option:selected').val();
+
+	var sendData = JSON.stringify({qryFlag:qryFlag, mvgr2:mvgr2, mvgr3:mvgr3}); 
+	
+	$.ajax({
+        type : 'POST',
+        data : sendData,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        dataType : 'json',
+        url :  '/cm/selectProdInfoList',
+        contentType:"application/json;charset=UTF-8",
+        success : function(result) {
+           //alert(result.resultList[0]);
+           setSelectBox(qryFlag, result.resultList);
+           $('#pageIndex').val(1);
+        },
+        error : function(request,status){
+            alert("조회 실패");
+        }
+	});
+}
+
+//콤보박스 세팅
+function setSelectBox(qryFlag, resultList){
+	var htmltext="";    
+    htmltext += "<option value=''>전체</option>";
+    for(var i = 0 ; i < resultList.length ; i++){
+		var resultVO = resultList[i];    
+		if(qryFlag=="1"){
+    		htmltext += "<option value=\'"+resultVO.mvgr2+"\'>"+resultVO.mvgt2+"</option>";
+		}else if(qryFlag=="2"){
+    		htmltext += "<option value=\'"+resultVO.mvgr3+"\'>"+resultVO.mvgt3+"</option>";
+		}else{
+    		htmltext += "<option value=\'"+resultVO.normt+"\'>"+resultVO.normt+"</option>";
+		}
+    }
+	if(qryFlag=="1"){
+    	$("#mvgr2").html(htmltext);
+	}else if(qryFlag=="2"){
+    	$("#mvgr3").html(htmltext);
+	}else{
+    	$("#normt").html(htmltext);
+	}
+}
+
+
+//BOM목록 조회
+function qryBomList(){
+	
+	var sendData = $('#searchFrm').serialize();
+//	alert(sendData);
+
+   	$.ajax({
+          type : 'POST',
+          data : sendData,
+          beforeSend : function(xhr)
+          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+          },
+          dataType : 'json',
+          url :  '/bomMgrList/selectBomMgrList',
+          success : function(result) {
+             //var obj = jQuery.parseJSON(result);
+             //alert(result.resultList[0]);
+             onSuccess(result);
+          },
+          error : function(request,status){
+              alert("조회 실패");
+          }
+	});
+   	
+	$('#updBankInfoBtn').hide();
+
+}
+
+function onSuccess(result){
+	var htmltext="";    
+    if(result.resultList.length == 0) {
+        htmltext += "<tr>";
+        htmltext += "<td colspan=\"8\" class='center'>조회 결과가 없습니다.</td>";
+        htmltext += "</tr>";
+    }else{
+
+		for(var n = 0 ; n<result.resultList.length ; n ++){
+			var resultVO = result.resultList[n];    
+		    htmltext += "<tr>";
+		    htmltext += "<td class='center'>"+resultVO.matnr+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.stlal+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.maktx+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.alevel+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.clevel+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.zpstau+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.zstoc+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.imtart+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.idnrk+"</td>";
+		    if(resultVO.finYn=="N"){
+			    htmltext += "<td class='center' name='header'><button type='button' class='btn btn-danger btn-sm'>미완료</button></td>";
+			}else{
+				htmltext += "<td class='center' name='header'><button type='button' class='btn btn-success btn-sm'>완　료</button></td>";
+			}		  
+		    if(resultVO.req=="Y"){
+		    	htmltext += "<td class='center' name='header'><button type='button' class='btn btn-primary btn-sm' onclick=\"prodDocRgt(\'"+resultVO.matnr+"\',\'"+resultVO.vtext+"\',\'"+resultVO.komtx+"\')\">등록</button></td>";
+		    }else if(resultVO.req=="N"){
+			    htmltext += "<td class='center' name='header'><button type='button' class='btn btn-secondary btn-sm' disabled='disabled'>등록</button></td>";
+		    }else{
+			    htmltext += "<td name='header'><input type='checkbox' name='chkFile' onclick=\"selectChk(this,\'"+resultVO.matnr+"\',\'"+resultVO.vtext+"\',\'"+resultVO.komtx+"\',\'"+resultVO.seq +"\')\" value='"+ resultVO.path +"'><a href=\"javascript:fileViewer(this,\'"+resultVO.path+"\',\'"+resultVO.fileType+"\', event)\" style='cursor:hand;'>"+resultVO.fileNm+"</a></td>";
+		    }
+		    htmltext += "<td class='center'>"+resultVO.cstlal+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.ztext+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.zmngko+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.bmeng+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.menge+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.bbmeng+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.meins+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.zpostp+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.imatkl+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.iwgbez+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.hmatnr+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.hstlal+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.stktx+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mtart+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.matkl+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.wgbez+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.dispo+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.dsnam+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.prdha+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.vtext+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mvgr1+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mvgt1+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mvgr2+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mvgt2+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mvgr3+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mvgt3+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mvgr4+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.mvgt4+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.normt+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.sanko+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.sanfe+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.sanka+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.andat+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.sastu+"</td>";
+
+		    htmltext += "</tr>";
+		}
+
+    }
+    $("#gridList > tbody").html(htmltext);
+	feather.replace();
+    $("#pagination").quickPager( {
+        pageSize: result.paginationInfo.pageSize,
+        pageUnit: result.paginationInfo.recordCountPerPage,
+        pageIndexId: "pageIndex",
+        callback:function() {
+        	qryBomList();
+        },
+        currentPage: result.paginationInfo.currentPageNo,
+        totalCount: result.paginationInfo.totalRecordCount,
+        searchUrl: "#_"
+    }); 
+}
+
+//제품 서류 등록화면 호출
+function prodDocRgt( matnr, vtext, komtx){
+	
+	var url = "/bomMgrList/bomDocRgtPopupScreen?matnr="+matnr+"&vtext="+vtext;
+
+	openPopup(url, 1000, 650);
+}
+
+//제품 서류 수정화면 호출
+function prodDocUpd(){
+	
+	var url = "/bomMgrList/bomDocUpdPopupScreen?matnr="+$('#selectedMatnr').val()+"&vtext="+$('#selectedVtext').val()+"&seq="+$('#selectedSeq').val();
+	
+	openPopup(url, 1000, 650);
+}
+
+function fileViewer(obj, path, type){
+
+	var url = "/file/fileViewer?filePath=" + encodeURI(path) + "&fileType="+ type;
+
+	if(type=="pdf"){
+		openPopup(url, 850, 800);
+	}else{
+		location.href = url;
+	}
+}
+
+function selectChk(obj, matnr, vtext, komtx, seq){
+	if ($(obj).prop('checked')) {
+	    $('input[type="checkbox"][name="chkFile"]').prop('checked', false);
+	    $(obj).prop('checked', true);
+	    $('#downBtn').prop("disabled",false);
+	    $('#deleteBtn').prop("disabled",false);
+	    $('#updBtn').prop("disabled",false);
+	    
+	    $('#selectedMatnr').val(matnr);
+	    $('#selectedVtext').val(vtext);
+	    $('#selectedKomtx').val(komtx);
+	    $('#selectedSeq').val(seq);
+	}else{
+	    $('#downBtn').prop("disabled",true);
+	    $('#deleteBtn').prop("disabled",true);
+	    $('#updBtn').prop("disabled",true);
+	    
+	    $('#selectedMatnr').val('');
+	    $('#selectedVtext').val('');
+	    $('#selectedKomtx').val('');
+	    $('#selectedSeq').val('');
+	}
+}
+
+function deleteProdDoc(){
+
+	if(!confirm("첨부파일을 삭제하시겠습니까?")){
+	return;
+	}
+	var sendData = JSON.stringify({matnr:$('#selectedMatnr').val(), vtext:$('#selectedVtext').val(), seq:$('#selectedSeq').val()}); 
+
+
+	$.ajax({
+        type : 'POST',
+        data : sendData,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        dataType : 'json',
+        url :  '/bomMgrList/bomDocDelete',
+        contentType:"application/json;charset=UTF-8",
+        success : function(result) {
+        	if(result.result>0){
+        		alert("삭제가 완료되었습니다.");
+        		qryBomList();
+        	}
+        },
+        error : function(request,status){
+            alert("조회 실패");
+        }
+	});
+}
+
+
+function prodDocDown(){
+	
+	var url = "/prodDocMgrList/downloadProdDoc?seq=" + $('#selectedSeq').val();
+
+	location.href = url;
+	
+}
+</script>
+</body>
+</html>

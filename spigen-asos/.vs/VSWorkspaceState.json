@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\.mvn",
+    "\\src",
+    "\\src\\main",
+    "\\src\\main\\java",
+    "\\src\\main\\resources",
+    "\\src\\main\\webapp"
+  ],
+  "SelectedNode": "\\.mvn\\wrapper",
+  "PreviewInSolutionExplorer": false
+}

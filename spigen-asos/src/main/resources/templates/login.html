@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+	<title>Login</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+	<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+<!--===============================================================================================-->
+</head>
+  <head th:replace="config::configFragment">
+
+<body style="background-color: #666666;">
+	<form id="menuFrm" name="menuFrm">
+	</form>
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<form class="login100-form validate-form" id="loginFrm" name="loginFrm">
+<!-- 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" /> -->
+					<span class="login100-form-title p-b-43">
+						Spigen-Web
+					</span>
+					
+					
+					<div class="wrap-input100 validate-input" data-validate="ID is required">
+						<input class="input100" type="text" id="id" name="id" value="">
+						<span class="focus-input100"></span>
+						<span class="label-input100">ID</span>
+					</div>
+					
+					
+					<div class="wrap-input100 validate-input" data-validate="Password is required">
+						<input class="input100" type="password" id="password" name="password" value="" onkeyup="enterkey();">
+						<span class="focus-input100"></span>
+						<span class="label-input100">Password</span>
+					</div>
+
+					<div class="flex-sb-m w-full p-t-3 p-b-32">
+						<div class="contact100-form-checkbox">
+							<input id="idSaveCheck" type="checkbox" name="idSaveCheck" >
+								Remember me
+						</div>
+
+<!-- 						<div> -->
+<!-- 							<a href="#" class="txt1" onclick="initPass()"> -->
+<!-- 								Forgot Password? -->
+<!-- 							</a> -->
+<!-- 						</div> -->
+					</div>
+			
+
+					<div class="container-login100-form-btn">
+						<input type="button" class="login100-form-btn" value="Login" onclick="startLogin()">
+<!-- 						<button class="login100-form-btn">Login -->
+<!-- 						</button> -->
+					</div>
+					
+<!-- 					<div class="w-full text-center p-t-27 p-b-239"> -->
+<!-- 						<span class="txt1"> -->
+<!-- 							Forgot -->
+<!-- 						</span> -->
+
+<!-- 						<a href="#" class="txt2"> -->
+<!-- 							User name / password? -->
+<!-- 						</a> -->
+<!-- 					</div> -->
+
+<!-- 					<div class="w-full text-center"> -->
+<!-- 						<a href="#" class="txt3" onclick="createUser()"> -->
+<!-- 							Sign Up -->
+<!-- 						</a> -->
+<!-- 					</div> -->
+				</form>
+
+				<div class="login100-more" style="background-image: url('images/bg-01.jpg');">
+				<img alt="" src="images/spigen_logo.png" style="width: 25%; padding: 5px;">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+
+	
+	
+<!--===============================================================================================-->
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/daterangepicker/moment.min.js"></script>
+	<script src="vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+	<script src="http://malsup.github.com/jquery.form.js"></script>
+	<script src="js/jquery.cookie.js"></script>
+	
+<script th:inline="javascript">
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
+var msg= "";
+function startLogin(){
+	
+	if($('#id').val()==""){
+		alert("아이디를 입력해주세요.");
+		$('#id').focus();
+		return;
+	}
+	if($('#password').val()==""){
+		alert("패스워드를 입력해주세요.");
+		$('#password').focus();
+		return;
+	}
+		
+	var sendData = $('#loginFrm').serialize();
+   	$.ajax({
+          type : 'POST',
+          data : sendData,
+          beforeSend : function(xhr)
+          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+          },
+          dataType : 'json',
+          url :  '/login/login-processing',
+          success : function(result) {
+        		console.log(result);
+        	  if(result.message!="S"){
+        		  alert("로그인 정보가 일치하지 않습니다.");
+        	  }else{
+        		//아이디저장 체크되어있으면 쿠키저장
+        	    if($("input:checkbox[id='idSaveCheck']").is(":checked")){
+        	        $.cookie('login_id', $("#id").val());
+        	    //아이디저장 미체크면 쿠키에 정보가 있던간에 삭제
+        	    } else {
+        	        $.removeCookie("login_id");
+        	    }
+        		  goToMain(result.result);
+        	  }
+          },
+          error : function(request,status){
+              alert("조회 실패");
+          }
+	});
+   	
+}
+
+function createUser(){
+	
+	var settings = "toolbar=0, ststus=0, menubar=0, scrollbars=yes, height="+ 700 + ", width=" + 650;
+	var url = "/login/signUpPopup";
+	
+	popup = window.open(url, "회원가입 신청", settings);	
+}
+
+function goToMain(role){
+
+	var obj = new Object();
+	if(role=="ROLE_TRADE_S"){
+		obj.id = "nav1";		
+	}else if(role=="ROLE_TRADE_B"){
+		obj.id = "nav2";		
+	}else if(role=="ROLE_TRADE_A"){
+		obj.id = "nav1";		
+	}else if(role=="ROLE_PRODUCT_A"){
+		obj.id = "nav4";		
+	}else if(role=="ROLE_ADMIN"){
+		obj.id = "nav1";		
+	}else if(role=="ROLE_PRODUCT_R"){
+		obj.id = "nav13";		
+	}else if(role=="ROLE_PRODUCT_V"){
+		obj.id = "nav13";		
+	}
+	changeMenu(obj);
+}
+
+function enterkey() {
+    if (window.event.keyCode == 13) {
+        // 엔터키가 눌렸을 때 실행할 내용
+        startLogin();
+    }
+}
+
+function initPass(){
+		
+	var settings = "toolbar=0, ststus=0, menubar=0, scrollbars=yes, height="+ 350 + ", width=" + 600;
+	var url = "/login/passwordInit";
+	
+	popup = window.open(url, "비밀번호 초기화", settings);
+	
+}
+
+$(document).ready(function() {
+    //최초 쿠키에 login_id라는 쿠키값이 존재하면
+    var login_id = $.cookie('login_id');
+    if(login_id != undefined) {
+        //아이디에 쿠키값을 담는다
+        $("#id").val(login_id);
+        //아이디저장 체크박스 체크를 해놓는다
+        $("#idSaveCheck").prop("checked",true);
+    }
+
+});
+
+</script>
+</body>
+</html>

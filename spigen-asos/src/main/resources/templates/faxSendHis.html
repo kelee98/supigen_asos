@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- 공통 Config -->
+  <head th:replace="config::configFragment">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v4.0.1">
+
+  </head>
+  <!-- 공통 헤더-->
+  <header th:replace="topbar::topbarFragment"></header>
+  <body>
+  	<form name="menuFrm">
+   		<input type="hidden"> 	
+   	</form>
+	<form name="searchFrm" id="searchFrm">
+    <div class="container-fluid">
+      <div class="row">	
+      	<!-- left메뉴 -->
+  		<nav th:replace="nav::sidebarMenu"></nav> 
+		<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+          <div class="pt-3 pb-2 mb-3 border-bottom">
+            <h2>FAX 전송 이력</h2>
+		  <div class="search">                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			<ul>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">은행명</span></label>                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <input type="text" id="bankNm" name="bankNm" hname="은행명" maxlength="100" class="inp_type">                                                                                                                                                                                                                                                                                                                                                                                                                                         
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+			  <li class="title2">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">접수번호</span></label>                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+			  <input type="text" id="reqNum" name="reqNum" hname="접수번호" maxlength="100" class="inp_type_w100">                                                                                                                                                                                                                                                                                                                                                                                                                                         
+			  </li>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+			</ul>
+			<ul>
+			  <li class="title4">                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+			  <label class="lb1"><span class="tx">* 조회기간</span></label>			  
+			  <input type="date" id="qryBfr" name="qryBfr" hname="조회기간" maxlength="6" class="inp_type_w70" value="2020-08-26">&nbsp;&nbsp;~&nbsp;                                                                                                                                                                                                                                                                                                                                                                                                                                      
+			  <input type="date" id="qryAftr" name="qryAftr" hname="조회기간" maxlength="6" class="inp_type_w70" value="2020-08-26">                                                                                                                                                                                                                                                                                                                                                                                                                                        
+			  </li> 
+			  <li>   
+			  <li class="title5">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+				<button type="button" id="qryBtn" name="qryBtn" value="조회" onclick="qryFaxSendHis()" class="btn btn-secondary btn-sm">
+				<span data-feather="search"></span> 조회
+				</button>
+			  </li>
+			</ul>
+		  </div>
+		    <article class="article_list_table2">
+            <div class="list-table2">
+              <table id="gridList" class="table table-striped table-sm">
+              	<colgroup>
+					<col width="13%">
+					<col width="16%">
+					<col width="10%">
+					<col width="16%">
+					<col width="20%">
+					<col width="25%">
+				</colgroup>
+                <thead>
+                  <tr>
+					<th scope="col" class="center">전송일시</th>
+					<th scope="col" class="center">접수번호</th>
+					<th scope="col" class="center">전송결과</th>
+					<th scope="col" class="center">은행명</th>
+					<th scope="col" class="center">FAX 번호</th>
+					<th scope="col" class="center">서류명</th>
+                  </tr>
+                </thead>
+                <tbody>
+	                <tr>
+	                	<td></td>
+	                	<td></td>
+	                	<td></td>
+	                	<td></td>
+	                	<td></td>
+	                	<td></td>
+	                </tr>
+                </tbody>
+              </table>
+            </div>
+            </article>
+          </div>
+      </main>
+      </div>
+     </div>
+      </form>
+<script>
+$(document).ready(function(){
+	
+	$('#qryBfr').val(getDate(7));
+	$('#qryAftr').val(getDate(0));
+	
+	feather.replace();
+	
+	fnInitMenu("nav6");
+});
+
+//팩스 전송이력 조회
+function qryFaxSendHis(){
+	
+	var sendData = $('#searchFrm').serialize();
+
+   	$.ajax({
+          type : 'POST',
+          data : sendData,
+          dataType : 'json',
+          beforeSend : function(xhr)
+          {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+          }, 
+          url :  '/fax/selectfaxSendHisQry',
+          success : function(result) {
+             onSuccess(result.resultList);
+          },
+          error : function(request,status){
+              alert("조회 실패");
+          }
+	});
+   	
+	$('#updBankInfo').hide();
+
+}
+
+function onSuccess(resultList){
+	
+	var htmltext="";    
+    if(resultList.length == 0) {
+        htmltext += "<tr>";
+        htmltext += "<td colspan=\"6\" class='center'>조회 결과가 없습니다.</td>";
+        htmltext += "</tr>";
+    }else{
+
+		for(var n = 0 ; n<resultList.length ; n ++){
+			var resultVO = resultList[n];      
+		    htmltext += "<tr>";
+		    htmltext += "<td class='center'>"+resultVO.sendDt+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.reqNum+"</td>";
+		    if(resultVO.sendResult==0){
+		    	htmltext += "<td class='center'>성공</td>";
+		    }else{
+			    htmltext += "<td class='center'>실패</td>";
+		    }
+		    htmltext += "<td class='center'>"+resultVO.bankNm+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.faxNum+"</td>";
+		    htmltext += "<td class='center'>"+resultVO.fileNm+"</td>";
+		    htmltext += "</tr>";
+		}
+
+    }
+    $("#gridList > tbody").html(htmltext);
+}
+
+</script>
+</body>
+</html>

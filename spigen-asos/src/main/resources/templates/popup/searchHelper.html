@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+<!-- 공통 Config -->
+<head th:replace="popup/popupConfig::configFragment">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container">
+	<h3>Search Help</h3>
+	<div class="row">
+        <div class="container-fluid">
+        <table id="sort2" class="grid table table-bordered table-sortable">
+            <thead>
+                <tr>
+                	<th>No.</th>
+                	<th>조건</th>
+                </tr>
+            </thead>
+            <tbody id="dataBind">
+                <tr>
+                    <td data-id="1">1</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control" onchange="dataParse(this)"></td>
+                </tr>
+                <tr>
+                    <td data-id="2">2</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="3">3</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="4">4</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="5">5</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="6">6</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="7">7</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="8">8</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="9">9</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="10">10</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="11">11</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="12">12</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="13">13</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="14">14</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="15">15</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="16">16</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="17">17</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="18">18</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="19">19</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td data-id="20">20</td>
+                    <td><input type="text" name="searchInput" value="" class="form-control"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="form-group" style="margin-top: 30px">
+            <div class="col-sm-11 col-sm-offset-1">
+                <button type="button" class="btn btn-secondary btn" style="width: 49%" onclick="window.close();">취소</button>
+                <button type="button" class="btn btn-primary btn" style="width: 49%" onclick="chkInput();">등록</button>
+            </div>
+        </div>
+       </div>
+    </div>
+</div>
+</body>
+<script>
+
+$(document).ready(function () {
+	
+	$("input[name=searchInput]").bind('paste',function(e){
+        var el = $(this);
+        setTimeout(function(){
+            var text = $(el).val();
+	        var rows = text.split(" ");
+	        var htmlText = "";
+		 	var cnt = 1;
+	     	for(var y in rows) {
+		 	    var cells = rows[y].split("/t");
+		 	    for(var x in cells) {
+		 	    	htmlText += "<tr>" 
+		 	    	         + "<td data-id="+ cnt + ">"+ cnt + "</td>"
+		 	    	         + "<td><input type='text' name='searchInput' value='"+cells[x]+"' class='form-control'></td>"
+		 	    	         + "</tr>"
+		        	//console.log(cells);
+		 	    	cnt++;
+		 	    }
+	     	}
+	 	    for(var i = cnt ; i < 21 ; i++) {
+	 	    	htmlText += "<tr>" 
+	 	    	         + "<td data-id="+ i + ">"+ i + "</td>"
+	 	    	         + "<td><input type='text' name='searchInput' value='' class='form-control'></td>"
+	 	    	         + "</tr>"
+	        	//console.log(cells);
+	 	    }
+	        $('#dataBind').html(htmlText);
+        },100);
+	});
+});
+
+function chkInput(){
+	var chkFlag = false;
+	var returnVal = "";
+	$('input[name=searchInput]').each(function (i,item) {  
+		if($(item).val()!=""){
+			chkFlag = true;
+			returnVal += $(item).val() + ",";
+		}
+	}); 
+	
+	if(!chkFlag){
+		alert("값을 입력해주세요.");
+	}else{
+		opener.searchHelperValue(returnVal);
+		window.close();
+	}
+	
+}
+
+function dataParse(obj){
+// 	var data = $('input[name=searchInput]').val();
+// 	var rows = data.split("\n");
+	
+// 	var table = $('<table />');
+	
+// 	for(var y in rows) {
+// 	    var cells = rows[y].split("\t");
+// 	    var row = $('<tr />');
+// 	    for(var x in cells) {
+// 	        row.append('<td>'+cells[x]+'</td>');
+// 	    }
+// 	    table.append(row);
+// 	}
+	
+// 	// Insert into DOM
+// 	$('#sort2').html(table);
+	
+}
+
+</script>
+</body>
+</html>

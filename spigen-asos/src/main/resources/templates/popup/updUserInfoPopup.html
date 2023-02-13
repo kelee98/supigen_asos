@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<!-- 공통 Config -->
+<head th:replace="popup/popupConfig::configFragment">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class = "container" th:each="result :${resultList}">
+	<form name="uploadForm" id="uploadForm" role="form" class="form-horizontal">
+		<h2>사용자 계정 수정</h2>
+		        <div class="form-group">
+                    <label for="firstName" class="col-sm-3 control-label">* 사용자ID</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="id" name="id" dataType="EMAIL" hname="사용자ID" placeholder="아이디를 입력해주세요.(이메일 형식)" class="form-control" autofocus maxlength="50"  required="required" th:value="${result.id}" onkeyup="chkInput(this)" readonly="readonly">
+                    	<span class="chkMsg" id="idChk"></span>
+                    </div>
+                </div>
+		        <div class="form-group">
+                    <label for="firstName" class="col-sm-3 control-label">* 성명</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="username" name="username" hname="성명" placeholder="성명을 입력해주세요." class="form-control" autofocus maxlength="20"  required="required" th:value="${result.username}">
+                    </div>
+                </div>                
+                 <div class="form-group">
+                    <label class="control-label col-sm-3">* 권한</label>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label class="radio-inline">
+                                    <input type="radio" name="roleId" value="12" checked="checked">제품서류
+                                </label>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="radio-inline">
+                                    <input type="radio" name="roleId" value="03">수출입서류
+                                </label>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="radio-inline">
+                                    <input type="radio" name="roleId" value="00">마스터
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                 <div class="form-group">
+                    <label class="control-label col-sm-3">* 사용여부</label>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label class="radio-inline">
+                                    <input type="radio" name="useYn" value="Y" checked="checked">사용
+                                </label>
+                            </div>
+                            <div class="col-sm-4">
+                                <label class="radio-inline">
+                                    <input type="radio" name="useYn" value="N">미사용
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">* 비밀번호</label>
+                    <div class="col-sm-9">
+                         <div class="row">
+                            <div class="col-sm-5">
+                                <label class="radio-inline" style="padding-top: 7px; padding-left: 0px">
+                        			<input type="checkbox" id="initYn" name="initYn" hname="비밀번호" value="Y" > 초기화
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 30px">
+                    <div class="col-sm-11 col-sm-offset-1">
+                        <button type="button" class="btn btn-secondary btn" style="width: 49%" onclick="window.close();">취소</button>
+                        <button type="button" class="btn btn-primary btn" style="width: 49%" onclick="updUser();">등록</button>
+                    </div>
+                </div>
+	</form>
+</div>
+</body>
+<script th:inline="javascript">
+
+$(document).ready(function () {
+	
+	/*<![CDATA[*/
+	var roleId = /*[[${resultList[0].roleId}]]*/;
+	/*]]>*/
+	
+	$('input[name=roleId][value='+roleId+']').prop("checked", true);
+			
+});
+
+//유저 등록
+function updUser(){
+	
+	var sendData = $('#uploadForm').serialize();
+
+    $.ajax({
+        type: 'POST',
+        dataType : 'json', 
+        data : sendData,
+        beforeSend : function(xhr)
+        {   /*데이터를 전송하기 전에 헤더에 csrf값을 설정한다*/
+				xhr.setRequestHeader(header, token); 
+        },
+        url :  '/userMgrList/updUserInfo',
+        success: function (data) {
+          if(data.result>0){
+        	  alert("수정이 완료되었습니다.");
+        	  window.close();
+          }
+        },
+        error: function (e) {
+            alert("등록 실패");
+        }
+    });
+}
+
+</script>
+</body>
+</html>
